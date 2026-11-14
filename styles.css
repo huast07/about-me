@@ -1,4 +1,4 @@
-/* Shared tokens + main tree page. Tab pages (projects/travels/passions) only use the base section. */
+/* Shared tokens + main tree page. Branch pages only use the base section and the .stub styles. */
 @property --sky-top { syntax: "<color>"; inherits: true; initial-value: #fbf1f0; }
 @property --sky-bot { syntax: "<color>"; inherits: true; initial-value: #f1e6e4; }
 
@@ -22,37 +22,49 @@ a:focus-visible, button:focus-visible { outline: 2px dashed var(--ink); outline-
 #sky { position: fixed; inset: 0; z-index: 0; background: linear-gradient(180deg, var(--sky-top), var(--sky-bot)); }
 #sky::after { content: ""; position: absolute; inset: 0; opacity: .35; pointer-events: none;
   background-image: radial-gradient(rgba(60, 40, 40, .07) 1px, transparent 1px); background-size: 3px 3px; }
-/* faded ink painting + vertical verses behind the tree */
+/* faded ink painting (a transparent ink layer, see tools/ink-layer.py) + vertical verses behind the tree */
 #backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 /* no blend mode or CSS filter here: both force the tall layer to be re-composited every frame */
-#ink { position: absolute; left: 0; top: 0; width: 100%; opacity: .2; will-change: transform; }
-#ink img { display: block; width: 100%; height: 100%; }
+#ink { position: absolute; left: 0; top: 0; width: 100%; opacity: .17; will-change: transform; }
+/* on phones the scroll is taller than the screen is wide: crop the sides, keeping the scholar's bridge in view */
+#ink img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 42% 50%; }
 .verse .ch { opacity: 0; transition: opacity 1.2s ease; }
 .verse .ch.on { opacity: 1; }
 #verses { position: absolute; inset: 0; }
-/* vertical-rl: flex column = block axis, so each line becomes a column read right to left */
-.verse { position: absolute; top: 13vh; writing-mode: vertical-rl; display: flex; flex-direction: column; gap: .55em; white-space: nowrap; color: var(--ink); opacity: .2;
-  font-family: "Noto Serif JP", "Noto Serif TC", "Hiragino Mincho ProN", "Songti TC", serif; font-size: clamp(20px, 1.8vw, 26px); letter-spacing: .28em; line-height: 1; }
+/* vertical-rl: flex column = block axis, so each line becomes a column read right to left.
+   Faded through the text colour (not opacity) so the seal can stay a strong vermilion. */
+.verse { position: absolute; top: 12vh; writing-mode: vertical-rl; display: flex; flex-direction: column; gap: .5em; white-space: nowrap;
+  color: rgba(42, 35, 36, .34); font-family: "Noto Serif JP", "Noto Serif TC", "Hiragino Mincho ProN", "Songti TC", serif;
+  font-size: clamp(24px, 2.3vw, 34px); letter-spacing: .24em; line-height: 1; }
 .verse[lang="zh-Hant"] { font-family: "Noto Serif TC", "Songti TC", "Noto Serif JP", serif; }
 .verse .v-title { font-weight: 500; }
-.verse .v-author { font-size: .5em; letter-spacing: .2em; padding-top: 6em; }
+/* in vertical-rl the flex row runs top to bottom, so the seal lands under the signature */
+.verse .v-author { font-size: .52em; letter-spacing: .2em; padding-top: 5em; display: flex; flex-direction: row; align-items: center; gap: .9em; }
+/* seal (印章): white characters cut into a vermilion square, stamped under the signature */
+.verse .seal { font-family: "Noto Serif TC", "Songti TC", serif; font-weight: 900; letter-spacing: 0; color: #fbf3ee;
+  background: #b5342b; padding: .32em .3em; font-size: 1.45em; line-height: 1.05; border-radius: 2px;
+  box-shadow: inset 0 0 0 .12em #b5342b, inset 0 0 0 .2em rgba(251, 243, 238, .85); }
+.verse .seal.on { opacity: .82; }
+.verse .seal[data-n="1"] { font-size: 2em; padding: .2em; }
 .verse-haiku { left: 4vw; }
 .verse-poem { right: 52px; } /* just inside the progress rail */
 canvas#tree, canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 canvas#fx { z-index: 3; }
-#world { position: fixed; left: 0; top: 0; width: 100%; z-index: 2; will-change: transform; }
-#spacer { position: relative; z-index: -1; }
+/* the page itself scrolls normally over the fixed tree */
+#world { position: relative; z-index: 2; }
 
 /* ---------- hero ---------- */
-.hero { position: absolute; left: max(16px, 19vw); /* clears the haiku columns at the left edge */ transform: translateY(-100%); width: min(560px, calc(100% - 32px)); }
+.hero { min-height: 100vh; padding: 18vh 16px 0 max(16px, 21vw); /* clears the haiku columns at the left edge */ }
+.hero > * { max-width: 560px; }
 .hero h1 { font-weight: 500; font-size: clamp(48px, 8vw, 92px); line-height: .92; margin: 10px 0 16px; letter-spacing: -.01em; }
 .hero h1 em { color: var(--sakura-deep); }
 .hero p { font-size: 21px; line-height: 1.4; margin: 0 0 16px; max-width: 460px; color: var(--ink-soft); }
 .hero .arrow { display: inline-block; animation: bob 2.4s ease-in-out infinite; }
 @keyframes bob { 50% { transform: translateY(6px); } }
 
-/* ---------- highlight cards ---------- */
-.mark { position: absolute; transform: translateY(-50%) translateY(18px); opacity: 0;
+/* ---------- highlight cards: one screen-high beat each, the card centred in it ---------- */
+.beat { position: relative; height: 78vh; }
+.mark { position: absolute; top: 50%; transform: translateY(-50%) translateY(18px); opacity: 0;
   transition: opacity .9s ease, transform .9s cubic-bezier(.2, .8, .2, 1);
   background: color-mix(in srgb, var(--paper) 94%, transparent); border: 1px solid var(--rule); padding: 20px 24px 22px;
   box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 18px 44px -26px rgba(60, 20, 30, .45); }
@@ -64,12 +76,15 @@ canvas#fx { z-index: 3; }
 .mark p { margin: 0; font-size: 22px; line-height: 1.4; }
 
 /* ---------- finale ---------- */
-.finale { position: absolute; left: 50%; width: min(760px, calc(100% - 32px)); text-align: center;
-  transform: translate(-50%, -50%) translateY(24px); opacity: 0; transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2, .8, .2, 1); }
-.finale.on { opacity: 1; transform: translate(-50%, -50%); }
+.finale { width: min(760px, calc(100% - 32px)); min-height: 100vh; margin: 0 auto; padding: 72px 0 28px; text-align: center;
+  display: flex; flex-direction: column; justify-content: center;
+  transform: translateY(24px); opacity: 0; transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2, .8, .2, 1); }
+.finale.on { opacity: 1; transform: none; }
 .finale h2 { font-weight: 500; font-style: italic; font-size: clamp(54px, 10vw, 110px); line-height: 1; margin: 10px 0 6px; color: var(--ink);
   text-shadow: 0 2px 30px rgba(255, 240, 244, .9); }
-.finale .translation { font-size: 24px; margin: 0; color: var(--ink-soft); }
+/* paper halo keeps the motto legible over the blossoming crown */
+.finale .translation, .finale .hand, .finale > .mono { text-shadow: 0 0 6px var(--paper), 0 0 14px var(--paper), 0 0 24px var(--paper); }
+.finale .translation { font-size: 24px; margin: 0; color: var(--ink); }
 .finale .hand { margin: 4px 0 30px; }
 .paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; text-align: left; }
 .path { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 20px; color: var(--ink); text-decoration: none;
@@ -87,11 +102,20 @@ canvas#fx { z-index: 3; }
 /* backed like the HUD chips so the links stay legible over the blossom canopy */
 .contact a { color: var(--ink); background: color-mix(in srgb, var(--paper) 92%, transparent); border: 1px solid var(--rule); padding: 6px 10px; }
 .contact a:hover, .contact a:focus-visible { background: var(--ink); color: var(--paper); }
+.credits { font-family: var(--mono); font-size: 10px; line-height: 1.7; letter-spacing: .04em; color: var(--ink-soft); margin: 18px auto 0; max-width: 620px;
+  background: color-mix(in srgb, var(--paper) 80%, transparent); padding: 6px 10px; }
+.credits a { color: inherit; }
 
 /* ---------- HUD ---------- */
 .hud { position: fixed; z-index: 5; font-family: var(--mono); }
+/* content scrolls under the top bar: fade it out there so it never collides with the name and buttons */
+body::before { content: ""; position: fixed; left: 0; right: 0; top: 0; height: 76px; z-index: 4; pointer-events: none;
+  background: linear-gradient(var(--sky-top) 45%, color-mix(in srgb, var(--sky-top) 0%, transparent)); }
 #topbar { left: 16px; right: 16px; top: 14px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
 #topbar > * { pointer-events: auto; }
+.controls { display: flex; gap: 8px; }
+.play { width: 0; height: 0; border-style: solid; border-width: 5px 0 5px 8px; border-color: transparent transparent transparent currentColor; }
+.chip[aria-pressed=true] .play { width: 8px; height: 10px; border: 0; border-left: 3px solid; border-right: 3px solid; }
 .brand { font-family: var(--serif); font-size: 21px; font-style: italic; text-decoration: none; color: var(--ink); }
 .chip { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--ink);
   background: color-mix(in srgb, var(--paper) 85%, transparent); color: var(--ink); padding: 8px 11px; cursor: pointer; display: flex; align-items: center; gap: 7px; }
@@ -112,7 +136,9 @@ canvas#fx { z-index: 3; }
 #rail button:hover span, #rail button:focus-visible span { opacity: 1; }
 
 @media (max-width: 760px) {
-  .hero { left: 16px; }
+  .hero { padding: 14vh 16px 0; }
+  .beat { height: 70vh; }
+  .wide { display: none; }
   .mark { padding: 16px 18px 18px; }
   .mark .age b { font-size: 42px; }
   .mark p { font-size: 20px; }
@@ -123,10 +149,10 @@ canvas#fx { z-index: 3; }
   .path .go { right: 10px; top: 10px; font-size: 18px; }
   .finale .hand { margin-bottom: 18px; }
   #rail, #season { display: none; }
-  .verse { top: auto; bottom: 12vh; font-size: 15px; opacity: .16; } /* small enough that both verses stay clear of the trunk */ /* below the hero title on small screens */
+  .verse { top: 84px; font-size: 18px; color: rgba(42, 35, 36, .28); }
   .verse-haiku { left: 10px; }
   .verse-poem { right: 10px; }
-  #ink { opacity: .16; }
+  #ink { opacity: .15; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

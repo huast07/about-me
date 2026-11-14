@@ -1,36 +1,36 @@
 /* Sakura tree engine.
-   Scrolling grows a procedural cherry tree from a seed. Each highlight in SITE.highlights
-   sprouts a branch, and the seasons cycle as the tree grows. At the crown it reaches full
-   bloom, then the motto and the three paths (projects, travels, passions) appear.
-   World units: wy = pixels above the ground line. Screen y = H - GROUND - wy + scrollY. */
+   The tree stands still in the viewport and grows as you scroll down, while the page content
+   (intro, one card per highlight, finale) scrolls up past it like any normal page. Each highlight
+   sprouts a branch when its card reaches the reading line, and the seasons cycle as the tree grows.
+   At the end it reaches full bloom and the finale (motto, branch pages, contact) arrives.
+   Tree units: wy = pixels above the ground line. Screen y = H - GROUND - wy. */
 (() => {
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const MOBILE_BP = 760;
-  const GROUND = 96, SEED_H = 760, STEP = 700, CROWN_GAP = 320;
+  const GROUND = 64;                 // ground line, px above the bottom of the viewport
+  const CROWN_SCREEN = 0.3;          // fully grown trunk top, as a fraction of the viewport from the top
+  const FIRST_BRANCH = 0.16, LAST_BRANCH = 0.93; // where the highlight branches sit along the trunk (fraction of its height)
   /* The tree matures as it grows: branches and trunk start at these fractions of full size. */
   const YOUNG_BRANCH = 0.5, YOUNG_TWIG = 0.3, YOUNG_TRUNK = 0.3;
-  const SEASON_FADE_MS = 1400, CANOPY_COUNT = 760, GROWTH_RATE = 3.2;
-  /* At the end of the page the crown sits at CROWN_SCREEN of the viewport height and the motto at FINALE_SCREEN. */
-  const CROWN_SCREEN = 0.8, FINALE_SCREEN = 0.42;
-  /* Screen line (fraction from top) that decides the current season and rail stop: just below centre, where cards are read. */
-  const FOCUS_SCREEN = 0.62;
-  const CARD_MAX_W = 340, CARD_GAP = 70; // highlight card width and distance from the trunk (desktop)
-  const TOPBAR_CLEARANCE = 64; // px kept free above the finale for the fixed top bar
+  const BRANCH_GROWTH = 0.85;        // a branch is (tip - base) / (BRANCH_GROWTH * STEP) branch-lengths long
+  const SEASON_FADE_MS = 1400, CANOPY_COUNT = 760;
+  const FOCUS = 0.55;                // the reading line (fraction from the top) where a card's branch sprouts
+  const SPROUT = 0.6;                // how far (in branch steps) the tip has passed a branch when its card is on the reading line
+  const CARD_MAX_W = 340, CARD_SIDE_GAP = 24;
+  const BUD_START = 18;              // px of shoot visible before any scrolling
 
   const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const lerp = (a, b, k) => a + (b - a) * k;
 
-  /* ---------- world layout ---------- */
+  /* ---------- tree shape (fixed per seed; heights are set from the viewport in resize) ---------- */
   const marks = SITE.highlights.map((h, i) => ({
-    ...h, i, wy: SEED_H + i * STEP, side: i % 2 ? -1 : 1,
+    ...h, i, side: i % 2 ? -1 : 1, // side the card sits on; its branch grows the other way
     season: SEASON_CYCLE[Math.floor(i * SEASON_CYCLE.length / SITE.highlights.length)] // one cycle, long seasons
   }));
-  const maturity = i => marks.length > 1 ? i / (marks.length - 1) : 1;
-  const TOP = marks[marks.length - 1].wy + CROWN_GAP;
-  let WORLD_H = TOP + 1000; // recomputed from the viewport height in resize()
-  const seasonAt = wy => wy >= TOP - 80 ? "bloom"
-    : marks[clamp(Math.floor((wy - SEED_H + STEP * 0.5) / STEP), 0, marks.length - 1)].season;
+  const N = marks.length;
+  const maturity = i => N > 1 ? i / (N - 1) : 1;
 
   /* Recursive branch, deterministic per seed. Units: 1 = branch scale S. */
   function buildBranch(dir, seed) {
@@ -51,13 +51,13 @@
       .flatMap(s => [0, 1].map(() => ({ x: s.x2 + (r() - 0.5) * 0.06, y: s.y2 + (r() - 0.5) * 0.06, a: r() * 6.28, s: 0.7 + r() * 0.6, c: Math.floor(r() * 3), d: s.d1 })));
     return { segs, buds };
   }
-  const branches = marks.map((m, i) => ({ ...buildBranch(-m.side, 1000 + i * 97), wy: m.wy,
+  const branches = marks.map((m, i) => ({ ...buildBranch(-m.side, 1000 + i * 97), wy: 0,
     scale: YOUNG_BRANCH + (1 - YOUNG_BRANCH) * maturity(i) }));
   const twigs = [];
   { const r = mulberry32(42);
-    for (let wy = 260; wy < TOP - 120; wy += 120 + r() * 130) {
+    for (let f = 0.06; f < 0.97; f += 0.035 + r() * 0.04) {
       const b = buildBranch(r() < 0.5 ? -1 : 1, Math.floor(r() * 1e6));
-      twigs.push({ wy, scale: YOUNG_TWIG + (0.55 - YOUNG_TWIG) * Math.min(1, wy / TOP),
+      twigs.push({ f, wy: 0, scale: YOUNG_TWIG + (0.55 - YOUNG_TWIG) * f,
         segs: b.segs.filter(s => s.depth <= 2).map(s => ({ ...s, w: s.w * 0.6 })),
         buds: b.buds.filter((_, j) => j % 2 === 0) });
     } }
@@ -66,30 +66,24 @@
     for (let i = 0; i < CANOPY_COUNT; i++) { const a = r() * 6.283, d = Math.sqrt(r());
       canopy.push({ x: Math.cos(a) * d * 1.3, y: 0.08 + Math.sin(a) * d * 0.62, a: r() * 6.28, s: 1 + r(), c: Math.floor(r() * 3), k: d }); } }
 
-  /* ---------- DOM ---------- */
-  const world = document.getElementById("world"), spacer = document.getElementById("spacer");
-  const place = (html, wy) => { const t = document.createElement("template"); t.innerHTML = html.trim();
-    const el = t.content.firstChild; el.dataset.wy = wy; world.appendChild(el); return el; };
+  /* ---------- DOM: an ordinary scrolling page ---------- */
+  const story = document.getElementById("world");
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const pad2 = n => String(n).padStart(2, "0");
-
-  place(`<section class="hero" aria-label="Introduction">
+  const contact = SITE.contact || {}, mc = SITE.musicCredit, art = SITE.painting;
+  story.innerHTML = `
+    <section class="hero" aria-label="Introduction">
       <div class="mono">A life, grown one ring at a time</div>
       <h1>${esc(SITE.name.split(" ")[0])}<br><em>${esc(SITE.name.split(" ").slice(1).join(" "))}</em></h1>
-      <p>Every branch on this tree is a moment that shaped me. Scroll, and watch it grow through the seasons.</p>
+      <p>Every branch on this tree is a moment that shaped me. Scroll, or press Autoscroll, and watch it grow through the seasons.</p>
       <span class="hand"><span class="arrow" aria-hidden="true">&darr;</span> scroll to grow</span>
-    </section>`, 380);
-
-  marks.forEach(m => {
-    const age = m.age == null ? `<b>??</b>,<span class="tbd mono">age TBD</span>` : `<b>${esc(m.age)}</b>,`;
-    m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
-        <div class="mono kicker"><span>${pad2(m.i + 1)} / ${pad2(marks.length)}</span><span>${esc(m.tag)} - ${SEASONS[m.season].label}</span></div>
-        <h2 class="age" id="mt-${m.i}">At age ${age}</h2>
+    </section>
+    ${marks.map(m => `<section class="beat"><article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
+        <div class="mono kicker"><span>${pad2(m.i + 1)} / ${pad2(N)}</span><span>${esc(m.tag)} - ${SEASONS[m.season].label}</span></div>
+        <h2 class="age" id="mt-${m.i}">At age ${m.age == null ? `<b>??</b>,<span class="tbd mono">age TBD</span>` : `<b>${esc(m.age)}</b>,`}</h2>
         <p>${esc(m.text)}</p>
-      </article>`, m.wy + 60);
-  });
-
-  const finale = place(`<section class="finale" aria-labelledby="motto">
+      </article></section>`).join("")}
+    <section class="finale" aria-labelledby="motto">
       <div class="mono">${esc(SEASONS.bloom.label)}</div>
       <h2 id="motto" lang="la">${esc(SITE.motto.latin)}</h2>
       <p class="translation">${esc(SITE.motto.translation)}</p>
@@ -100,28 +94,48 @@
       </nav>
       <div class="contact mono">
         <a href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn &nearr;</a>
-        ${SITE.contact.github ? `<a href="${esc(SITE.contact.github)}" target="_blank" rel="noopener">GitHub &nearr;</a>` : ""}
-        ${SITE.contact.email ? `<a href="mailto:${esc(SITE.contact.email)}">${esc(SITE.contact.email)}</a>` : ""}
+        ${contact.github ? `<a href="${esc(contact.github)}" target="_blank" rel="noopener">GitHub &nearr;</a>` : ""}
+        ${contact.email ? `<a href="mailto:${esc(contact.email)}">${esc(contact.email)}</a>` : ""}
       </div>
-    </section>`, TOP + 600);
+      <p class="credits">
+        ${art ? `Painting: <a href="${esc(art.url)}" target="_blank" rel="noopener">${esc(art.credit)}</a>` : ""}
+        ${mc && SITE.music?.length ? `<br>Music: ${SITE.music.map(t => `<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.title)}</a>`).join(", ")},
+          ${esc(mc.instrument)} by ${esc(mc.performer)}, <a href="${esc(mc.licenseUrl)}" target="_blank" rel="noopener">${esc(mc.license)}</a>, via Wikimedia Commons.` : ""}
+      </p>
+    </section>`;
+  marks.forEach(m => { m.el = document.getElementById(`m-${m.i}`); });
+  const finale = story.querySelector(".finale");
 
-  /* ---------- canvas + camera ---------- */
+  /* ---------- canvas + layout ---------- */
   const cv = document.getElementById("tree");
   let ctx = cv.getContext("2d"); // temporarily swapped to a sprite canvas while sprites are built
   const fxCv = document.getElementById("fx"), fctx = fxCv.getContext("2d");
   let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false, DPR = 1;
-  const camY = () => scrollY;
-  const sy = wy => H - GROUND - wy + camY();
-  /* The growing tip starts at the ground (a bud) and catches up with the reading line as you scroll. */
-  const BUD_START = 22; // px of shoot visible before any scrolling
-  const tipY = () => reduceMotion ? Infinity : Math.max(BUD_START, camY() + H * 0.56 - Math.max(0, H * 0.56 - camY()));
-  const growth = (wy, scale) => Math.max(0, (tipY() - wy) * GROWTH_RATE / (S * scale));
-  const trunkX = wy => trunkCX + Math.sin(wy * 0.0021) * 14 + Math.sin(wy * 0.0057 + 1.3) * 7;
+  let TOP = 500, STEP = 40, CANOPY_GROW = 120, maxScroll = 1;
+  const sy = wy => H - GROUND - wy;
+  const trunkX = wy => trunkCX + Math.sin(wy / TOP * 6.5) * 9 + Math.sin(wy / TOP * 17 + 1.3) * 4;
+  /* Scroll -> story position t: 0 at the top, i + 1 when card i is on the reading line, N + 1 at the end. */
+  let anchors = [];
+  function storyT() {
+    const y = scrollY;
+    if (y <= anchors[0]) return 0;
+    for (let k = 1; k < anchors.length; k++) if (y <= anchors[k]) return k - 1 + (y - anchors[k - 1]) / Math.max(1, anchors[k] - anchors[k - 1]);
+    return anchors.length - 1;
+  }
+  /* Height of the growing tip for a story position. */
+  function tipFor(t) {
+    if (reduceMotion) return Infinity;
+    const at = i => i < 0 ? BUD_START : i >= N ? TOP + CANOPY_GROW : branches[i].wy + SPROUT * STEP;
+    const k = Math.floor(t);
+    return lerp(at(k - 1), at(k), t - k);
+  }
+  let tip = BUD_START;
+  const growth = wy => Math.max(0, (tip - wy) / (BRANCH_GROWTH * STEP));
   function trunkW(wy) {
-    let w = 50 - 32 * Math.min(1, wy / TOP);
-    marks.forEach(m => { const d = (wy - m.wy) / 40; w += 6 * Math.exp(-d * d); });
-    const age = YOUNG_TRUNK + (1 - YOUNG_TRUNK) * Math.min(1, Math.max(0, tipY()) / TOP); // trunk thickens as the tree grows
-    w *= TW * age; return Math.max(3, wy < 40 ? w * (0.5 + wy / 80) : w);
+    let w = 50 - 30 * Math.min(1, wy / TOP);
+    branches.forEach(b => { const d = (wy - b.wy) / 12; w += 5 * Math.exp(-d * d); });
+    const age = YOUNG_TRUNK + (1 - YOUNG_TRUNK) * Math.min(1, Math.max(0, tip) / TOP); // trunk thickens as the tree grows
+    w *= TW * age; return Math.max(3, wy < 30 ? w * (0.55 + wy / 70) : w);
   }
 
   function resize() {
@@ -129,21 +143,27 @@
     if (dpr !== DPR) sprites.clear(); DPR = dpr;
     [cv, fxCv].forEach(c => { c.width = W * dpr; c.height = H * dpr; });
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    S = mobile ? W * 0.4 : Math.min(W * 0.28, 300); trunkCX = W * 0.5; TW = mobile ? 0.62 : 1;
-    WORLD_H = TOP + GROUND + H * CROWN_SCREEN;
-    spacer.style.height = WORLD_H + "px"; world.style.height = WORLD_H + "px";
-    const finaleCentre = Math.max(H * FINALE_SCREEN, finale.offsetHeight / 2 + TOPBAR_CLEARANCE);
-    finale.dataset.wy = WORLD_H - GROUND - finaleCentre;
-    layoutDom(); render();
+    TOP = H - GROUND - H * CROWN_SCREEN;
+    S = mobile ? W * 0.36 : Math.min(W * 0.18, H * 0.27, 260);
+    trunkCX = W * 0.5; TW = mobile ? 0.62 : 1;
+    STEP = (LAST_BRANCH - FIRST_BRANCH) * TOP / Math.max(1, N - 1);
+    CANOPY_GROW = TOP * 0.3;
+    branches.forEach((b, i) => { b.wy = TOP * FIRST_BRANCH + i * STEP; });
+    twigs.forEach(t => { t.wy = t.f * TOP; });
+    layoutCards();
+    maxScroll = Math.max(1, document.documentElement.scrollHeight - H);
+    anchors = [0, ...marks.map(m => clamp(m.mid - H * FOCUS, 1, maxScroll - 1)), maxScroll];
+    for (let k = 1; k < anchors.length; k++) anchors[k] = Math.max(anchors[k], anchors[k - 1] + 1);
+    dirty = true; render();
   }
-  function layoutDom() {
-    const cardW = Math.min(CARD_MAX_W, W * 0.5 - 110); // narrow enough to leave the edge verses clear
-    world.querySelectorAll("[data-wy]").forEach(el => { el.style.top = (WORLD_H - +el.dataset.wy) + "px"; });
+  function layoutCards() {
+    const gap = S * 0.62, cardW = Math.min(CARD_MAX_W, W * 0.5 - gap - CARD_SIDE_GAP);
     marks.forEach(m => {
-      if (mobile) { m.el.style.left = "16px"; m.el.style.width = (W - 32) + "px"; return; }
-      m.el.style.width = cardW + "px";
-      m.el.style.left = (m.side > 0 ? trunkX(m.wy) + CARD_GAP : trunkX(m.wy) - CARD_GAP - cardW) + "px";
+      const s = m.el.style;
+      if (mobile) { s.left = "16px"; s.width = (W - 32) + "px"; }
+      else { s.width = cardW + "px"; s.left = (m.side > 0 ? trunkCX + gap : trunkCX - gap - cardW) + "px"; }
     });
+    marks.forEach(m => { const beat = m.el.parentElement; m.mid = beat.offsetTop + beat.offsetHeight / 2; m.x0 = m.el.offsetLeft; m.x1 = m.x0 + m.el.offsetWidth; });
   }
 
   /* ---------- drawing ---------- */
@@ -195,43 +215,43 @@
     else stamp(sprite("snow", col), x, y, 0, s * k);
   }
 
+  function drawGround() {
+    ctx.fillStyle = "rgba(74,52,44,.12)"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 4, Math.min(W * 0.45, 420), 22, 0, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = "rgba(74,52,44,.5)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, sy(0) + 2);
+    for (let x = 0; x <= W; x += 12) ctx.lineTo(x, sy(0) + 2 + Math.sin(x * 0.07) * 1.5); ctx.stroke();
+    ctx.fillStyle = "#5c3d33"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 8, 9, 6, -0.3, 0, 6.283); ctx.fill();
+  }
   function drawTrunk() {
-    const tip = Math.min(tipY(), TOP + 120), lo = Math.max(0, camY() - GROUND - 60), hi = Math.min(tip, camY() + H + 60);
-    if (sy(0) < H + 40) {
-      ctx.fillStyle = "rgba(74,52,44,.12)"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 4, Math.min(W * 0.45, 420), 26, 0, 0, 6.283); ctx.fill();
-      ctx.strokeStyle = "rgba(74,52,44,.5)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, sy(0) + 2);
-      for (let x = 0; x <= W; x += 12) ctx.lineTo(x, sy(0) + 2 + Math.sin(x * 0.07) * 1.5); ctx.stroke();
-      ctx.fillStyle = "#5c3d33"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 8, 9, 6, -0.3, 0, 6.283); ctx.fill();
-    }
-    if (hi <= lo) { if (sy(tip) < H + 20) drawTipBud(tip); return; }
-    const halfW = wy => trunkW(wy) * Math.min(1, (tip - wy) / 200 + 0.2) / 2;
+    drawGround();
+    const top = Math.min(tip, TOP + S * 0.25);
+    if (top < 12) { drawTipBud(tip); return; }
+    const halfW = wy => trunkW(wy) * Math.min(1, (top - wy) / (TOP * 0.25) + 0.2) / 2;
     const L = [], R = [];
-    for (let wy = lo; wy <= hi; wy += 5) { const x = trunkX(wy), w = halfW(wy); L.push([x - w, sy(wy)]); R.push([x + w, sy(wy)]); }
+    for (let wy = 0; wy <= top; wy += 3) { const x = trunkX(wy), w = halfW(wy); L.push([x - w, sy(wy)]); R.push([x + w, sy(wy)]); }
     const g = ctx.createLinearGradient(trunkCX - 30, 0, trunkCX + 30, 0);
     g.addColorStop(0, "#2e1f1c"); g.addColorStop(0.45, "#5a3e36"); g.addColorStop(1, "#2c1d1a");
     ctx.fillStyle = g; ctx.beginPath(); L.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p));
     for (let i = R.length - 1; i >= 0; i--) ctx.lineTo(...R[i]); ctx.closePath(); ctx.fill();
     // cherry bark: horizontal lenticels
-    ctx.strokeStyle = "rgba(220,190,180,.28)"; ctx.lineWidth = 1.2;
-    for (let wy = Math.ceil(lo / 23) * 23; wy <= hi; wy += 23) {
+    ctx.strokeStyle = "rgba(220,190,180,.28)"; ctx.lineWidth = 1.1;
+    for (let wy = 14; wy <= top - 10; wy += 14) {
       const w = halfW(wy), x = trunkX(wy), off = Math.sin(wy * 1.7) * w * 0.4, len = w * (0.3 + 0.25 * Math.abs(Math.sin(wy)));
       ctx.beginPath(); ctx.moveTo(x + off - len / 2, sy(wy)); ctx.lineTo(x + off + len / 2, sy(wy)); ctx.stroke();
     }
-    if (tip < TOP + 100 && sy(tip) > -20 && sy(tip) < H + 20) drawTipBud(tip);
+    if (tip < TOP + S * 0.2) drawTipBud(tip);
   }
   /* The leading bud. While the tree is still a seedling it also carries two first leaves. */
-  function drawTipBud(tip) {
-    const x = trunkX(tip), y = sy(tip), seedling = Math.max(0, 1 - tip / 160);
+  function drawTipBud(t) {
+    const x = trunkX(t), y = sy(t), seedling = Math.max(0, 1 - t / 120);
     if (seedling > 0) {
       drawLeaf(x - 1, y + 10, -1.1, 0.9 * seedling + 0.2, SEASONS.spring.colors[2]);
       drawLeaf(x + 1, y + 12, 1.1, 0.8 * seedling + 0.2, SEASONS.spring.colors[2]);
     }
-    drawFlowerBud(x, y - 2, 0, 1.8, SEASONS[seasonAt(tip)].foliage === "leaf" ? SEASONS.spring.colors[2] : SEASONS.spring.colors[0]);
+    drawFlowerBud(x, y - 2, 0, 1.8, SEASONS[season].foliage === "leaf" ? SEASONS.spring.colors[2] : SEASONS.spring.colors[0]);
   }
   function drawWood(b) {
-    const g = growth(b.wy, b.scale); b.g = g; if (g <= 0) return;
-    const bx = trunkX(b.wy), base = sy(b.wy), u = S * b.scale, reach = u * 2;
-    if (base < -reach || base > H + reach) { b.g = -1; return; }
+    const g = growth(b.wy); b.g = g; if (g <= 0) return;
+    const bx = trunkX(b.wy), base = sy(b.wy), u = S * b.scale;
     ctx.strokeStyle = "#3d2a25"; ctx.lineCap = "round";
     b.segs.forEach(s => { if (s.d0 >= g) return; const f = Math.min(1, (g - s.d0) / (s.d1 - s.d0));
       ctx.lineWidth = s.w * (mobile ? 0.8 : 1) * (0.5 + 0.5 * b.scale); ctx.beginPath(); ctx.moveTo(bx + s.x1 * u, base - s.y1 * u);
@@ -243,9 +263,20 @@
       drawBud(bx + l.x * u, base - l.y * u, l.a, l.s * k, l.c, seasonKey); });
   }
   function drawCanopy(seasonKey) {
-    const tip = tipY(); if (tip <= TOP) return;
-    const g = Math.min(1, (tip - TOP) / 260), cx = trunkX(TOP);
+    if (tip <= TOP) return;
+    const g = Math.min(1, (tip - TOP) / CANOPY_GROW), cx = trunkX(TOP);
     canopy.forEach(l => { if (l.k > g) return; drawBud(cx + l.x * S, sy(TOP + l.y * S), l.a, l.s * Math.min(1, (g - l.k) * 5), l.c, seasonKey); });
+  }
+  /* A faint ink thread from the card being read to the branch it grew (desktop only). */
+  function drawThread(m) {
+    if (mobile || !m) return;
+    const cy = m.mid - scrollY, k = 1 - Math.abs(cy - H * FOCUS) / (H * 0.35);
+    if (k <= 0) return;
+    const b = branches[m.i], bx = trunkX(b.wy), by = sy(b.wy), x = m.side > 0 ? m.x0 : m.x1;
+    ctx.save(); ctx.globalAlpha = k * 0.55; ctx.strokeStyle = "#2a2324"; ctx.lineWidth = 1; ctx.setLineDash([2, 5]);
+    ctx.beginPath(); ctx.moveTo(x, cy); ctx.bezierCurveTo(lerp(x, bx, 0.5), cy, lerp(x, bx, 0.6), by, bx + m.side * trunkW(b.wy) * 0.5, by); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle = "#b9476c"; ctx.beginPath(); ctx.arc(bx + m.side * trunkW(b.wy) * 0.5, by, 3, 0, 6.283); ctx.fill();
+    ctx.restore();
   }
 
   /* ---------- seasons ---------- */
@@ -257,7 +288,6 @@
     const root = document.documentElement.style, se = SEASONS[next];
     root.setProperty("--sky-top", se.sky[0]); root.setProperty("--sky-bot", se.sky[1]);
     seasonLabel.textContent = se.label;
-    Music.setSeason(next);
   }
   const seasonFade = () => reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
   function foliagePass() {
@@ -271,19 +301,17 @@
   /* ---------- frame ---------- */
   const railBtns = [];
   function render() {
-    ctx.clearRect(0, 0, W, H);
+    const t = storyT(); tip = tipFor(t);
+    const cur = t < 0.5 ? -1 : t > N + 0.5 ? N : Math.round(t) - 1; // -1 intro, 0..N-1 a highlight, N the finale
+    setSeason(tip >= TOP ? "bloom" : cur < 0 ? "spring" : marks[Math.min(cur, N - 1)].season);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
     drawTrunk();
     [...twigs, ...branches].forEach(drawWood);
     foliagePass();
-    world.style.transform = `translateY(${H - GROUND - WORLD_H + camY()}px)`;
-    const tip = tipY();
-    const finaleOn = tip > +finale.dataset.wy - 160;
-    finale.classList.toggle("on", finaleOn);
-    marks.forEach(m => m.el.classList.toggle("on", tip > m.wy - 40 && !finaleOn)); // cards step aside for the finale
-    const mid = camY() + H * (1 - FOCUS_SCREEN) - GROUND;
-    setSeason(seasonAt(mid));
-    const cur = mid >= TOP - 80 ? marks.length : clamp(Math.round((mid - SEED_H) / STEP), 0, marks.length - 1);
-    railBtns.forEach((b, i) => { const on = i === cur && mid > SEED_H - STEP / 2;
+    if (cur >= 0 && cur < N) drawThread(marks[cur]);
+    marks.forEach(m => m.el.classList.toggle("on", m.mid - scrollY < H * 0.9));
+    finale.classList.toggle("on", finale.offsetTop - scrollY < H * 0.6);
+    railBtns.forEach((b, i) => { const on = i === cur;
       b.classList.toggle("cur", on); b.setAttribute("aria-current", on ? "step" : "false"); });
   }
 
@@ -324,23 +352,25 @@
   }
 
   /* ---------- navigation ---------- */
-  const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND), behavior: reduceMotion ? "auto" : "smooth" });
+  const goTo = y => scrollTo({ top: y, behavior: reduceMotion ? "auto" : "smooth" });
   const rail = document.getElementById("rail");
-  [...marks.map(m => ({ label: m.tag, wy: () => m.wy + 60 })), { label: SITE.motto.latin, wy: () => +finale.dataset.wy }].forEach(stop => {
+  [...marks.map((m, i) => ({ label: m.tag, y: () => anchors[i + 1] })), { label: SITE.motto.latin, y: () => maxScroll }].forEach(stop => {
     const li = document.createElement("li"), b = document.createElement("button");
     b.innerHTML = `<span>${esc(stop.label)}</span>`; b.setAttribute("aria-label", `Jump to ${stop.label}`);
-    b.addEventListener("click", () => goTo(stop.wy()));
+    b.addEventListener("click", () => goTo(stop.y()));
     li.appendChild(b); rail.appendChild(li); railBtns.push(b);
   });
   document.getElementById("toSeed").addEventListener("click", e => { e.preventDefault(); goTo(0); });
-  world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND) }); });
 
   const musicBtn = document.getElementById("musicBtn");
-  musicBtn.addEventListener("click", () => musicBtn.setAttribute("aria-pressed", String(Music.toggle())));
+  if (Music.available) {
+    musicBtn.addEventListener("click", () => musicBtn.setAttribute("aria-pressed", String(Music.toggle())));
+    Music.onChange(on => musicBtn.setAttribute("aria-pressed", String(on)));
+  } else musicBtn.hidden = true;
 
   addEventListener("resize", resize);
   seasonLabel.textContent = SEASONS[season].label;
   resize();
-  document.fonts?.ready.then(resize); // web fonts change the finale's height
+  document.fonts?.ready.then(resize); // web fonts change card and finale heights
   requestAnimationFrame(loop);
 })();
