@@ -28,6 +28,13 @@ const SITE = {
     note: "The UTS motto, and still the plan."
   },
 
+  /* Faded verses drawn vertically behind the tree. Lines are columns, read right to left. */
+  verses: [
+    { id: "haiku", lang: "ja", lines: ["世の中は", "三日見ぬ間の", "桜かな"], author: "大島蓼太" },
+    /* TODO(Sterling): paste the poem's lines and author; until then only the title shows. */
+    { id: "poem", lang: "zh-Hant", title: "櫻桃花下", lines: [], author: "" }
+  ],
+
   /* The three branches the finale leads to. Each gets its own theme later. */
   paths: [
     { href: "projects.html", title: "Projects", blurb: "Maplecrown, BikeTO, antennas and science fair builds." },

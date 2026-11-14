@@ -1,9 +1,11 @@
-/* Season palettes for the sakura tree. "bloom" is the final full-bloom spring at the crown. */
+/* Season palettes for the sakura tree. The story runs through ONE cycle, each season covering a
+   contiguous block of highlights; "bloom" is the final full-bloom spring at the crown.
+   Spring is the young tree's first spring: mostly buds, a few early blossoms. */
 const SEASON_CYCLE = ["spring", "summer", "autumn", "winter"];
 
 const SEASONS = {
-  spring: { label: "Spring", sky: ["#fbf1f0", "#f1e6e4"], foliage: "blossom",
-            colors: ["#f6c1cf", "#f3a9bd", "#fbd9e1"], fx: "petals" },
+  spring: { label: "Spring", sky: ["#fbf1f0", "#f1e6e4"], foliage: "bud",
+            colors: ["#f3a9bd", "#e98fa9", "#8fae6a"], fx: "petals" },
   summer: { label: "Summer", sky: ["#f4f1dc", "#e3ead0"], foliage: "leaf",
             colors: ["#5d8a46", "#77a356", "#46703a"], fx: "motes" },
   autumn: { label: "Autumn", sky: ["#f7ead9", "#efd9c0"], foliage: "leaf",

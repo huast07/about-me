@@ -6,7 +6,9 @@
 (() => {
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const MOBILE_BP = 760;
-  const GROUND = 96, SEED_H = 760, STEP = 600, CROWN_GAP = 320;
+  const GROUND = 96, SEED_H = 760, STEP = 700, CROWN_GAP = 320;
+  /* The tree matures as it grows: branches and trunk start at these fractions of full size. */
+  const YOUNG_BRANCH = 0.5, YOUNG_TWIG = 0.3, YOUNG_TRUNK = 0.3;
   const SEASON_FADE_MS = 1400, CANOPY_COUNT = 760, GROWTH_RATE = 3.2;
   /* At the end of the page the crown sits at CROWN_SCREEN of the viewport height and the motto at FINALE_SCREEN. */
   const CROWN_SCREEN = 0.8, FINALE_SCREEN = 0.42;
@@ -20,8 +22,10 @@
 
   /* ---------- world layout ---------- */
   const marks = SITE.highlights.map((h, i) => ({
-    ...h, i, wy: SEED_H + i * STEP, side: i % 2 ? -1 : 1, season: SEASON_CYCLE[i % SEASON_CYCLE.length]
+    ...h, i, wy: SEED_H + i * STEP, side: i % 2 ? -1 : 1,
+    season: SEASON_CYCLE[Math.floor(i * SEASON_CYCLE.length / SITE.highlights.length)] // one cycle, long seasons
   }));
+  const maturity = i => marks.length > 1 ? i / (marks.length - 1) : 1;
   const TOP = marks[marks.length - 1].wy + CROWN_GAP;
   let WORLD_H = TOP + 1000; // recomputed from the viewport height in resize()
   const seasonAt = wy => wy >= TOP - 80 ? "bloom"
@@ -46,14 +50,15 @@
       .flatMap(s => [0, 1].map(() => ({ x: s.x2 + (r() - 0.5) * 0.06, y: s.y2 + (r() - 0.5) * 0.06, a: r() * 6.28, s: 0.7 + r() * 0.6, c: Math.floor(r() * 3), d: s.d1 })));
     return { segs, buds };
   }
-  const branches = marks.map((m, i) => ({ ...buildBranch(-m.side, 1000 + i * 97), wy: m.wy, scale: 1 }));
+  const branches = marks.map((m, i) => ({ ...buildBranch(-m.side, 1000 + i * 97), wy: m.wy,
+    scale: YOUNG_BRANCH + (1 - YOUNG_BRANCH) * maturity(i) }));
   const twigs = [];
   { const r = mulberry32(42);
-    for (let wy = SEED_H + 160; wy < TOP - 120; wy += 120 + r() * 130) {
-      const b = buildBranch(r() < 0.5 ? -1 : 1, Math.floor(r() * 1e6)), k = 0.5;
-      twigs.push({ wy, scale: k,
-        segs: b.segs.filter(s => s.depth <= 2).map(s => ({ ...s, x1: s.x1 * k, y1: s.y1 * k, x2: s.x2 * k, y2: s.y2 * k, d0: s.d0 * k, d1: s.d1 * k, w: s.w * 0.6 })),
-        buds: b.buds.filter((_, j) => j % 2 === 0).map(l => ({ ...l, x: l.x * k, y: l.y * k, d: l.d * k })) });
+    for (let wy = 260; wy < TOP - 120; wy += 120 + r() * 130) {
+      const b = buildBranch(r() < 0.5 ? -1 : 1, Math.floor(r() * 1e6));
+      twigs.push({ wy, scale: YOUNG_TWIG + (0.55 - YOUNG_TWIG) * Math.min(1, wy / TOP),
+        segs: b.segs.filter(s => s.depth <= 2).map(s => ({ ...s, w: s.w * 0.6 })),
+        buds: b.buds.filter((_, j) => j % 2 === 0) });
     } }
   const canopy = [];
   { const r = mulberry32(2024);
@@ -101,13 +106,16 @@
   let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false;
   const camY = () => scrollY;
   const sy = wy => H - GROUND - wy + camY();
-  const tipY = () => reduceMotion ? Infinity : camY() + H * 0.56 - Math.max(0, 320 - camY());
+  /* The growing tip starts at the ground (a bud) and catches up with the reading line as you scroll. */
+  const BUD_START = 22; // px of shoot visible before any scrolling
+  const tipY = () => reduceMotion ? Infinity : Math.max(BUD_START, camY() + H * 0.56 - Math.max(0, H * 0.56 - camY()));
   const growth = (wy, scale) => Math.max(0, (tipY() - wy) * GROWTH_RATE / (S * scale));
   const trunkX = wy => trunkCX + Math.sin(wy * 0.0021) * 14 + Math.sin(wy * 0.0057 + 1.3) * 7;
   function trunkW(wy) {
     let w = 50 - 32 * Math.min(1, wy / TOP);
     marks.forEach(m => { const d = (wy - m.wy) / 40; w += 6 * Math.exp(-d * d); });
-    w *= TW; return Math.max(5, wy < 40 ? w * (0.5 + wy / 80) : w);
+    const age = YOUNG_TRUNK + (1 - YOUNG_TRUNK) * Math.min(1, Math.max(0, tipY()) / TOP); // trunk thickens as the tree grows
+    w *= TW * age; return Math.max(3, wy < 40 ? w * (0.5 + wy / 80) : w);
   }
 
   function resize() {
@@ -146,8 +154,15 @@
     ctx.moveTo(0, 0); ctx.quadraticCurveTo(7, -5, 0, -15); ctx.quadraticCurveTo(-7, -5, 0, 0); ctx.fill(); ctx.restore();
   }
   function drawSnowTuft(x, y, s, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(x, y - 1, 4.5 * s, 2.2 * s, 0, 0, 6.283); ctx.fill(); }
+  /* A sakura bud: green calyx with a pink tip. */
+  function drawFlowerBud(x, y, a, s, col) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.scale(s, s);
+    ctx.fillStyle = SEASONS.spring.colors[2]; ctx.beginPath(); ctx.ellipse(0, 1, 2.6, 3.2, 0, 0, 6.283); ctx.fill();
+    ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, -3, 2.4, 3.8, 0, 0, 6.283); ctx.fill(); ctx.restore();
+  }
   function drawBud(x, y, a, s, c, seasonKey) {
     const se = SEASONS[seasonKey], col = se.colors[c], k = mobile ? 0.8 : 1;
+    if (se.foliage === "bud") return c === 0 ? drawBlossomCluster(x, y, a, s * k * 0.55, col) : drawFlowerBud(x, y, a, s * k, col);
     if (se.foliage === "blossom") drawBlossomCluster(x, y, a, s * k, col);
     else if (se.foliage === "leaf") drawLeaf(x, y, a, s * k, col);
     else drawSnowTuft(x, y, s * k, col);
@@ -161,7 +176,7 @@
       for (let x = 0; x <= W; x += 12) ctx.lineTo(x, sy(0) + 2 + Math.sin(x * 0.07) * 1.5); ctx.stroke();
       ctx.fillStyle = "#5c3d33"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 8, 9, 6, -0.3, 0, 6.283); ctx.fill();
     }
-    if (hi <= lo) return;
+    if (hi <= lo) { if (sy(tip) < H + 20) drawTipBud(tip); return; }
     const halfW = wy => trunkW(wy) * Math.min(1, (tip - wy) / 200 + 0.2) / 2;
     const L = [], R = [];
     for (let wy = lo; wy <= hi; wy += 5) { const x = trunkX(wy), w = halfW(wy); L.push([x - w, sy(wy)]); R.push([x + w, sy(wy)]); }
@@ -175,24 +190,31 @@
       const w = halfW(wy), x = trunkX(wy), off = Math.sin(wy * 1.7) * w * 0.4, len = w * (0.3 + 0.25 * Math.abs(Math.sin(wy)));
       ctx.beginPath(); ctx.moveTo(x + off - len / 2, sy(wy)); ctx.lineTo(x + off + len / 2, sy(wy)); ctx.stroke();
     }
-    if (tip < TOP + 100 && sy(tip) > -20 && sy(tip) < H + 20) {
-      ctx.fillStyle = SEASONS[seasonAt(tip)].colors[1]; ctx.beginPath(); ctx.ellipse(trunkX(tip), sy(tip) - 4, 5, 9, 0, 0, 6.283); ctx.fill();
+    if (tip < TOP + 100 && sy(tip) > -20 && sy(tip) < H + 20) drawTipBud(tip);
+  }
+  /* The leading bud. While the tree is still a seedling it also carries two first leaves. */
+  function drawTipBud(tip) {
+    const x = trunkX(tip), y = sy(tip), seedling = Math.max(0, 1 - tip / 160);
+    if (seedling > 0) {
+      drawLeaf(x - 1, y + 10, -1.1, 0.9 * seedling + 0.2, SEASONS.spring.colors[2]);
+      drawLeaf(x + 1, y + 12, 1.1, 0.8 * seedling + 0.2, SEASONS.spring.colors[2]);
     }
+    drawFlowerBud(x, y - 2, 0, 1.8, SEASONS[seasonAt(tip)].foliage === "leaf" ? SEASONS.spring.colors[2] : SEASONS.spring.colors[0]);
   }
   function drawWood(b) {
     const g = growth(b.wy, b.scale); b.g = g; if (g <= 0) return;
-    const bx = trunkX(b.wy), base = sy(b.wy), reach = S * 2;
+    const bx = trunkX(b.wy), base = sy(b.wy), u = S * b.scale, reach = u * 2;
     if (base < -reach || base > H + reach) { b.g = -1; return; }
     ctx.strokeStyle = "#3d2a25"; ctx.lineCap = "round";
     b.segs.forEach(s => { if (s.d0 >= g) return; const f = Math.min(1, (g - s.d0) / (s.d1 - s.d0));
-      ctx.lineWidth = s.w * (mobile ? 0.8 : 1); ctx.beginPath(); ctx.moveTo(bx + s.x1 * S, base - s.y1 * S);
-      ctx.lineTo(bx + (s.x1 + (s.x2 - s.x1) * f) * S, base - (s.y1 + (s.y2 - s.y1) * f) * S); ctx.stroke(); });
+      ctx.lineWidth = s.w * (mobile ? 0.8 : 1) * (0.5 + 0.5 * b.scale); ctx.beginPath(); ctx.moveTo(bx + s.x1 * u, base - s.y1 * u);
+      ctx.lineTo(bx + (s.x1 + (s.x2 - s.x1) * f) * u, base - (s.y1 + (s.y2 - s.y1) * f) * u); ctx.stroke(); });
   }
   function drawFoliage(b, seasonKey, t) {
-    if (!(b.g > 0)) return; const bx = trunkX(b.wy), base = sy(b.wy);
+    if (!(b.g > 0)) return; const bx = trunkX(b.wy), base = sy(b.wy), u = S * b.scale;
     b.buds.forEach(l => { if (l.d > b.g) return; const k = Math.min(1, (b.g - l.d) * 6);
       const sway = reduceMotion ? 0 : Math.sin(t * 0.0012 + l.a * 3) * 0.12;
-      drawBud(bx + l.x * S, base - l.y * S, l.a + sway, l.s * k, l.c, seasonKey); });
+      drawBud(bx + l.x * u, base - l.y * u, l.a + sway, l.s * k, l.c, seasonKey); });
   }
   function drawCanopy(seasonKey) {
     const tip = tipY(); if (tip <= TOP) return;
