@@ -34,28 +34,13 @@ const SITE = {
     email: "sterling.huang@mail.utoronto.ca"
   },
 
-  /* Faded verses drawn vertically behind the tree. Lines are columns, read right to left.
-     seal: characters cut into the red seal stamped under the author (white-on-red, read top to bottom). */
+  /* Faded verses drawn vertically behind the tree. Lines are columns, read right to left. */
   verses: [
-    { id: "haiku", lang: "ja", lines: ["世の中は", "三日見ぬ間の", "桜かな"], author: "大島蓼太", seal: "櫻" },
+    { id: "haiku", lang: "ja", lines: ["世の中は", "三日見ぬ間の", "桜かな"], author: "大島蓼太" },
     /* Text confirmed by Sterling. Author attribution (李商隱) still to confirm. */
     { id: "poem", lang: "zh-Hant", title: "櫻桃花下",
-      lines: ["流鶯舞蝶兩相欺", "不取花芳正結時", "他日未開今日謝", "嘉辰長短是參差"], author: "李商隱", seal: "如樹" }
+      lines: ["流鶯舞蝶兩相欺", "不取花芳正結時", "他日未開今日謝", "嘉辰長短是參差"], author: "李商隱" }
   ],
-
-  /* Background painting and soundtrack, with the attribution their licences require. */
-  painting: {
-    src: "assets/art/whispering-pines.webp",
-    credit: "Tang Yin, Whispering Pines on a Mountain Path (Ming dynasty), National Palace Museum, Taipei. Public domain.",
-    url: "https://commons.wikimedia.org/wiki/File:Tang_Yin_Whispering_Pines.jpg"
-  },
-  music: [
-    { src: "assets/music/guqin-zuiyu-changwan.m4a", title: "醉漁唱晚 Evening Song of the Drunken Fisherman",
-      url: "https://commons.wikimedia.org/wiki/File:Guqin-Zuiyu_Changwan.ogg" },
-    { src: "assets/music/guqin-yangguan-sandie.m4a", title: "陽關三疊 Three Refrains on the Yang Pass",
-      url: "https://commons.wikimedia.org/wiki/File:Guqin-Yangguan_Sandie.ogg" }
-  ],
-  musicCredit: { performer: "Charlie Huang", instrument: "guqin", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/" },
 
   /* The branches the finale leads to. Each gets its own theme later. */
   paths: [
