@@ -1,0 +1,289 @@
+/* Sakura tree engine.
+   Scrolling grows a procedural cherry tree from a seed. Each highlight in SITE.highlights
+   sprouts a branch, and the seasons cycle as the tree grows. At the crown it reaches full
+   bloom, then the motto and the three paths (projects, travels, passions) appear.
+   World units: wy = pixels above the ground line. Screen y = H - GROUND - wy + scrollY. */
+(() => {
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const MOBILE_BP = 760;
+  const GROUND = 96, SEED_H = 760, STEP = 600, CROWN_GAP = 320;
+  const SEASON_FADE_MS = 1400, CANOPY_COUNT = 760, GROWTH_RATE = 3.2;
+  /* At the end of the page the crown sits at CROWN_SCREEN of the viewport height and the motto at FINALE_SCREEN. */
+  const CROWN_SCREEN = 0.8, FINALE_SCREEN = 0.42;
+  /* Screen line (fraction from top) that decides the current season and rail stop: just below centre, where cards are read. */
+  const FOCUS_SCREEN = 0.62;
+  const TOPBAR_CLEARANCE = 64; // px kept free above the finale for the fixed top bar
+
+  const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  /* ---------- world layout ---------- */
+  const marks = SITE.highlights.map((h, i) => ({
+    ...h, i, wy: SEED_H + i * STEP, side: i % 2 ? -1 : 1, season: SEASON_CYCLE[i % SEASON_CYCLE.length]
+  }));
+  const TOP = marks[marks.length - 1].wy + CROWN_GAP;
+  let WORLD_H = TOP + 1000; // recomputed from the viewport height in resize()
+  const seasonAt = wy => wy >= TOP - 80 ? "bloom"
+    : marks[clamp(Math.floor((wy - SEED_H + STEP * 0.5) / STEP), 0, marks.length - 1)].season;
+
+  /* Recursive branch, deterministic per seed. Units: 1 = branch scale S. */
+  function buildBranch(dir, seed) {
+    const r = mulberry32(seed), segs = [];
+    function grow(x, y, ang, len, depth, d, main) {
+      const x2 = x + Math.sin(ang) * len, y2 = y + Math.cos(ang) * len;
+      segs.push({ x1: x, y1: y, x2, y2, d0: d, d1: d + len, w: Math.max(1, (main ? 7 : 4) - depth * 1.6), depth, main });
+      if (depth >= 4) return;
+      if (main && depth < 3) grow(x2, y2, ang - dir * (0.12 + r() * 0.18), len * (0.82 + r() * 0.1), depth + 1, d + len, true);
+      const forks = (r() < 0.85 ? 1 : 0) + (depth < 2 ? 1 : 0);
+      for (let k = 0; k < forks; k++) {
+        const s = (k % 2 ? -1 : 1) * dir;
+        grow(x2, y2, ang + s * (0.5 + r() * 0.5), len * (0.42 + r() * 0.18), depth + 1 + (main ? 0 : 1), d + len, false);
+      }
+    }
+    grow(0, 0, dir * (0.95 + r() * 0.35), 0.36, 0, 0, true);
+    const buds = segs.filter(s => !s.main || s.depth > 0)
+      .flatMap(s => [0, 1].map(() => ({ x: s.x2 + (r() - 0.5) * 0.06, y: s.y2 + (r() - 0.5) * 0.06, a: r() * 6.28, s: 0.7 + r() * 0.6, c: Math.floor(r() * 3), d: s.d1 })));
+    return { segs, buds };
+  }
+  const branches = marks.map((m, i) => ({ ...buildBranch(-m.side, 1000 + i * 97), wy: m.wy, scale: 1 }));
+  const twigs = [];
+  { const r = mulberry32(42);
+    for (let wy = SEED_H + 160; wy < TOP - 120; wy += 120 + r() * 130) {
+      const b = buildBranch(r() < 0.5 ? -1 : 1, Math.floor(r() * 1e6)), k = 0.5;
+      twigs.push({ wy, scale: k,
+        segs: b.segs.filter(s => s.depth <= 2).map(s => ({ ...s, x1: s.x1 * k, y1: s.y1 * k, x2: s.x2 * k, y2: s.y2 * k, d0: s.d0 * k, d1: s.d1 * k, w: s.w * 0.6 })),
+        buds: b.buds.filter((_, j) => j % 2 === 0).map(l => ({ ...l, x: l.x * k, y: l.y * k, d: l.d * k })) });
+    } }
+  const canopy = [];
+  { const r = mulberry32(2024);
+    for (let i = 0; i < CANOPY_COUNT; i++) { const a = r() * 6.283, d = Math.sqrt(r());
+      canopy.push({ x: Math.cos(a) * d * 1.3, y: 0.08 + Math.sin(a) * d * 0.62, a: r() * 6.28, s: 1 + r(), c: Math.floor(r() * 3), k: d }); } }
+
+  /* ---------- DOM ---------- */
+  const world = document.getElementById("world"), spacer = document.getElementById("spacer");
+  const place = (html, wy) => { const t = document.createElement("template"); t.innerHTML = html.trim();
+    const el = t.content.firstChild; el.dataset.wy = wy; world.appendChild(el); return el; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const pad2 = n => String(n).padStart(2, "0");
+
+  place(`<section class="hero" aria-label="Introduction">
+      <div class="mono">A life, grown one ring at a time</div>
+      <h1>${esc(SITE.name.split(" ")[0])}<br><em>${esc(SITE.name.split(" ").slice(1).join(" "))}</em></h1>
+      <p>Every branch on this tree is a moment that shaped me. Scroll, and watch it grow through the seasons.</p>
+      <span class="hand"><span class="arrow" aria-hidden="true">&darr;</span> scroll to grow</span>
+    </section>`, 380);
+
+  marks.forEach(m => {
+    const age = m.age == null ? `<b>??</b>,<span class="tbd mono">age TBD</span>` : `<b>${esc(m.age)}</b>,`;
+    m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
+        <div class="mono kicker"><span>${pad2(m.i + 1)} / ${pad2(marks.length)}</span><span>${esc(m.tag)} - ${SEASONS[m.season].label}</span></div>
+        <h2 class="age" id="mt-${m.i}">At age ${age}</h2>
+        <p>${esc(m.text)}</p>
+      </article>`, m.wy + 60);
+  });
+
+  const finale = place(`<section class="finale" aria-labelledby="motto">
+      <div class="mono">${esc(SEASONS.bloom.label)}</div>
+      <h2 id="motto" lang="la">${esc(SITE.motto.latin)}</h2>
+      <p class="translation">${esc(SITE.motto.translation)}</p>
+      <p class="hand">${esc(SITE.motto.note)}</p>
+      <nav class="paths" aria-label="Explore more">
+        ${SITE.paths.map((p, i) => `<a class="path" href="${esc(p.href)}" style="--i:${i}">
+          <span class="mono">Branch ${pad2(i + 1)}</span><strong>${esc(p.title)}</strong><span class="blurb">${esc(p.blurb)}</span><span class="go" aria-hidden="true">&rarr;</span></a>`).join("")}
+      </nav>
+      <a class="linkedin mono" href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn &nearr;</a>
+    </section>`, TOP + 600);
+
+  /* ---------- canvas + camera ---------- */
+  const cv = document.getElementById("tree"), ctx = cv.getContext("2d");
+  const fxCv = document.getElementById("fx"), fctx = fxCv.getContext("2d");
+  let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false;
+  const camY = () => scrollY;
+  const sy = wy => H - GROUND - wy + camY();
+  const tipY = () => reduceMotion ? Infinity : camY() + H * 0.56 - Math.max(0, 320 - camY());
+  const growth = (wy, scale) => Math.max(0, (tipY() - wy) * GROWTH_RATE / (S * scale));
+  const trunkX = wy => trunkCX + Math.sin(wy * 0.0021) * 14 + Math.sin(wy * 0.0057 + 1.3) * 7;
+  function trunkW(wy) {
+    let w = 50 - 32 * Math.min(1, wy / TOP);
+    marks.forEach(m => { const d = (wy - m.wy) / 40; w += 6 * Math.exp(-d * d); });
+    w *= TW; return Math.max(5, wy < 40 ? w * (0.5 + wy / 80) : w);
+  }
+
+  function resize() {
+    const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mobile = W < MOBILE_BP;
+    [cv, fxCv].forEach(c => { c.width = W * dpr; c.height = H * dpr; });
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S = mobile ? W * 0.4 : Math.min(W * 0.28, 300); trunkCX = W * 0.5; TW = mobile ? 0.62 : 1;
+    WORLD_H = TOP + GROUND + H * CROWN_SCREEN;
+    spacer.style.height = WORLD_H + "px"; world.style.height = WORLD_H + "px";
+    const finaleCentre = Math.max(H * FINALE_SCREEN, finale.offsetHeight / 2 + TOPBAR_CLEARANCE);
+    finale.dataset.wy = WORLD_H - GROUND - finaleCentre;
+    layoutDom(); render();
+  }
+  function layoutDom() {
+    const cardW = Math.min(400, W * 0.5 - 110);
+    world.querySelectorAll("[data-wy]").forEach(el => { el.style.top = (WORLD_H - +el.dataset.wy) + "px"; });
+    marks.forEach(m => {
+      if (mobile) { m.el.style.left = "16px"; m.el.style.width = (W - 32) + "px"; return; }
+      m.el.style.width = cardW + "px";
+      m.el.style.left = (m.side > 0 ? trunkX(m.wy) + 80 : trunkX(m.wy) - 80 - cardW) + "px";
+    });
+  }
+
+  /* ---------- drawing ---------- */
+  function drawBlossomCluster(x, y, a, s, col) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.scale(s, s);
+    [[0, 0, 1], [6, -3, 0.75], [-5, -4, 0.65]].forEach(([ox, oy, k]) => {
+      ctx.save(); ctx.translate(ox, oy); ctx.scale(k, k); ctx.fillStyle = col;
+      for (let p = 0; p < 5; p++) { ctx.rotate(1.2566); ctx.beginPath(); ctx.ellipse(0, -4.2, 2.8, 4.3, 0, 0, 6.283); ctx.fill(); }
+      ctx.fillStyle = "#c2567a"; ctx.beginPath(); ctx.arc(0, 0, 1.3, 0, 6.283); ctx.fill(); ctx.restore();
+    });
+    ctx.restore();
+  }
+  function drawLeaf(x, y, a, s, col) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.scale(s, s); ctx.fillStyle = col; ctx.beginPath();
+    ctx.moveTo(0, 0); ctx.quadraticCurveTo(7, -5, 0, -15); ctx.quadraticCurveTo(-7, -5, 0, 0); ctx.fill(); ctx.restore();
+  }
+  function drawSnowTuft(x, y, s, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(x, y - 1, 4.5 * s, 2.2 * s, 0, 0, 6.283); ctx.fill(); }
+  function drawBud(x, y, a, s, c, seasonKey) {
+    const se = SEASONS[seasonKey], col = se.colors[c], k = mobile ? 0.8 : 1;
+    if (se.foliage === "blossom") drawBlossomCluster(x, y, a, s * k, col);
+    else if (se.foliage === "leaf") drawLeaf(x, y, a, s * k, col);
+    else drawSnowTuft(x, y, s * k, col);
+  }
+
+  function drawTrunk() {
+    const tip = Math.min(tipY(), TOP + 120), lo = Math.max(0, camY() - GROUND - 60), hi = Math.min(tip, camY() + H + 60);
+    if (sy(0) < H + 40) {
+      ctx.fillStyle = "rgba(74,52,44,.12)"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 4, Math.min(W * 0.45, 420), 26, 0, 0, 6.283); ctx.fill();
+      ctx.strokeStyle = "rgba(74,52,44,.5)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, sy(0) + 2);
+      for (let x = 0; x <= W; x += 12) ctx.lineTo(x, sy(0) + 2 + Math.sin(x * 0.07) * 1.5); ctx.stroke();
+      ctx.fillStyle = "#5c3d33"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0) + 8, 9, 6, -0.3, 0, 6.283); ctx.fill();
+    }
+    if (hi <= lo) return;
+    const halfW = wy => trunkW(wy) * Math.min(1, (tip - wy) / 200 + 0.2) / 2;
+    const L = [], R = [];
+    for (let wy = lo; wy <= hi; wy += 5) { const x = trunkX(wy), w = halfW(wy); L.push([x - w, sy(wy)]); R.push([x + w, sy(wy)]); }
+    const g = ctx.createLinearGradient(trunkCX - 30, 0, trunkCX + 30, 0);
+    g.addColorStop(0, "#2e1f1c"); g.addColorStop(0.45, "#5a3e36"); g.addColorStop(1, "#2c1d1a");
+    ctx.fillStyle = g; ctx.beginPath(); L.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p));
+    for (let i = R.length - 1; i >= 0; i--) ctx.lineTo(...R[i]); ctx.closePath(); ctx.fill();
+    // cherry bark: horizontal lenticels
+    ctx.strokeStyle = "rgba(220,190,180,.28)"; ctx.lineWidth = 1.2;
+    for (let wy = Math.ceil(lo / 23) * 23; wy <= hi; wy += 23) {
+      const w = halfW(wy), x = trunkX(wy), off = Math.sin(wy * 1.7) * w * 0.4, len = w * (0.3 + 0.25 * Math.abs(Math.sin(wy)));
+      ctx.beginPath(); ctx.moveTo(x + off - len / 2, sy(wy)); ctx.lineTo(x + off + len / 2, sy(wy)); ctx.stroke();
+    }
+    if (tip < TOP + 100 && sy(tip) > -20 && sy(tip) < H + 20) {
+      ctx.fillStyle = SEASONS[seasonAt(tip)].colors[1]; ctx.beginPath(); ctx.ellipse(trunkX(tip), sy(tip) - 4, 5, 9, 0, 0, 6.283); ctx.fill();
+    }
+  }
+  function drawWood(b) {
+    const g = growth(b.wy, b.scale); b.g = g; if (g <= 0) return;
+    const bx = trunkX(b.wy), base = sy(b.wy), reach = S * 2;
+    if (base < -reach || base > H + reach) { b.g = -1; return; }
+    ctx.strokeStyle = "#3d2a25"; ctx.lineCap = "round";
+    b.segs.forEach(s => { if (s.d0 >= g) return; const f = Math.min(1, (g - s.d0) / (s.d1 - s.d0));
+      ctx.lineWidth = s.w * (mobile ? 0.8 : 1); ctx.beginPath(); ctx.moveTo(bx + s.x1 * S, base - s.y1 * S);
+      ctx.lineTo(bx + (s.x1 + (s.x2 - s.x1) * f) * S, base - (s.y1 + (s.y2 - s.y1) * f) * S); ctx.stroke(); });
+  }
+  function drawFoliage(b, seasonKey, t) {
+    if (!(b.g > 0)) return; const bx = trunkX(b.wy), base = sy(b.wy);
+    b.buds.forEach(l => { if (l.d > b.g) return; const k = Math.min(1, (b.g - l.d) * 6);
+      const sway = reduceMotion ? 0 : Math.sin(t * 0.0012 + l.a * 3) * 0.12;
+      drawBud(bx + l.x * S, base - l.y * S, l.a + sway, l.s * k, l.c, seasonKey); });
+  }
+  function drawCanopy(seasonKey) {
+    const tip = tipY(); if (tip <= TOP) return;
+    const g = Math.min(1, (tip - TOP) / 260), cx = trunkX(TOP);
+    canopy.forEach(l => { if (l.k > g) return; drawBud(cx + l.x * S, sy(TOP + l.y * S), l.a, l.s * Math.min(1, (g - l.k) * 5), l.c, seasonKey); });
+  }
+
+  /* ---------- seasons ---------- */
+  let season = "spring", prevSeason = "spring", seasonChangedAt = -Infinity;
+  const seasonLabel = document.getElementById("season");
+  function setSeason(next) {
+    if (next === season) return;
+    prevSeason = season; season = next; seasonChangedAt = performance.now();
+    const root = document.documentElement.style, se = SEASONS[next];
+    root.setProperty("--sky-top", se.sky[0]); root.setProperty("--sky-bot", se.sky[1]);
+    seasonLabel.textContent = se.label;
+    Music.setSeason(next);
+  }
+  function foliagePass(t) {
+    const all = s => { [...twigs, ...branches].forEach(b => drawFoliage(b, s, t)); drawCanopy(s); };
+    const m = reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
+    if (m < 1) { ctx.globalAlpha = 1 - m; all(prevSeason); }
+    ctx.globalAlpha = m; all(season); ctx.globalAlpha = 1;
+  }
+
+  /* ---------- frame ---------- */
+  const railBtns = [];
+  function render(t = performance.now()) {
+    ctx.clearRect(0, 0, W, H);
+    drawTrunk();
+    [...twigs, ...branches].forEach(drawWood);
+    foliagePass(t);
+    world.style.transform = `translateY(${H - GROUND - WORLD_H + camY()}px)`;
+    const tip = tipY();
+    const finaleOn = tip > +finale.dataset.wy - 160;
+    finale.classList.toggle("on", finaleOn);
+    marks.forEach(m => m.el.classList.toggle("on", tip > m.wy - 40 && !finaleOn)); // cards step aside for the finale
+    const mid = camY() + H * (1 - FOCUS_SCREEN) - GROUND;
+    setSeason(seasonAt(mid));
+    const cur = mid >= TOP - 80 ? marks.length : clamp(Math.round((mid - SEED_H) / STEP), 0, marks.length - 1);
+    railBtns.forEach((b, i) => { const on = i === cur && mid > SEED_H - STEP / 2;
+      b.classList.toggle("cur", on); b.setAttribute("aria-current", on ? "step" : "false"); });
+  }
+
+  /* ---------- particles ---------- */
+  const parts = [], FX_MAX = { petals: 46, motes: 26, leaves: 28, snow: 90 };
+  function drawParticle(p) {
+    if (p.k === "snow") { p.y += 0.6 + p.v; p.a += 0.01; p.x += Math.sin(p.a) * 0.5;
+      fctx.fillStyle = "rgba(255,255,255,.95)"; fctx.beginPath(); fctx.arc(p.x, p.y, 1 + p.v * 2.2, 0, 6.283); fctx.fill(); return; }
+    if (p.k === "petals") { p.y += 0.7 + p.v * 0.6; p.a += 0.02; p.x += Math.sin(p.a) * 1.1 + 0.3;
+      fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.a); fctx.fillStyle = "rgba(243,169,189,.85)";
+      fctx.beginPath(); fctx.ellipse(0, 0, 4.2, 2.6, 0, 0, 6.283); fctx.fill(); fctx.restore(); return; }
+    if (p.k === "leaves") { p.y += 1 + p.v * 0.8; p.a += 0.03; p.x += Math.sin(p.a) * 1.4;
+      fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.a * 2); fctx.fillStyle = SEASONS.autumn.colors[Math.floor(p.v * 3)];
+      fctx.beginPath(); fctx.moveTo(0, 0); fctx.quadraticCurveTo(5, -4, 0, -11); fctx.quadraticCurveTo(-5, -4, 0, 0); fctx.fill(); fctx.restore(); return; }
+    p.y -= 0.2 + p.v * 0.3; p.a += 0.02; p.x += Math.sin(p.a) * 0.4;
+    fctx.fillStyle = `rgba(240,200,94,${0.3 + 0.4 * Math.abs(Math.sin(p.a * 2))})`; fctx.beginPath(); fctx.arc(p.x, p.y, 1.6, 0, 6.283); fctx.fill();
+    if (p.y < -10) p.y = H + 10;
+  }
+  function stepFx() {
+    fctx.clearRect(0, 0, W, H); if (reduceMotion) return;
+    const kind = SEASONS[season].fx;
+    let have = parts.reduce((n, p) => n + (p.k === kind), 0);
+    for (; have < FX_MAX[kind]; have++) parts.push({ x: Math.random() * W, y: Math.random() * H - H, v: Math.random(), a: Math.random() * 6.28, k: kind });
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      if (p.k !== kind && Math.random() < 0.03) { parts.splice(i, 1); continue; }
+      drawParticle(p);
+      if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W * 1.1; }
+    }
+  }
+  function loop(t) { render(t); stepFx(); requestAnimationFrame(loop); }
+
+  /* ---------- navigation ---------- */
+  const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND), behavior: reduceMotion ? "auto" : "smooth" });
+  const rail = document.getElementById("rail");
+  [...marks.map(m => ({ label: m.tag, wy: () => m.wy + 60 })), { label: SITE.motto.latin, wy: () => +finale.dataset.wy }].forEach(stop => {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.innerHTML = `<span>${esc(stop.label)}</span>`; b.setAttribute("aria-label", `Jump to ${stop.label}`);
+    b.addEventListener("click", () => goTo(stop.wy()));
+    li.appendChild(b); rail.appendChild(li); railBtns.push(b);
+  });
+  document.getElementById("toSeed").addEventListener("click", e => { e.preventDefault(); goTo(0); });
+  world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND) }); });
+
+  const musicBtn = document.getElementById("musicBtn");
+  musicBtn.addEventListener("click", () => musicBtn.setAttribute("aria-pressed", String(Music.toggle())));
+
+  addEventListener("resize", resize);
+  seasonLabel.textContent = SEASONS[season].label;
+  resize();
+  document.fonts?.ready.then(resize); // web fonts change the finale's height
+  requestAnimationFrame(loop);
+})();
