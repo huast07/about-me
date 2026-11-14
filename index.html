@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sterling Huang - Growth Rings</title>
+<meta name="description" content="Sterling Huang's portfolio as a tree that grows while you scroll. The trunk is the main story, the branches are side quests.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3ecdc; --paper-2:#e9dfc8; --ink:#2b2a22; --ink-soft:#5d5948; --moss:#5f7a4a;
+  --bark:#4a3a2c; --rule:rgba(43,42,34,.18);
+  --sky-top:#f4efe2; --sky-bot:#e6eadb; --accent:#c9746b;
+  --serif:"Cormorant Garamond",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,monospace; --hand:"Caveat",cursive;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{margin:0;color:var(--ink);font-family:var(--serif);background:var(--sky-bot);overflow-x:hidden;
+  -webkit-font-smoothing:antialiased}
+#sky{position:fixed;inset:0;background:linear-gradient(180deg,var(--sky-top),var(--sky-bot));transition:background 1.6s ease;z-index:0}
+#sky::after{content:"";position:absolute;inset:0;opacity:.35;pointer-events:none;
+  background-image:radial-gradient(rgba(60,50,30,.08) 1px,transparent 1px);background-size:3px 3px}
+canvas#tree,canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+canvas#fx{z-index:3}
+#world{position:fixed;left:0;top:0;width:100%;z-index:2;will-change:transform}
+#spacer{position:relative;z-index:-1}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.hand{font-family:var(--hand);font-size:22px;color:var(--ink-soft)}
+
+/* hero */
+.hero{position:absolute;left:max(16px,8vw);transform:translateY(-100%);width:min(560px,calc(100% - 32px))}
+.hero p{margin-left:0!important}
+.hero h1{font-weight:500;font-size:clamp(44px,8vw,84px);line-height:.95;margin:0 0 14px;letter-spacing:-.01em}
+.hero h1 em{font-style:italic;color:var(--moss)}
+.hero p{font-size:20px;line-height:1.4;margin:0 auto 18px;max-width:470px;color:var(--ink-soft)}
+.hero .hand{display:block;margin-top:8px}
+.hero .arrow{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+
+/* chapter cards */
+.chapter{position:absolute;width:min(330px,calc(100% - 32px));transform:translateY(-50%);
+  background:color-mix(in srgb,var(--paper) 88%,transparent);border:1px solid var(--rule);padding:20px 22px 18px;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 14px 40px -24px rgba(40,30,10,.5)}
+.chapter .ring{display:flex;justify-content:space-between;color:var(--ink-soft)}
+.chapter h2{font-weight:500;font-size:34px;line-height:1.02;margin:10px 0 6px}
+.chapter .where{font-style:italic;color:var(--moss);font-size:18px;margin-bottom:10px}
+.chapter p{margin:0;font-size:18px;line-height:1.4}
+.chapter .draft{margin-top:12px;color:var(--accent)}
+
+/* specimens on branches */
+.spec{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border:0;padding:0;background:none;cursor:pointer;
+  transition:opacity .7s ease,transform .7s cubic-bezier(.2,1.4,.4,1);opacity:0;transform:scale(.3)}
+.spec.on{opacity:1;transform:scale(1)}
+.spec svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 4px rgba(40,30,10,.25))}
+.spec .lbl{position:absolute;top:50%;white-space:nowrap;transform:translateY(-50%);font-family:var(--serif);font-size:17px;
+  font-style:italic;color:var(--ink);background:color-mix(in srgb,var(--paper) 80%,transparent);padding:1px 7px;pointer-events:none}
+.spec.r .lbl{left:48px}.spec.l .lbl{right:48px}
+.spec:hover svg,.spec:focus-visible svg{transform:scale(1.15)}
+.spec svg{transition:transform .3s ease}
+.spec:focus-visible,.bird:focus-visible,button:focus-visible,a:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
+
+/* birds */
+.bird{position:absolute;width:40px;height:30px;border:0;background:none;padding:0;cursor:pointer;color:var(--ink)}
+.bird svg{width:100%;height:100%;animation:glide 7s ease-in-out infinite}
+.bird .wing{transform-origin:20px 15px;animation:flap .9s ease-in-out infinite}
+@keyframes flap{50%{transform:scaleY(.35)}}
+@keyframes glide{0%,100%{transform:translate(0,0)}50%{transform:translate(26px,-10px)}}
+.bird.got{opacity:0;pointer-events:none;transition:opacity .6s}
+.bird .tip{position:absolute;left:44px;top:4px;white-space:nowrap;font-family:var(--hand);font-size:19px;color:var(--ink-soft)}
+
+/* crown */
+.crown{position:absolute;left:50%;transform:translate(-50%,-50%);text-align:center;width:min(520px,calc(100% - 32px))}
+.crown h2{font-weight:500;font-size:44px;margin:0 0 8px;font-style:italic}
+.crown p{font-size:19px;line-height:1.45;margin:0 0 16px}
+.btn{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);
+  text-decoration:none;border:1px solid var(--ink);padding:10px 16px;background:var(--paper);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+
+/* HUD */
+.hud{position:fixed;z-index:5;font-family:var(--mono)}
+#rings{right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column-reverse;gap:10px;margin:0;padding:0;list-style:none}
+#rings button{width:30px;height:30px;border-radius:50%;border:1px solid var(--ink);background:transparent;cursor:pointer;position:relative;padding:0}
+#rings button::after{content:"";position:absolute;inset:7px;border-radius:50%;border:1px solid var(--ink);opacity:.5}
+#rings button.cur{background:var(--ink)}
+#rings button.cur::after{border-color:var(--paper)}
+#rings button span{position:absolute;right:40px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;opacity:0;transition:opacity .2s;pointer-events:none;background:var(--paper);padding:2px 6px}
+#rings button:hover span,#rings button:focus-visible span{opacity:1}
+#topbar{left:16px;right:16px;top:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+#topbar>*{pointer-events:auto}
+.brand{font-family:var(--serif);font-size:20px;font-style:italic;text-decoration:none;color:var(--ink)}
+.tools{display:flex;gap:8px}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--ink);background:color-mix(in srgb,var(--paper) 85%,transparent);
+  color:var(--ink);padding:8px 11px;cursor:pointer;display:flex;align-items:center;gap:7px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.eq{display:inline-flex;gap:2px;height:10px;align-items:flex-end}
+.eq i{width:2px;background:currentColor;height:3px}
+.chip[aria-pressed=true] .eq i{animation:eq 1.1s ease-in-out infinite}
+.chip[aria-pressed=true] .eq i:nth-child(2){animation-delay:-.4s}.chip[aria-pressed=true] .eq i:nth-child(3){animation-delay:-.7s}
+@keyframes eq{50%{height:10px}}
+#season{left:16px;bottom:16px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:color-mix(in srgb,var(--paper) 85%,transparent);padding:6px 9px;border:1px solid var(--rule)}
+#pouchPanel{position:fixed;z-index:6;right:16px;top:58px;width:min(300px,calc(100% - 32px));background:var(--paper);border:1px solid var(--ink);padding:16px;display:none;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.4)}
+#pouchPanel.open{display:block}
+#pouchPanel h3{margin:0 0 4px;font-weight:500;font-size:24px}
+#pouchPanel ul{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:17px}
+#pouchPanel li{color:var(--ink-soft);opacity:.45}
+#pouchPanel li.got{opacity:1;color:var(--ink)}
+#pouchPanel li.got::before{content:"\2726 ";color:var(--moss)}
+#pouchPanel li:not(.got)::before{content:"\00b7 "}
+
+/* journal */
+dialog#journal{border:0;padding:0;margin:0;width:100%;max-width:100%;height:100%;max-height:100%;background:transparent;color:var(--ink)}
+dialog#journal::backdrop{background:rgba(30,26,18,.55);backdrop-filter:blur(3px)}
+.page{min-height:100%;width:min(980px,100%);margin:0 auto;background:var(--paper);position:relative;
+  background-image:linear-gradient(90deg,transparent 49.6%,rgba(80,60,30,.12) 50%,transparent 50.4%),radial-gradient(ellipse at 20% 0%,rgba(255,255,255,.5),transparent 60%),radial-gradient(ellipse at 100% 100%,rgba(140,110,60,.18),transparent 55%);
+  padding:56px 56px 64px;display:grid;grid-template-columns:1fr 1fr;gap:56px;animation:press .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes press{from{opacity:0;transform:translateY(24px) rotate(-.6deg)}}
+.page .close{position:absolute;right:18px;top:16px}
+.plate{border:1px solid var(--rule);padding:22px;text-align:center;position:relative;background:rgba(255,255,255,.25)}
+.plate .tape{position:absolute;width:90px;height:24px;background:rgba(220,205,160,.7);top:-12px;left:50%;transform:translateX(-50%) rotate(-3deg)}
+.plate svg{width:100%;max-width:300px;height:auto}
+.plate .latin{font-style:italic;font-size:22px;margin-top:6px}
+.plate .no{color:var(--ink-soft);margin-top:4px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.slot{aspect-ratio:4/3;border:1px dashed var(--ink-soft);display:grid;place-items:center;color:var(--ink-soft);font-family:var(--mono);font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;background:repeating-linear-gradient(45deg,transparent 0 8px,rgba(80,60,30,.05) 8px 9px);padding:6px;text-align:center}
+.notes .tag{color:var(--moss);padding-right:110px}
+.notes h2{font-weight:500;font-size:clamp(34px,5vw,48px);line-height:1;margin:10px 0 6px}
+.notes .when{color:var(--ink-soft);font-style:italic;font-size:18px}
+.notes h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:24px 0 6px;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:6px}
+.notes p{font-size:19px;line-height:1.5;margin:0}
+.notes .ph{color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+.notes ul{margin:0;padding-left:20px;font-size:19px;line-height:1.5}
+.notes .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.notes .back{margin-top:28px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:760px){
+  .page{grid-template-columns:1fr;padding:56px 18px 40px;gap:28px;background-image:radial-gradient(ellipse at 100% 100%,rgba(140,110,60,.18),transparent 55%)}
+  #rings{right:8px;gap:8px}
+  #season{display:none}
+  .hero{left:16px}
+  #rings button{width:22px;height:22px}
+  #rings button::after{inset:5px}
+  .spec .lbl,.spec.r .lbl,.spec.l .lbl{font-size:15px;top:46px;left:50%;right:auto;transform:translateX(-50%);white-space:normal;width:max-content;max-width:130px;text-align:center;line-height:1.1}
+  .notes .tag{padding-right:90px}
+  .chapter{padding:16px 18px}
+  .chapter h2{font-size:28px}
+  .brand{font-size:17px}
+  .chip .t{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<!--
+  Growth Rings - Sterling's portfolio as a growing tree.
+  Edit content in the STORY / VACATIONS objects in the script below. Everything else is generated.
+  Per-chapter audio hooks (replace generative music with real files later):
+  <audio id="audio-uts" src="audio/uts-spring.mp3" loop preload="none"></audio>
+  <audio id="audio-uoft" src="audio/uoft-summer.mp3" loop preload="none"></audio>
+  <audio id="audio-denmark" src="audio/denmark-winter.mp3" loop preload="none"></audio>
+  <audio id="audio-thailand" src="audio/thailand-monsoon.mp3" loop preload="none"></audio>
+-->
+<div id="sky"></div>
+<canvas id="tree" aria-hidden="true"></canvas>
+<div id="world"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="spacer"></div>
+
+<div class="hud" id="topbar">
+  <a class="brand" href="#" id="toSeed">Sterling Huang</a>
+  <div class="tools">
+    <button class="chip" id="pouchBtn" aria-expanded="false" aria-controls="pouchPanel"><span class="t">Seed pouch</span> <span id="pouchCount">0/17</span></button>
+    <button class="chip" id="musicBtn" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Music</span><span class="sr"> toggle generative music</span></button>
+  </div>
+</div>
+<div id="pouchPanel" role="region" aria-label="Collected vacations">
+  <h3>Seed pouch</h3>
+  <div class="hand">Trips drift past as birds. Catch them.</div>
+  <ul id="pouchList"></ul>
+</div>
+<nav aria-label="Chapters"><ol class="hud" id="rings"></ol></nav>
+<div class="hud" id="season" aria-live="polite"></div>
+
+<dialog id="journal" aria-labelledby="jTitle"><div class="page" id="jPage"></div></dialog>
+
+<script>
+/* ================== CONTENT (edit me) ==================
+   Draft order, to be confirmed. Everything marked TBD or placeholder is waiting for Sterling. */
+const STORY = [
+  { id:"uts", title:"University of Toronto Schools", where:"Toronto - high school", season:"spring", ring:"Ring I",
+    blurb:"Where I learned that a coat hanger is just an antenna that hasn't been told yet. Placeholder blurb.",
+    sides:[
+      {title:"Antenna building", kind:"leaf", tag:"Tinkering", latin:"Antenna radiofolia", blurb:"Bent metal until the radio listened. Placeholder."},
+      {title:"Science fair projects", kind:"leaf", tag:"Research", latin:"Hypothesis tripanelis", blurb:"Tri-fold boards, big feelings. Placeholder."},
+      {title:"Canada-Wide Science Fair", kind:"blossom", tag:"Competition", latin:"Fera scientia canadensis", blurb:"Took a project national. Result TBD."},
+      {title:"ISEF Team Canada Shortlist", kind:"blossom", tag:"Competition", latin:"Isefia shortlistii", blurb:"Shortlisted for Team Canada. Details TBD."},
+      {title:"Canadian Chemistry Olympiad", kind:"blossom", tag:"Competition", latin:"Chymica olympica", blurb:"Balanced equations under time pressure. Placeholder."},
+      {title:"DECA ICDC", kind:"fruit", tag:"Competition", latin:"Mercatoria decaea", blurb:"Business cases in a blazer. Placeholder."},
+      {title:"Wharton Global Investing Competition", kind:"fruit", tag:"Competition", latin:"Portfolia whartonii", blurb:"Built a pretend portfolio with real stress. Placeholder."}
+    ]},
+  { id:"uoft", title:"U of T Engineering Science", where:"Toronto - undergrad", season:"summer", ring:"Ring II",
+    blurb:"The program famous for its workload. I also somehow joined everything. Placeholder blurb.",
+    sides:[
+      {title:"Matter Lab", kind:"leaf", tag:"Research", latin:"Materia laboratoria", blurb:"Research with the Matter Lab. Topic TBD."},
+      {title:"Sun Life", kind:"leaf", tag:"Work", latin:"Sol vitae", blurb:"Work term at Sun Life. Role TBD."},
+      {title:"Canadian Armed Forces", kind:"leaf", tag:"Work", latin:"Militaris borealis", blurb:"Worked with the CAF. Details TBD."},
+      {title:"Lower residence fees campaign", kind:"blossom", tag:"Activism", latin:"Petitio residentiae", blurb:"Petitions and persistence for cheaper housing. Outcome TBD."},
+      {title:"Weekly book club", kind:"fruit", tag:"Community", latin:"Liber hebdomadalis", blurb:"Same time every week, different book. Placeholder."},
+      {title:"City Cultural Events Volunteer Captain", kind:"blossom", tag:"Volunteering", latin:"Capitanea culturalis", blurb:"Herded volunteers at city events. Placeholder."},
+      {title:"FIFA volunteer", kind:"blossom", tag:"Volunteering", latin:"Pila mundialis", blurb:"Volunteered with FIFA. Event details TBD."},
+      {title:"BikeTO", kind:"fruit", tag:"Project + hustle", latin:"Birota torontonensis", blurb:"Bikes, Toronto, a small business. Placeholder."},
+      {title:"Maplecrown", kind:"fruit", tag:"Project", latin:"Acer coronatum", blurb:"A project called Maplecrown. Description TBD."}
+    ]},
+  { id:"denmark", title:"Denmark Exchange", where:"Denmark - exchange term", season:"winter", ring:"Ring III",
+    blurb:"Learned to bike in sideways rain and to say hygge without irony. Placeholder blurb.",
+    sides:[]},
+  { id:"thailand", title:"Thailand Research Exchange", where:"KMUTT, Bangkok - work + research", season:"monsoon", ring:"Ring IV",
+    blurb:"Research by day, monsoon by afternoon. Placeholder blurb.",
+    sides:[
+      {title:"Research at KMUTT", kind:"leaf", tag:"Research", latin:"Investigatio thonburiensis", blurb:"The research half of the exchange. Topic TBD."},
+      {title:"WWOOF at Wind Whistle Farm", kind:"fruit", tag:"Volunteering", latin:"Ventus sibilans agrestis", blurb:"Farm work for room and board. Placement in time TBD."}
+    ]}
+];
+const VACATIONS = { // chapter placement is a guess
+  uts:["USA","Mexico"], uoft:["England","Iceland","France","Germany","Switzerland"],
+  denmark:["Belgium","Netherlands"], thailand:["Cambodia","Myanmar","Singapore","Malaysia","China","Laos","Japan","Vietnam"]
+};
+const LINKEDIN = "https://www.linkedin.com/in/sterling-huang-20206b24b/";
+
+/* ================== SEASONS ================== */
+const SEASONS = {
+  spring:{name:"Spring - Toronto", sky:["#f6efe6","#e7ecd9"], leaf:["#8fae6a","#b9cc8a","#6f9150"], bloom:"#e9a8a8", fruit:"#d8865a", fx:"petals"},
+  summer:{name:"Summer - Toronto", sky:["#f3ecd2","#dfe6c4"], leaf:["#4f7a3a","#6c9447","#3d6230"], bloom:"#f0c75e", fruit:"#c8553d", fx:"motes"},
+  winter:{name:"Winter - Denmark", sky:["#e9edf0","#cfd8dd"], leaf:["#9fb0b2","#c9d3d1","#7f9494"], bloom:"#ffffff", fruit:"#a8343b", fx:"snow"},
+  monsoon:{name:"Monsoon - Thailand", sky:["#d9e2d8","#b8c9b8"], leaf:["#2f6b4f","#4b8a5e","#245541"], bloom:"#f08fb0", fruit:"#e6a23c", fx:"rain"}
+};
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ================== RNG + LAYOUT ================== */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const GROUND = 96, SEED_H = 900, BASE_CH = 820, PER_SIDE = 300, CROWN_H = 760;
+const chapters = []; let y = SEED_H;
+STORY.forEach((c,i)=>{
+  const len = BASE_CH + PER_SIDE*Math.max(c.sides.length,1);
+  const ch = {...c, index:i, start:y, end:y+len, sides:c.sides.map((s,j)=>({...s, id:c.id+"-"+j, chapter:i,
+    wy: y + 360 + (len-420)*(j+.5)/Math.max(c.sides.length,1), dir: j%2? -1: 1}))};
+  chapters.push(ch); y += len;
+});
+const TOP = y; const WORLD_H = TOP + CROWN_H;
+const sides = chapters.flatMap(c=>c.sides);
+
+/* L-system-ish recursive branch, deterministic per side. Units: 1 = branch scale. */
+function buildBranch(side, seed){
+  const r = mulberry32(seed), segs = [];
+  function grow(x,y,ang,len,depth,d,main){
+    const x2 = x + Math.sin(ang)*len, y2 = y + Math.cos(ang)*len;
+    segs.push({x1:x,y1:y,x2,y2,d0:d,d1:d+len,w:Math.max(1,(main?7:4)-depth*1.6),depth,main});
+    if(depth>=4) return;
+    if(main && depth<3) grow(x2,y2, ang - side.dir*(0.12+r()*0.18), len*(0.82+r()*.1), depth+1, d+len, true);
+    const tw = r()<.85 ? 1 : 0;
+    for(let k=0;k<tw+ (depth<2?1:0);k++){
+      const s = (k%2?-1:1)*side.dir;
+      grow(x2,y2, ang + s*(0.5+r()*0.5), len*(0.42+r()*.18), depth+1+(main?0:1), d+len, false);
+    }
+  }
+  grow(0,0, side.dir*(0.95+r()*0.35), 0.36, 0, 0, true);
+  const tips = segs.filter(s=>s.main); const end = tips[tips.length-1];
+  side.segs = segs; side.tip = {x:end.x2,y:end.y2,d:end.d1};
+  side.leafs = segs.filter(s=>!s.main||s.depth>0).map(s=>({x:s.x2,y:s.y2,a:r()*6.28,s:.6+r()*.6,c:Math.floor(r()*3),d:s.d1}));
+}
+sides.forEach((s,i)=>buildBranch(s, 1000+i*97));
+
+/* decorative twigs on the trunk between side quests */
+const twigs = []; { const r = mulberry32(42); for(let wy=SEED_H+120; wy<TOP-100; wy+=110+r()*120){
+  const side = {dir:r()<.5?-1:1}; buildBranch(side, Math.floor(r()*1e6));
+  side.segs = side.segs.filter(s=>s.depth<=2).map(s=>({...s,x1:s.x1*.45,y1:s.y1*.45,x2:s.x2*.45,y2:s.y2*.45,d0:s.d0*.45,d1:s.d1*.45,w:s.w*.6}));
+  side.leafs = side.leafs.filter((_,k)=>k%2===0).map(l=>({...l,x:l.x*.45,y:l.y*.45,d:l.d*.45}));
+  twigs.push({...side, wy, chapter: chapters.findIndex(c=>wy>=c.start&&wy<c.end)});
+}}
+
+/* canopy: a crown of leaves in every season's colours, grown once the trunk tops out */
+const canopy = []; { const r = mulberry32(2024); const seasons = chapters.map(c=>SEASONS[c.season]);
+  for(let i=0;i<620;i++){ const a=r()*6.283, d=Math.sqrt(r()); const se=seasons[Math.floor(r()*seasons.length)];
+    canopy.push({x:Math.cos(a)*d*1.25, y:.05+Math.sin(a)*d*.6, a:r()*6.28, s:1+r()*1, col: r()<.12? se.bloom : se.leaf[Math.floor(r()*3)], k:d}); } }
+
+/* ================== DOM ================== */
+const world = document.getElementById("world"), spacer = document.getElementById("spacer");
+const elAt = (html, wy) => { const d = document.createElement("div"); d.innerHTML = html.trim(); const el = d.firstChild; el.dataset.wy = wy; world.appendChild(el); return el; };
+const glyph = (kind, col) => kind==="blossom"
+  ? `<svg viewBox="-20 -20 40 40" aria-hidden="true">${[0,1,2,3,4].map(k=>`<ellipse rx="6.5" ry="10" cy="-9" fill="${col.bloom}" stroke="#5a3d3a" stroke-width=".8" transform="rotate(${k*72})"/>`).join("")}<circle r="4.5" fill="#e3b33e" stroke="#5a3d3a" stroke-width=".8"/></svg>`
+  : kind==="fruit"
+  ? `<svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="M0-13 C3-19 9-19 11-16 C6-15 3-14 0-13Z" fill="${col.leaf[0]}" stroke="#2f3a20" stroke-width=".8"/><circle cy="2" r="12" fill="${col.fruit}" stroke="#4a2a1a" stroke-width="1"/><ellipse cx="-4" cy="-2" rx="3" ry="4.5" fill="rgba(255,255,255,.35)"/></svg>`
+  : `<svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="M0 16 C-14 4 -10 -12 0 -17 C10 -12 14 4 0 16Z" fill="${col.leaf[1]}" stroke="#2f3a20" stroke-width="1"/><path d="M0 16 L0 -14 M0 -2 L-6 -8 M0 4 L6 -2 M0 9 L-5 4" stroke="#2f3a20" stroke-width=".8" fill="none"/></svg>`;
+
+elAt(`<section class="hero" aria-label="Introduction"><div class="mono">A slow-growing portfolio - est. one seed</div>
+  <h1>Sterling<br><em>Huang</em></h1>
+  <p>I'm an engineer who keeps planting side quests. Scroll to grow the tree: the trunk is the main story, every branch is something I wandered off to do.</p>
+  <span class="hand"><span class="arrow">&darr;</span> scroll, and it grows up</span></section>`, 360);
+
+chapters.forEach(c=>{
+  const card = elAt(`<section class="chapter" id="ch-${c.id}" aria-labelledby="h-${c.id}"><div class="ring mono"><span>${c.ring}</span><span>${SEASONS[c.season].name}</span></div>
+    <h2 id="h-${c.id}">${c.title}</h2><div class="where">${c.where}</div><p>${c.blurb}</p>
+    <div class="draft mono">Dates TBD - draft order, to be confirmed</div>
+    ${c.sides.length?`<div class="hand" style="margin-top:6px">${c.sides.length} branch${c.sides.length>1?"es":""} sprouted here &rarr;</div>`:`<div class="hand" style="margin-top:6px">No branches this ring. Too cold. Mostly bikes.</div>`}</section>`, c.start+170);
+  card.dataset.card = 1;
+  c.sides.forEach(s=>{
+    const b = elAt(`<button class="spec ${s.dir>0?"r":"l"}" aria-label="${s.title} - ${s.tag}. Open journal page">${glyph(s.kind, SEASONS[c.season])}<span class="lbl">${s.title}</span></button>`, s.wy);
+    b.addEventListener("click", ()=>openJournal(s)); s.el = b;
+  });
+});
+const crown = elAt(`<section class="crown" aria-label="The canopy"><div class="mono">Ring V - not grown yet</div><h2>The canopy, to be continued</h2>
+  <p>That's the trunk so far. The next ring is TBD, which is the exciting part. If you want to be a branch, say hi.</p>
+  <a class="btn" href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn &nearr;</a> <button class="btn" id="replant">Back to the seed</button></section>`, TOP+380);
+
+/* birds = vacations */
+const birds = []; { const r = mulberry32(7); chapters.forEach(c=>{ (VACATIONS[c.id]||[]).forEach((name,k,arr)=>{
+  const wy = c.start + 260 + (c.end-c.start-360)*(k+.5)/arr.length + (r()-.5)*60;
+  const b = elAt(`<button class="bird" aria-label="Catch the ${name} trip bird"><svg viewBox="0 0 40 30" aria-hidden="true"><path class="wing" d="M4 14 Q12 4 20 15 Q28 4 36 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="16" r="2.2" fill="currentColor"/></svg><span class="tip">${name}</span></button>`, wy);
+  const bird = {name, wy, el:b, fx: .08 + r()*.84, chapter:c.index}; birds.push(bird);
+  b.addEventListener("click", ()=>collect(bird));
+}); }); }
+
+/* ================== RENDERING ================== */
+const cv = document.getElementById("tree"), ctx = cv.getContext("2d");
+const fx = document.getElementById("fx"), fctx = fx.getContext("2d");
+let W=0,H=0,DPR=1,S=200,trunkCX=0,TW=1;
+function resize(){
+  DPR = Math.min(2, devicePixelRatio||1); W = innerWidth; H = innerHeight;
+  [cv,fx].forEach(c=>{c.width=W*DPR;c.height=H*DPR}); ctx.setTransform(DPR,0,0,DPR,0,0); fctx.setTransform(DPR,0,0,DPR,0,0);
+  S = W<760 ? W*0.36 : Math.min(W*0.3, 300); trunkCX = W<760 ? W*0.5 : W*0.6; TW = W<760 ? .62 : 1;
+  spacer.style.height = (WORLD_H - 0) + "px"; world.style.height = WORLD_H + "px";
+  layoutDom(); render();
+}
+const trunkX = wy => trunkCX + Math.sin(wy*0.0021)*14 + Math.sin(wy*0.0057+1.3)*7;
+function trunkW(wy){
+  let w = 46 - 30*Math.min(1, wy/TOP);
+  chapters.forEach(c=>{ const d=(wy-c.start)/36; w += 9*Math.exp(-d*d); });
+  w *= TW; return Math.max(5, wy<40 ? w*(0.5+wy/80) : w);
+}
+const camY = () => scrollY;
+const sy = wy => H - GROUND - wy + camY();
+const tipY = () => reduceMotion ? 1e9 : camY() + H*0.56 - Math.max(0, 320 - camY());
+const growth = (wy, scale) => Math.max(0, (tipY()-wy) * 3.2 / (scale||S));
+
+function layoutDom(){
+  world.querySelectorAll("[data-wy]").forEach(el=>{
+    el.style.top = (WORLD_H - +el.dataset.wy) + "px";
+    if(el.dataset.card){ const c = chapters.find(c=>"ch-"+c.id===el.id);
+      if(W<760){ el.style.left = "16px"; }
+      else { el.style.left = Math.max(16, trunkCX - 120 - 330 - (c.sides[0]?.dir<0? 0:0)) + "px"; } }
+  });
+  sides.forEach(s=>{ const p = sidePos(s, s.tip); s.el.style.left = p.x+"px"; s.el.style.top = (WORLD_H - p.wy)+"px";
+    const flip = W>=760 && (s.dir>0 ? p.x + 300 > W - 50 : p.x - 300 < 0); s.el.classList.toggle("r", (s.dir>0) !== flip); s.el.classList.toggle("l", (s.dir>0) === flip); });
+  birds.forEach(b=>{ b.el.style.left = (b.fx*(W-120)+16)+"px"; });
+}
+function sidePos(s, pt){ return {x: trunkX(s.wy) + pt.x*S, wy: s.wy + pt.y*S}; }
+
+const seasonOf = i => SEASONS[chapters[Math.max(0,Math.min(chapters.length-1,i))].season];
+function drawTrunk(){
+  const tip = Math.min(tipY(), TOP+120), lo = Math.max(0, camY()-GROUND-60), hi = Math.min(tip, camY()+H+60);
+  // roots + soil
+  if(sy(0) < H+40){
+    ctx.fillStyle="rgba(74,58,44,.12)"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0)+4, Math.min(W*.45,420), 26, 0, 0, 6.29); ctx.fill();
+    ctx.strokeStyle="rgba(74,58,44,.55)"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,sy(0)+2); for(let x=0;x<=W;x+=12) ctx.lineTo(x, sy(0)+2+Math.sin(x*.07)*1.5); ctx.stroke();
+    ctx.fillStyle="#6b5136"; ctx.beginPath(); ctx.ellipse(trunkX(0), sy(0)+8, 9, 6, -.3, 0, 6.29); ctx.fill(); // the seed
+  }
+  if(hi<=lo) return;
+  const L=[],R=[]; for(let wy=lo; wy<=hi; wy+=5){ const x=trunkX(wy), w=trunkW(wy)*Math.min(1,(tip-wy)/200+.2)/2; L.push([x-w,sy(wy)]); R.push([x+w,sy(wy)]); }
+  const g = ctx.createLinearGradient(trunkCX-30,0,trunkCX+30,0); g.addColorStop(0,"#3b2d22"); g.addColorStop(.45,"#6a523c"); g.addColorStop(1,"#3a2c20");
+  ctx.fillStyle=g; ctx.beginPath(); L.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p)); for(let i=R.length-1;i>=0;i--) ctx.lineTo(...R[i]); ctx.closePath(); ctx.fill();
+  // bark lines
+  ctx.strokeStyle="rgba(25,18,10,.35)"; ctx.lineWidth=1;
+  for(let k=-2;k<=2;k++){ ctx.beginPath(); for(let wy=lo; wy<=hi; wy+=8){ const w=trunkW(wy)*Math.min(1,(tip-wy)/200+.2)/2; const x=trunkX(wy)+k*w*.38+Math.sin(wy*.05+k)*1.5; wy===lo?ctx.moveTo(x,sy(wy)):ctx.lineTo(x,sy(wy)); } ctx.stroke(); }
+  // growth rings at chapter boundaries
+  chapters.forEach(c=>{ if(c.start>tip||c.start<lo||c.start>hi) return; const x=trunkX(c.start), w=trunkW(c.start)/2+4, Y=sy(c.start);
+    for(let k=0;k<3;k++){ ctx.strokeStyle=`rgba(243,236,220,${.55-k*.15})`; ctx.lineWidth=1.2; ctx.beginPath(); ctx.ellipse(x,Y+k*5-5,w-k*2,4,0,0,Math.PI); ctx.stroke(); }
+    ctx.fillStyle="#2b2a22"; ctx.font="500 11px 'IBM Plex Mono'"; ctx.textAlign = "left"; ctx.fillText(c.ring.toUpperCase(), x+w+10, Y+4);
+  });
+  // canopy
+  if(tip>TOP){ const g=Math.min(1,(tip-TOP)/260), cx=trunkX(TOP);
+    canopy.forEach(l=>{ if(l.k>g) return; drawLeaf(cx+l.x*S, sy(TOP+l.y*S), l.a, l.s*Math.min(1,(g-l.k)*5)*(W<760?.8:1), l.col); }); }
+  // tip bud
+  if(tip<TOP+100 && sy(tip)>-20 && sy(tip)<H+20){ ctx.fillStyle=seasonOf(chapters.findIndex(c=>tip<c.end)).leaf[1]; ctx.beginPath(); ctx.ellipse(trunkX(tip), sy(tip)-4, 5, 9, 0, 0, 6.29); ctx.fill(); }
+}
+function drawLeaf(x,y,a,s,col){ ctx.save(); ctx.translate(x,y); ctx.rotate(a); ctx.scale(s,s); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(7,-5,0,-15); ctx.quadraticCurveTo(-7,-5,0,0); ctx.fill(); ctx.restore(); }
+function drawBranch(b, scale, t){
+  const g = growth(b.wy, scale); if(g<=0) return 0;
+  const bx = trunkX(b.wy), base = sy(b.wy); if(base < -scale || base > H+scale) return g;
+  const col = seasonOf(b.chapter);
+  ctx.strokeStyle="#4a3a2c"; ctx.lineCap="round";
+  b.segs.forEach(s=>{ if(s.d0>=g) return; const f=Math.min(1,(g-s.d0)/(s.d1-s.d0));
+    ctx.lineWidth=s.w*(scale/S); ctx.beginPath(); ctx.moveTo(bx+s.x1*S, base-s.y1*S); ctx.lineTo(bx+(s.x1+(s.x2-s.x1)*f)*S, base-(s.y1+(s.y2-s.y1)*f)*S); ctx.stroke(); });
+  b.leafs.forEach(l=>{ if(l.d>g) return; const k=Math.min(1,(g-l.d)*6); const sway = reduceMotion?0:Math.sin(t*.0012+l.a*3)*.12;
+    drawLeaf(bx+l.x*S, base-l.y*S, l.a+sway, l.s*k*(W<760?.8:1), col.leaf[l.c]); });
+  return g;
+}
+let curChapter = -1;
+function render(t=performance.now()){
+  ctx.clearRect(0,0,W,H);
+  drawTrunk();
+  twigs.forEach(b=>drawBranch(b, S, t));
+  sides.forEach(s=>{ const g = drawBranch(s, S, t); s.el.classList.toggle("on", g >= s.tip.d*0.95); });
+  world.style.transform = `translateY(${H - GROUND - WORLD_H + camY()}px)`;
+  // birds reveal
+  birds.forEach(b=>{ b.el.style.opacity = b.got? 0 : (tipY()>b.wy? 1 : 0); });
+  const mid = camY() + H*0.5;
+  const ci = Math.max(0, chapters.findIndex(c=>mid < c.end)); const idx = mid >= TOP ? chapters.length-1 : ci;
+  if(idx!==curChapter){ curChapter = idx; setSeason(idx); }
+}
+function setSeason(i){
+  const s = seasonOf(i), root = document.documentElement.style;
+  root.setProperty("--sky-top", s.sky[0]); root.setProperty("--sky-bot", s.sky[1]);
+  document.getElementById("season").textContent = `${chapters[i].ring} - ${s.name}`;
+  ringBtns.forEach((b,k)=>{ b.classList.toggle("cur",k===i); b.setAttribute("aria-current", k===i?"step":"false"); });
+  Music.setChapter(i);
+}
+
+/* ================== PARTICLES ================== */
+const parts = [];
+function stepFx(){
+  fctx.clearRect(0,0,W,H); if(reduceMotion) return;
+  const kind = seasonOf(curChapter).fx, max = kind==="rain"?140: kind==="snow"?90: kind==="petals"?30:24;
+  while(parts.length<max) parts.push({x:Math.random()*W,y:Math.random()*H-H,v:Math.random(),a:Math.random()*6.28,k:kind});
+  for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; if(p.k!==kind && Math.random()<.03){ parts.splice(i,1); continue; }
+    if(p.k==="rain"){ p.y+=9+p.v*6; p.x-=1.5; fctx.strokeStyle="rgba(70,100,90,.35)"; fctx.lineWidth=1; fctx.beginPath(); fctx.moveTo(p.x,p.y); fctx.lineTo(p.x-2,p.y-12-p.v*6); fctx.stroke(); }
+    else if(p.k==="snow"){ p.y+=.6+p.v; p.a+=.01; p.x+=Math.sin(p.a)*.5; fctx.fillStyle="rgba(255,255,255,.9)"; fctx.beginPath(); fctx.arc(p.x,p.y,1+p.v*2.2,0,6.29); fctx.fill(); }
+    else if(p.k==="petals"){ p.y+=.7+p.v*.6; p.a+=.02; p.x+=Math.sin(p.a)*1.1; fctx.save(); fctx.translate(p.x,p.y); fctx.rotate(p.a); fctx.fillStyle="rgba(233,168,168,.8)"; fctx.beginPath(); fctx.ellipse(0,0,4,2.4,0,0,6.29); fctx.fill(); fctx.restore(); }
+    else { p.y-=.2+p.v*.3; p.a+=.02; p.x+=Math.sin(p.a)*.4; fctx.fillStyle=`rgba(240,200,94,${.3+.4*Math.abs(Math.sin(p.a*2))})`; fctx.beginPath(); fctx.arc(p.x,p.y,1.6,0,6.29); fctx.fill(); if(p.y<-10) p.y=H+10; }
+    if(p.y>H+20) { p.y=-20; p.x=Math.random()*W*1.1; }
+  }
+}
+function loop(t){ render(t); stepFx(); requestAnimationFrame(loop); }
+
+/* ================== HUD ================== */
+const ringsEl = document.getElementById("rings");
+const ringBtns = chapters.map((c,i)=>{ const li=document.createElement("li"); const b=document.createElement("button");
+  b.innerHTML = `<span>${c.ring} - ${c.title}</span>`; b.setAttribute("aria-label", `Jump to ${c.ring}: ${c.title}`);
+  b.addEventListener("click", ()=>goTo(c.start+170)); li.appendChild(b); ringsEl.appendChild(li); return b; });
+const goTo = wy => scrollTo({top: Math.max(0, wy - H*0.5 + GROUND), behavior: reduceMotion?"auto":"smooth"});
+document.getElementById("toSeed").addEventListener("click", e=>{e.preventDefault(); goTo(0);});
+document.getElementById("replant").addEventListener("click", ()=>goTo(0));
+// keyboard focus inside the fixed world: bring the focused item to the middle of the screen
+world.addEventListener("focusin", e=>{ const el=e.target.closest("[data-wy]"); if(!el) return;
+  const wy = el.classList.contains("spec") ? sides.find(s=>s.el===el).wy + 120 : +el.dataset.wy; scrollTo({top: Math.max(0, wy - H*0.5 + GROUND)}); });
+
+/* seed pouch */
+const STORE_KEY = "growth-rings-pouch";
+let got = new Set(); try{ got = new Set(JSON.parse(localStorage.getItem(STORE_KEY)||"[]")); }catch(e){ got = new Set(); }
+const pouchList = document.getElementById("pouchList"), pouchBtn = document.getElementById("pouchBtn"), pouchPanel = document.getElementById("pouchPanel");
+function renderPouch(){
+  pouchList.innerHTML = birds.map(b=>`<li class="${got.has(b.name)?"got":""}">${b.name}</li>`).join("");
+  document.getElementById("pouchCount").textContent = `${got.size}/${birds.length}`;
+  birds.forEach(b=>{ b.got = got.has(b.name); b.el.classList.toggle("got", b.got); if(b.got) b.el.tabIndex=-1; });
+}
+function collect(b){ got.add(b.name); try{ localStorage.setItem(STORE_KEY, JSON.stringify([...got])); }catch(e){} renderPouch(); Music.chime(); pouchBtn.focus({preventScroll:true}); }
+pouchBtn.addEventListener("click", ()=>{ const o = pouchPanel.classList.toggle("open"); pouchBtn.setAttribute("aria-expanded", o); });
+
+/* ================== JOURNAL ================== */
+const dlg = document.getElementById("journal"), jPage = document.getElementById("jPage"); let lastFocus = null;
+function openJournal(s){
+  const c = chapters[s.chapter], col = SEASONS[c.season]; lastFocus = document.activeElement;
+  const n = sides.indexOf(s)+1;
+  jPage.innerHTML = `<button class="btn close" id="jClose">Close &times;</button>
+   <div><div class="plate"><div class="tape"></div>
+      <svg viewBox="-60 -90 120 170" aria-hidden="true"><path d="M0 80 C 4 40 -6 10 0 -40" stroke="#4a3a2c" stroke-width="2.4" fill="none"/>
+        <path d="M0 30 C 20 20 30 0 34 -10" stroke="#4a3a2c" stroke-width="1.4" fill="none"/><path d="M0 10 C -18 0 -28 -16 -32 -26" stroke="#4a3a2c" stroke-width="1.4" fill="none"/>
+        <g transform="translate(34 -16) rotate(30) scale(.8)"><path d="M0 16 C-14 4 -10 -12 0 -17 C10 -12 14 4 0 16Z" fill="${col.leaf[0]}" opacity=".85"/></g>
+        <g transform="translate(-32 -30) rotate(-30) scale(.7)"><path d="M0 16 C-14 4 -10 -12 0 -17 C10 -12 14 4 0 16Z" fill="${col.leaf[2]}" opacity=".85"/></g>
+        <g transform="translate(0 -56) scale(1.6)">${glyph(s.kind,col).replace(/<\/?svg[^>]*>/g,"")}</g></svg>
+      <div class="latin">${s.latin}</div><div class="no mono">Specimen no. ${String(n).padStart(2,"0")} - pressed in ${c.ring}</div></div>
+    <div class="slots"><div class="slot">photo: ${s.title}</div><div class="slot">photo: ${c.where.split(" - ")[0]}</div><div class="slot" style="grid-column:span 2;aspect-ratio:8/3">photo or artifact: TBD</div></div></div>
+   <div class="notes"><div class="tag mono">${s.tag} - branch of ${c.title}</div><h2 id="jTitle">${s.title}</h2><div class="when">When: TBD, during ${c.title}</div>
+     <h3>Field notes <span class="ph">placeholder</span></h3><p>${s.blurb} This is where the longer story goes: how it started, what went sideways, what I'd do again.</p>
+     <h3>What I learned <span class="ph">placeholder</span></h3><ul><li>Lesson one, TBD.</li><li>Lesson two, TBD.</li><li>Something I'm still chewing on, TBD.</li></ul>
+     <h3>Links</h3><div class="links"><span class="btn" aria-disabled="true">Project link TBD</span><a class="btn" href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn &nearr;</a></div>
+     <div class="hand back">Pressed and dried, ${new Date().getFullYear()} edition.</div>
+     <button class="btn back" id="jBack">&larr; Back to the tree</button></div>`;
+  dlg.showModal(); dlg.scrollTop = 0; jPage.querySelector("#jClose").focus();
+  jPage.querySelector("#jClose").onclick = jPage.querySelector("#jBack").onclick = ()=>dlg.close();
+  Music.layer(true);
+}
+dlg.addEventListener("close", ()=>{ Music.layer(false); if(lastFocus) lastFocus.focus({preventScroll:true}); });
+dlg.addEventListener("click", e=>{ if(e.target===dlg) dlg.close(); });
+
+/* ================== MUSIC (generative, Web Audio) ==================
+   Piano plucks + soft string pad; harmony and density change per season. Opening a journal page adds a music-box layer. */
+const Music = (()=>{
+  const PROG = { // MIDI chords per season
+    spring:{chords:[[48,60,64,67,71],[45,57,60,64,67],[41,57,60,65,69],[43,55,59,62,67]], rate:1.1, cut:1400},
+    summer:{chords:[[50,62,66,69,73],[47,59,62,66,69],[43,59,62,67,71],[45,57,61,64,69]], rate:1.5, cut:2000},
+    winter:{chords:[[45,57,60,64,71],[41,57,60,65,67],[48,55,60,64,67],[43,55,59,62,64]], rate:.6, cut:900},
+    monsoon:{chords:[[40,52,55,59,62],[45,52,57,59,64],[43,50,55,59,62],[38,50,57,59,64]], rate:.9, cut:1100}
+  };
+  let ac=null, master, verb, on=false, season="spring", ci=0, timer=null, nextChord=0, nextNote=0, layerOn=false, pads=[];
+  const hz = m => 440*Math.pow(2,(m-69)/12);
+  function init(){
+    ac = new (window.AudioContext||window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+    // cheap reverb: feedback delays
+    verb = ac.createGain(); verb.gain.value=.5; [0.13,0.29,0.47].forEach((t,i)=>{ const d=ac.createDelay(1); d.delayTime.value=t; const fb=ac.createGain(); fb.gain.value=.38-i*.06; const lp=ac.createBiquadFilter(); lp.frequency.value=2400;
+      verb.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(master); });
+  }
+  function pad(chord, t, cut){
+    pads.forEach(p=>{ p.g.gain.cancelScheduledValues(t); p.g.gain.setValueAtTime(p.g.gain.value,t); p.g.gain.linearRampToValueAtTime(0,t+4); p.o.forEach(o=>o.stop(t+4.2)); });
+    pads = chord.slice(0,4).map((m,i)=>{ const g=ac.createGain(), f=ac.createBiquadFilter(); f.type="lowpass"; f.frequency.value=cut*.6; f.Q.value=.4;
+      const o=[-6,6].map(dt=>{ const x=ac.createOscillator(); x.type="sawtooth"; x.frequency.value=hz(m+(i===0?0:0)); x.detune.value=dt; x.connect(f); x.start(t); return x; });
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(i===0?.05:.028,t+3.5); f.connect(g); g.connect(master); g.connect(verb); return {g,o}; });
+  }
+  function pluck(m, t, vel=.12, type="triangle", dec=2.6){
+    const o=ac.createOscillator(), o2=ac.createOscillator(), g=ac.createGain(); o.type=type; o2.type="sine"; o.frequency.value=hz(m); o2.frequency.value=hz(m)*2;
+    const g2=ac.createGain(); g2.gain.value=.25; o2.connect(g2); g2.connect(g); o.connect(g);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vel,t+.008); g.gain.exponentialRampToValueAtTime(.0008,t+dec);
+    g.connect(master); g.connect(verb); o.start(t); o2.start(t); o.stop(t+dec+.1); o2.stop(t+dec+.1);
+  }
+  function tick(){
+    const P = PROG[season], now = ac.currentTime;
+    while(nextChord < now + .3){ ci=(ci+1)%P.chords.length; pad(P.chords[ci], Math.max(now,nextChord), P.cut); nextChord = Math.max(now,nextChord) + 8; }
+    while(nextNote < now + .3){ const ch=P.chords[ci]; const m = ch[1+Math.floor(Math.random()*(ch.length-1))] + (Math.random()<.4?12:0);
+      const t = Math.max(now,nextNote); pluck(m, t, .07+Math.random()*.06);
+      if(layerOn && Math.random()<.6) pluck(ch[1+Math.floor(Math.random()*4)]+24, t+.25, .035, "sine", 1.6);
+      nextNote = t + (0.45 + Math.random()*1.1)/P.rate; }
+  }
+  return {
+    toggle(){ if(!ac) init(); on=!on; ac.resume();
+      const t=ac.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value,t); master.gain.linearRampToValueAtTime(on?.9:0,t+1.5);
+      if(on){ nextChord=t; nextNote=t+.5; timer=setInterval(tick,120); } else { clearInterval(timer); }
+      return on; },
+    setChapter(i){ const s = chapters[i].season; if(s!==season){ season=s; if(ac&&on) nextChord = ac.currentTime; } },
+    layer(v){ layerOn=v; },
+    chime(){ if(ac&&on){ const ch=PROG[season].chords[ci]; [0,.12,.24].forEach((d,k)=>pluck(ch[k+1]+24, ac.currentTime+d, .05, "sine", 1.8)); } }
+  };
+})();
+const musicBtn = document.getElementById("musicBtn");
+musicBtn.addEventListener("click", ()=>musicBtn.setAttribute("aria-pressed", Music.toggle()));
+
+/* ================== GO ================== */
+addEventListener("resize", resize);
+renderPouch(); resize();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
