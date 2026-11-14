@@ -50,10 +50,26 @@ const Music = (() => {
       nextNote = t + (0.45 + Math.random() * 1.1) / P.rate;
     }
   }
+  /* iOS mutes Web Audio while the ring/silent switch is on unless the page plays as media.
+     Declaring a playback audio session (Safari 16.4+) and looping a silent clip (older iOS) both lift that. */
+  let silentClip = null;
+  function silentWavUrl() {
+    const n = 4410, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+    const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    str(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); str(8, "WAVE"); str(12, "fmt "); v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 44100, true); v.setUint32(28, 88200, true);
+    v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, "data"); v.setUint32(40, n * 2, true);
+    return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+  }
+  function mediaPlayback(play) {
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { console.warn("audioSession unavailable", e); }
+    if (!silentClip) { silentClip = new Audio(silentWavUrl()); silentClip.loop = true; silentClip.setAttribute("playsinline", ""); }
+    if (play) silentClip.play().catch(e => console.warn("silent clip blocked", e)); else silentClip.pause();
+  }
   return {
     toggle() {
       try { if (!ac) init(); } catch (e) { console.error("Web Audio unavailable", e); return false; }
-      on = !on; ac.resume();
+      on = !on; mediaPlayback(on); ac.resume().catch(e => console.error("AudioContext resume failed", e));
       const t = ac.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t);
       master.gain.linearRampToValueAtTime(on ? MASTER_LEVEL : 0, t + FADE_SECONDS);
       if (on) { nextChord = t; nextNote = t + 0.5; timer = setInterval(tick, TICK_MS); } else { clearInterval(timer); }

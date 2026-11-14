@@ -24,8 +24,9 @@ a:focus-visible, button:focus-visible { outline: 2px dashed var(--ink); outline-
   background-image: radial-gradient(rgba(60, 40, 40, .07) 1px, transparent 1px); background-size: 3px 3px; }
 /* faded ink painting + vertical verses behind the tree */
 #backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-#ink { position: absolute; left: 0; top: 0; width: 100%; opacity: .2; mix-blend-mode: multiply; filter: sepia(.35); will-change: transform; }
-#ink svg { display: block; width: 100%; height: 100%; }
+/* no blend mode or CSS filter here: both force the tall layer to be re-composited every frame */
+#ink { position: absolute; left: 0; top: 0; width: 100%; opacity: .2; will-change: transform; }
+#ink img { display: block; width: 100%; height: 100%; }
 .verse .ch { opacity: 0; transition: opacity 1.2s ease; }
 .verse .ch.on { opacity: 1; }
 #verses { position: absolute; inset: 0; }
@@ -82,7 +83,10 @@ canvas#fx { z-index: 3; }
 .path:hover, .path:focus-visible { background: var(--ink); color: var(--paper); }
 .path:hover .blurb, .path:focus-visible .blurb { color: color-mix(in srgb, var(--paper) 80%, transparent); }
 .path:hover .go { transform: translateX(4px); }
-.linkedin { display: inline-block; margin-top: 22px; color: var(--ink); }
+.contact { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; }
+/* backed like the HUD chips so the links stay legible over the blossom canopy */
+.contact a { color: var(--ink); background: color-mix(in srgb, var(--paper) 92%, transparent); border: 1px solid var(--rule); padding: 6px 10px; }
+.contact a:hover, .contact a:focus-visible { background: var(--ink); color: var(--paper); }
 
 /* ---------- HUD ---------- */
 .hud { position: fixed; z-index: 5; font-family: var(--mono); }
@@ -112,9 +116,11 @@ canvas#fx { z-index: 3; }
   .mark { padding: 16px 18px 18px; }
   .mark .age b { font-size: 42px; }
   .mark p { font-size: 20px; }
-  .paths { grid-template-columns: 1fr; gap: 10px; }
-  .path { padding: 14px 16px 16px; }
-  .path strong { font-size: 26px; }
+  .paths { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .path { padding: 12px 12px 14px; }
+  .path strong { font-size: 22px; padding-right: 18px; }
+  .path .blurb { font-size: 14px; }
+  .path .go { right: 10px; top: 10px; font-size: 18px; }
   .finale .hand { margin-bottom: 18px; }
   #rail, #season { display: none; }
   .verse { top: auto; bottom: 12vh; font-size: 15px; opacity: .16; } /* small enough that both verses stay clear of the trunk */ /* below the hero title on small screens */

@@ -98,13 +98,18 @@
         ${SITE.paths.map((p, i) => `<a class="path" href="${esc(p.href)}" style="--i:${i}">
           <span class="mono">Branch ${pad2(i + 1)}</span><strong>${esc(p.title)}</strong><span class="blurb">${esc(p.blurb)}</span><span class="go" aria-hidden="true">&rarr;</span></a>`).join("")}
       </nav>
-      <a class="linkedin mono" href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn &nearr;</a>
+      <div class="contact mono">
+        <a href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn &nearr;</a>
+        ${SITE.contact.github ? `<a href="${esc(SITE.contact.github)}" target="_blank" rel="noopener">GitHub &nearr;</a>` : ""}
+        ${SITE.contact.email ? `<a href="mailto:${esc(SITE.contact.email)}">${esc(SITE.contact.email)}</a>` : ""}
+      </div>
     </section>`, TOP + 600);
 
   /* ---------- canvas + camera ---------- */
-  const cv = document.getElementById("tree"), ctx = cv.getContext("2d");
+  const cv = document.getElementById("tree");
+  let ctx = cv.getContext("2d"); // temporarily swapped to a sprite canvas while sprites are built
   const fxCv = document.getElementById("fx"), fctx = fxCv.getContext("2d");
-  let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false;
+  let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false, DPR = 1;
   const camY = () => scrollY;
   const sy = wy => H - GROUND - wy + camY();
   /* The growing tip starts at the ground (a bud) and catches up with the reading line as you scroll. */
@@ -121,6 +126,7 @@
 
   function resize() {
     const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mobile = W < MOBILE_BP;
+    if (dpr !== DPR) sprites.clear(); DPR = dpr;
     [cv, fxCv].forEach(c => { c.width = W * dpr; c.height = H * dpr; });
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     S = mobile ? W * 0.4 : Math.min(W * 0.28, 300); trunkCX = W * 0.5; TW = mobile ? 0.62 : 1;
@@ -161,12 +167,32 @@
     ctx.fillStyle = SEASONS.spring.colors[2]; ctx.beginPath(); ctx.ellipse(0, 1, 2.6, 3.2, 0, 0, 6.283); ctx.fill();
     ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, -3, 2.4, 3.8, 0, 0, 6.283); ctx.fill(); ctx.restore();
   }
+  /* Foliage is stamped from small pre-rendered sprites (one per shape and colour): drawing
+     thousands of petal paths every frame was the main cost of the crown. */
+  const SPRITE = 40, SPRITE_RES = 2; // css px box, and extra resolution so sprites stay sharp when scaled up
+  const sprites = new Map();
+  function sprite(kind, col) {
+    const key = kind + col; if (sprites.has(key)) return sprites.get(key);
+    const c = document.createElement("canvas"), px = Math.ceil(SPRITE * DPR * SPRITE_RES); c.width = c.height = px;
+    const g = c.getContext("2d"), real = ctx; g.setTransform(px / SPRITE, 0, 0, px / SPRITE, px / 2, px / 2);
+    ctx = g; // reuse the path drawers on the sprite canvas
+    if (kind === "blossom") drawBlossomCluster(0, 0, 0, 1, col);
+    else if (kind === "bud") drawFlowerBud(0, 0, 0, 1, col);
+    else if (kind === "leaf") drawLeaf(0, 0, 0, 1, col);
+    else drawSnowTuft(0, 0, 1, col);
+    ctx = real; sprites.set(key, c); return c;
+  }
+  function stamp(img, x, y, a, s) {
+    const c = Math.cos(a) * s * DPR, n = Math.sin(a) * s * DPR;
+    ctx.setTransform(c, n, -n, c, x * DPR, y * DPR);
+    ctx.drawImage(img, -SPRITE / 2, -SPRITE / 2, SPRITE, SPRITE);
+  }
   function drawBud(x, y, a, s, c, seasonKey) {
     const se = SEASONS[seasonKey], col = se.colors[c], k = mobile ? 0.8 : 1;
-    if (se.foliage === "bud") return c === 0 ? drawBlossomCluster(x, y, a, s * k * 0.55, col) : drawFlowerBud(x, y, a, s * k, col);
-    if (se.foliage === "blossom") drawBlossomCluster(x, y, a, s * k, col);
-    else if (se.foliage === "leaf") drawLeaf(x, y, a, s * k, col);
-    else drawSnowTuft(x, y, s * k, col);
+    if (se.foliage === "bud") return c === 0 ? stamp(sprite("blossom", col), x, y, a, s * k * 0.55) : stamp(sprite("bud", col), x, y, a, s * k);
+    if (se.foliage === "blossom") stamp(sprite("blossom", col), x, y, a, s * k);
+    else if (se.foliage === "leaf") stamp(sprite("leaf", col), x, y, a, s * k);
+    else stamp(sprite("snow", col), x, y, 0, s * k);
   }
 
   function drawTrunk() {
@@ -211,11 +237,10 @@
       ctx.lineWidth = s.w * (mobile ? 0.8 : 1) * (0.5 + 0.5 * b.scale); ctx.beginPath(); ctx.moveTo(bx + s.x1 * u, base - s.y1 * u);
       ctx.lineTo(bx + (s.x1 + (s.x2 - s.x1) * f) * u, base - (s.y1 + (s.y2 - s.y1) * f) * u); ctx.stroke(); });
   }
-  function drawFoliage(b, seasonKey, t) {
+  function drawFoliage(b, seasonKey) {
     if (!(b.g > 0)) return; const bx = trunkX(b.wy), base = sy(b.wy), u = S * b.scale;
     b.buds.forEach(l => { if (l.d > b.g) return; const k = Math.min(1, (b.g - l.d) * 6);
-      const sway = reduceMotion ? 0 : Math.sin(t * 0.0012 + l.a * 3) * 0.12;
-      drawBud(bx + l.x * u, base - l.y * u, l.a + sway, l.s * k, l.c, seasonKey); });
+      drawBud(bx + l.x * u, base - l.y * u, l.a, l.s * k, l.c, seasonKey); });
   }
   function drawCanopy(seasonKey) {
     const tip = tipY(); if (tip <= TOP) return;
@@ -234,20 +259,22 @@
     seasonLabel.textContent = se.label;
     Music.setSeason(next);
   }
-  function foliagePass(t) {
-    const all = s => { [...twigs, ...branches].forEach(b => drawFoliage(b, s, t)); drawCanopy(s); };
-    const m = reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
+  const seasonFade = () => reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
+  function foliagePass() {
+    const all = s => { [...twigs, ...branches].forEach(b => drawFoliage(b, s)); drawCanopy(s); };
+    const m = seasonFade();
     if (m < 1) { ctx.globalAlpha = 1 - m; all(prevSeason); }
     ctx.globalAlpha = m; all(season); ctx.globalAlpha = 1;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); // stamps leave a per-sprite transform behind
   }
 
   /* ---------- frame ---------- */
   const railBtns = [];
-  function render(t = performance.now()) {
+  function render() {
     ctx.clearRect(0, 0, W, H);
     drawTrunk();
     [...twigs, ...branches].forEach(drawWood);
-    foliagePass(t);
+    foliagePass();
     world.style.transform = `translateY(${H - GROUND - WORLD_H + camY()}px)`;
     const tip = tipY();
     const finaleOn = tip > +finale.dataset.wy - 160;
@@ -287,7 +314,14 @@
       if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W * 1.1; }
     }
   }
-  function loop(t) { render(t); stepFx(); requestAnimationFrame(loop); }
+  /* The tree only changes when the page scrolls or a season is fading, so it is redrawn only then.
+     Falling particles live on their own canvas and animate every frame. */
+  let dirty = true;
+  addEventListener("scroll", () => { dirty = true; }, { passive: true });
+  function loop() {
+    if (dirty || seasonFade() < 1) { dirty = false; render(); }
+    stepFx(); requestAnimationFrame(loop);
+  }
 
   /* ---------- navigation ---------- */
   const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND), behavior: reduceMotion ? "auto" : "smooth" });

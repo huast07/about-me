@@ -25,7 +25,13 @@ const SITE = {
   motto: {
     latin: "Velut Arbor Aevo",
     translation: "As a tree through the ages",
-    note: "The UTS motto, and still the plan."
+    note: "The University of Toronto motto, and still the plan."
+  },
+
+  /* Contact links shown under the finale. An empty value hides that link. */
+  contact: {
+    github: "https://github.com/huast07",
+    email: "sterling.huang@mail.utoronto.ca"
   },
 
   /* Faded verses drawn vertically behind the tree. Lines are columns, read right to left. */
@@ -36,10 +42,13 @@ const SITE = {
       lines: ["流鶯舞蝶兩相欺", "不取花芳正結時", "他日未開今日謝", "嘉辰長短是參差"], author: "李商隱" }
   ],
 
-  /* The three branches the finale leads to. Each gets its own theme later. */
+  /* The branches the finale leads to. Each gets its own theme later. */
   paths: [
-    { href: "projects.html", title: "Projects", blurb: "Maplecrown, BikeTO, antennas and science fair builds." },
+    { href: "research.html", title: "Research", blurb: "Matter Lab, KMUTT and the science fair years." },
+    { href: "industry.html", title: "Industry Projects", blurb: "Sun Life, Maplecrown, BikeTO and more." },
     { href: "travels.html", title: "Travels", blurb: "Denmark, Thailand and seventeen more countries." },
-    { href: "passions.html", title: "Passions", blurb: "Book club, activism, volunteering and farm life." }
+    { href: "volunteering.html", title: "Volunteering", blurb: "FIFA, city events, farm life and advocacy." },
+    { href: "military.html", title: "Military Service", blurb: "Canadian Armed Forces." },
+    { href: "readings.html", title: "Readings and Blogs", blurb: "The weekly book club and things I write." }
   ]
 };

@@ -29,7 +29,11 @@
   const written = verses.map(v => ({ range: REVEAL[v.id] || [0, 1], spans: [...host.querySelectorAll(`.verse-${CSS.escape(v.id)} .ch`)], shown: -1 }));
 
   /* ---------- landscape ---------- */
-  art.innerHTML = Landscape.svg();
+  /* Rendered as an <img> so the browser rasterises the filtered SVG once instead of re-compositing live vectors. */
+  const img = new Image();
+  img.alt = ""; img.decoding = "async";
+  img.src = URL.createObjectURL(new Blob([Landscape.svg()], { type: "image/svg+xml" }));
+  art.appendChild(img);
   let artH = 0;
   function size() {
     const W = innerWidth, H = innerHeight;
