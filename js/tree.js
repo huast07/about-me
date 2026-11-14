@@ -14,6 +14,7 @@
   const CROWN_SCREEN = 0.8, FINALE_SCREEN = 0.42;
   /* Screen line (fraction from top) that decides the current season and rail stop: just below centre, where cards are read. */
   const FOCUS_SCREEN = 0.62;
+  const CARD_MAX_W = 340, CARD_GAP = 70; // highlight card width and distance from the trunk (desktop)
   const TOPBAR_CLEARANCE = 64; // px kept free above the finale for the fixed top bar
 
   const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
@@ -130,12 +131,12 @@
     layoutDom(); render();
   }
   function layoutDom() {
-    const cardW = Math.min(400, W * 0.5 - 110);
+    const cardW = Math.min(CARD_MAX_W, W * 0.5 - 110); // narrow enough to leave the edge verses clear
     world.querySelectorAll("[data-wy]").forEach(el => { el.style.top = (WORLD_H - +el.dataset.wy) + "px"; });
     marks.forEach(m => {
       if (mobile) { m.el.style.left = "16px"; m.el.style.width = (W - 32) + "px"; return; }
       m.el.style.width = cardW + "px";
-      m.el.style.left = (m.side > 0 ? trunkX(m.wy) + 80 : trunkX(m.wy) - 80 - cardW) + "px";
+      m.el.style.left = (m.side > 0 ? trunkX(m.wy) + CARD_GAP : trunkX(m.wy) - CARD_GAP - cardW) + "px";
     });
   }
 

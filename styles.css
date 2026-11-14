@@ -24,17 +24,19 @@ a:focus-visible, button:focus-visible { outline: 2px dashed var(--ink); outline-
   background-image: radial-gradient(rgba(60, 40, 40, .07) 1px, transparent 1px); background-size: 3px 3px; }
 /* faded ink painting + vertical verses behind the tree */
 #backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-#ink { position: absolute; left: 0; right: 0; bottom: -6vh; width: 100%; height: 100%; object-fit: cover; object-position: center bottom;
-  opacity: .2; mix-blend-mode: multiply; filter: sepia(.35); will-change: transform; }
+#ink { position: absolute; left: 0; top: 0; width: 100%; opacity: .2; mix-blend-mode: multiply; filter: sepia(.35); will-change: transform; }
+#ink svg { display: block; width: 100%; height: 100%; }
+.verse .ch { opacity: 0; transition: opacity 1.2s ease; }
+.verse .ch.on { opacity: 1; }
 #verses { position: absolute; inset: 0; }
 /* vertical-rl: flex column = block axis, so each line becomes a column read right to left */
 .verse { position: absolute; top: 13vh; writing-mode: vertical-rl; display: flex; flex-direction: column; gap: .55em; white-space: nowrap; color: var(--ink); opacity: .2;
-  font-family: "Noto Serif JP", "Noto Serif TC", "Hiragino Mincho ProN", "Songti TC", serif; font-size: clamp(22px, 2.3vw, 34px); letter-spacing: .28em; line-height: 1; }
+  font-family: "Noto Serif JP", "Noto Serif TC", "Hiragino Mincho ProN", "Songti TC", serif; font-size: clamp(20px, 1.8vw, 26px); letter-spacing: .28em; line-height: 1; }
 .verse[lang="zh-Hant"] { font-family: "Noto Serif TC", "Songti TC", "Noto Serif JP", serif; }
 .verse .v-title { font-weight: 500; }
 .verse .v-author { font-size: .5em; letter-spacing: .2em; padding-top: 6em; }
 .verse-haiku { left: 4vw; }
-.verse-poem { right: 6vw; }
+.verse-poem { right: 52px; } /* just inside the progress rail */
 canvas#tree, canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 canvas#fx { z-index: 3; }
 #world { position: fixed; left: 0; top: 0; width: 100%; z-index: 2; will-change: transform; }
@@ -115,7 +117,7 @@ canvas#fx { z-index: 3; }
   .path strong { font-size: 26px; }
   .finale .hand { margin-bottom: 18px; }
   #rail, #season { display: none; }
-  .verse { top: auto; bottom: 12vh; font-size: 20px; opacity: .14; } /* below the hero title on small screens */
+  .verse { top: auto; bottom: 12vh; font-size: 15px; opacity: .16; } /* small enough that both verses stay clear of the trunk */ /* below the hero title on small screens */
   .verse-haiku { left: 10px; }
   .verse-poem { right: 10px; }
   #ink { opacity: .16; }
