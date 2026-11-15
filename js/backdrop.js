@@ -62,6 +62,7 @@
     return reduceMotion ? 1 : Math.min(1, Math.max(0, scrollY / max));
   };
   function update() {
+    if (!host.isConnected) return;
     const p = progress();
     draw(reduceMotion ? 0 : p);
     written.forEach(w => {

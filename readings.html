@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="stub">
+<div id="page">
 <!-- Placeholder. This branch gets its own theme in a later round. -->
 <main>
   <div class="mono">Branch 06 - coming soon</div>
@@ -21,5 +22,21 @@
   </ul>
   <a class="back mono" href="index.html">&larr; Back to the tree</a>
 </main>
+</div>
+<div class="hud" id="topbar">
+  <a class="brand" href="index.html">Sterling Huang</a>
+  <div class="music-controls">
+    <button class="chip" id="musicBtn" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Play music</span></button>
+    <details class="music-credit"><summary aria-label="About the music">♫</summary><div>
+      <strong>Winter — Largo</strong><br>Vivaldi · The Four Seasons<br>
+      John Harrison, violin · Robert Turizziani, conductor · Wichita State University Chamber Players.<br>
+      <a href="https://commons.wikimedia.org/wiki/File:11_-_Vivaldi_Winter_mvt_2_Largo_-_John_Harrison_violin.ogg" target="_blank" rel="noopener">Recording &amp; source</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a><br>
+      Playback includes a crossfade for continuous looping; adapted audio under the same license.
+    </div></details>
+  </div>
+</div>
+<p id="musicStatus" class="sr" role="status"></p>
+<script src="js/music.js"></script>
+<script src="js/navigation.js"></script>
 </body>
 </html>

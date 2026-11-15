@@ -2,24 +2,24 @@
    CONTENT - edit this file only to change what the main page says.
    Highlights are listed oldest first. The tree grows one highlight per
    step and the seasons cycle spring > summer > autumn > winter as it grows.
-   age: a number, or null while unknown (shows as "??" with a TBD marker).
-   Every sentence below is placeholder copy until Sterling confirms it.
+   age: a number, or null for a milestone with a custom heading.
+   Main-page milestones supplied by Sterling.
    ===================================================================== */
 const SITE = {
   name: "Sterling Huang",
   linkedin: "https://www.linkedin.com/in/sterling-huang-20206b24b/",
 
   highlights: [
-    { age: null, tag: "UTS", text: "Sterling started at University of Toronto Schools, and convinced a coat hanger it was an antenna." },
-    { age: null, tag: "Science fair", text: "Sterling took his science fair project all the way to the Canada-Wide Science Fair." },
-    { age: null, tag: "Chemistry", text: "Sterling sat the Canadian Chemistry Olympiad." },
-    { age: null, tag: "ISEF", text: "Sterling was shortlisted for ISEF Team Canada." },
-    { age: null, tag: "EngSci", text: "Sterling began Engineering Science at the University of Toronto." },
-    { age: null, tag: "Research", text: "Sterling joined the Matter Lab as a researcher." },
-    { age: null, tag: "FIFA", text: "Sterling volunteered with FIFA." },
-    { age: null, tag: "Maplecrown", text: "Sterling started building Maplecrown." },
-    { age: null, tag: "Denmark", text: "Sterling crossed the Atlantic for an exchange in Denmark." },
-    { age: null, tag: "Thailand", text: "Sterling flew to Bangkok for a research exchange at KMUTT." }
+    { age: null, heading: "Roots in Toronto", tag: "Toronto", text: "Sterling was born in Toronto and grew up in North York." },
+    { age: 11, tag: "Leadership", text: "Sterling received the Principal's Award for Student Leadership in his graduating class." },
+    { age: 12, tag: "UTS", text: "Sterling enrolled in the University of Toronto Schools in downtown Toronto." },
+    { age: 15, tag: "Science Olympiad", text: "Sterling participated in the Junior Science Olympiad and became an alternate member of Team Canada." },
+    { age: 16, tag: "Chemistry", text: "Sterling won a bronze medal at the Canadian Chemistry Olympiad and qualified for the National Training Camp. Around the same time, he began auditing university lectures at the University of Toronto." },
+    { age: 17, tag: "Service", text: "Sterling joined the Canadian Armed Forces as a naval reservist, committing to serve Canada before self. He completed Basic Military Qualification in the summer of 2025." },
+    { age: 17, tag: "MILSET", text: "That same year, Sterling was selected to represent Team Canada at the MILSET International Science Expo and was interviewed by CBC after receiving the Best Delegation Award." },
+    { age: 18, tag: "ISEF", text: "Sterling was shortlisted to represent Team Canada at the Regeneron International Science and Engineering Fair." },
+    { age: 18, tag: "World Series", text: "Later that year, Sterling was selected to represent the Canadian Armed Forces by carrying the Canadian flag at Game 7 of the 2025 World Series." },
+    { age: 19, tag: "BikeTO & Research", text: "Sterling published BikeTO to the App Store and received a Mitacs Globalink Research Award for a research exchange in Bangkok, Thailand." }
   ],
 
   motto: {

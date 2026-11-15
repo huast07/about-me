@@ -81,10 +81,10 @@
     </section>`, 380);
 
   marks.forEach(m => {
-    const age = m.age == null ? `<b>??</b>,<span class="tbd mono">age TBD</span>` : `<b>${esc(m.age)}</b>,`;
+    const heading = m.heading ? esc(m.heading) : `At age <b>${esc(m.age)}</b>,`;
     m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
         <div class="mono kicker"><span>${pad2(m.i + 1)} / ${pad2(marks.length)}</span><span>${esc(m.tag)} - ${SEASONS[m.season].label}</span></div>
-        <h2 class="age" id="mt-${m.i}">At age ${age}</h2>
+        <h2 class="age" id="mt-${m.i}">${heading}</h2>
         <p>${esc(m.text)}</p>
       </article>`, m.wy + 60);
   });
@@ -125,6 +125,7 @@
   }
 
   function resize() {
+    if (!world.isConnected) return;
     const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mobile = W < MOBILE_BP;
     if (dpr !== DPR) sprites.clear(); DPR = dpr;
     [cv, fxCv].forEach(c => { c.width = W * dpr; c.height = H * dpr; });
@@ -257,7 +258,6 @@
     const root = document.documentElement.style, se = SEASONS[next];
     root.setProperty("--sky-top", se.sky[0]); root.setProperty("--sky-bot", se.sky[1]);
     seasonLabel.textContent = se.label;
-    Music.setSeason(next);
   }
   const seasonFade = () => reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
   function foliagePass() {
@@ -319,6 +319,7 @@
   let dirty = true;
   addEventListener("scroll", () => { dirty = true; }, { passive: true });
   function loop() {
+    if (!world.isConnected) { requestAnimationFrame(loop); return; }
     if (dirty || seasonFade() < 1) { dirty = false; render(); }
     stepFx(); requestAnimationFrame(loop);
   }
@@ -332,11 +333,8 @@
     b.addEventListener("click", () => goTo(stop.wy()));
     li.appendChild(b); rail.appendChild(li); railBtns.push(b);
   });
-  document.getElementById("toSeed").addEventListener("click", e => { e.preventDefault(); goTo(0); });
   world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND) }); });
 
-  const musicBtn = document.getElementById("musicBtn");
-  musicBtn.addEventListener("click", () => musicBtn.setAttribute("aria-pressed", String(Music.toggle())));
 
   addEventListener("resize", resize);
   seasonLabel.textContent = SEASONS[season].label;
