@@ -68,3 +68,7 @@ weathered empty stone memorials receding toward a misty sea, shadows becoming sh
 silhouettes, and a floating stone arch framing a pale dawn sky. Reflective mood,
 muted blue-grey and limestone with crimson accents, quiet central space for text;
 no combat, weapons, lettering, or flags. Created with the built-in image tool.
+
+Artwork edit (built-in image tool): remove all tombstones and their plinths, filling
+the exposed areas with poppy meadow, rocks, hillside and mist; preserve the floating
+arches, ships, dawn light, composition and oil-painting style.
