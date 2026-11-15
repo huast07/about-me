@@ -27,7 +27,9 @@ const SITE = {
   motto: {
     latin: "Velut Arbor Aevo",
     translation: "As a tree through the ages",
-    note: "The University of Toronto motto, and still the plan."
+    note: "Crescit occulto velut arbor aevo fama Marcelli.",
+    citation: "Horace, Odes I.12, lines 45–46",
+    source: "https://www.registrar.utoronto.ca/convocation/history-tradition/"
   },
 
   /* Contact links shown under the finale. An empty value hides that link. */

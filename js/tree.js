@@ -101,7 +101,8 @@
       <div class="mono">${esc(SEASONS.bloom.label)}</div>
       <h2 id="motto" lang="la">${esc(SITE.motto.latin)}</h2>
       <p class="translation">${esc(SITE.motto.translation)}</p>
-      <p class="hand">${esc(SITE.motto.note)}</p>
+      <p class="hand"><span lang="la">“${esc(SITE.motto.note)}”</span><br>
+        <a class="motto-citation" href="${esc(SITE.motto.source)}" target="_blank" rel="noopener">${esc(SITE.motto.citation)}</a></p>
       <nav class="paths" aria-label="Explore more">
         ${SITE.paths.map((p, i) => `<a class="path" href="${esc(p.href)}" style="--i:${i}">
           <span class="mono">Branch ${pad2(i + 1)}</span><strong>${esc(p.title)}</strong><span class="blurb">${esc(p.blurb)}</span><span class="go" aria-hidden="true">&rarr;</span></a>`).join("")}
