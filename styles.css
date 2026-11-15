@@ -84,7 +84,7 @@ canvas#fx { z-index: 3; }
 .path:hover, .path:focus-visible { background: var(--ink); color: var(--paper); }
 .path:hover .blurb, .path:focus-visible .blurb { color: color-mix(in srgb, var(--paper) 80%, transparent); }
 .path:hover .go { transform: translateX(4px); }
-.contact { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; }
+.contact { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 22px; }
 /* backed like the HUD chips so the links stay legible over the blossom canopy */
 .contact a { color: var(--ink); background: color-mix(in srgb, var(--paper) 92%, transparent); border: 1px solid var(--rule); padding: 6px 10px; }
 .contact a:hover, .contact a:focus-visible { background: var(--ink); color: var(--paper); }

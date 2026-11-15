@@ -103,15 +103,15 @@
       <p class="translation">${esc(SITE.motto.translation)}</p>
       <p class="hand"><span lang="la">“${esc(SITE.motto.note)}”</span><br>
         <span class="motto-citation">${esc(SITE.motto.citation)}</span></p>
-      <nav class="paths" aria-label="Explore more">
-        ${SITE.paths.map((p, i) => `<a class="path" href="${esc(p.href)}" style="--i:${i}">
-          <span class="mono">Branch ${pad2(i + 1)}</span><strong>${esc(p.title)}</strong><span class="blurb">${esc(p.blurb)}</span><span class="go" aria-hidden="true">&rarr;</span></a>`).join("")}
-      </nav>
       <div class="contact mono">
         <a href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn &nearr;</a>
         ${SITE.contact.github ? `<a href="${esc(SITE.contact.github)}" target="_blank" rel="noopener">GitHub &nearr;</a>` : ""}
         ${SITE.contact.email ? `<a href="mailto:${esc(SITE.contact.email)}">${esc(SITE.contact.email)}</a>` : ""}
       </div>
+      <nav class="paths" aria-label="Explore more">
+        ${SITE.paths.map((p, i) => `<a class="path" href="${esc(p.href)}" style="--i:${i}">
+          <span class="mono">Branch ${pad2(i + 1)}</span><strong>${esc(p.title)}</strong><span class="blurb">${esc(p.blurb)}</span><span class="go" aria-hidden="true">&rarr;</span></a>`).join("")}
+      </nav>
     </section>`, TOP + 600);
 
   /* ---------- canvas + camera ---------- */
