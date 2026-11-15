@@ -3,7 +3,15 @@
   const button = document.getElementById('musicBtn');
   const label = button.querySelector('.t');
   const status = document.getElementById('musicStatus');
-  const trackURL = new URL('../assets/audio/winter-largo.mp3', document.currentScript.src);
+  const assetBase = new URL('../', document.currentScript.src);
+  const tracks = {
+    home: { file: 'assets/audio/winter-largo.mp3', title: 'Vivaldi, Winter — Largo', credit: `<strong>Winter — Largo</strong><br>Vivaldi · The Four Seasons<br>John Harrison, violin · Robert Turizziani, conductor · Wichita State University Chamber Players.<br><a href="https://commons.wikimedia.org/wiki/File:11_-_Vivaldi_Winter_mvt_2_Largo_-_John_Harrison_violin.ogg" target="_blank" rel="noopener">Recording &amp; source</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a><br>Playback includes a crossfade for continuous looping; adapted audio under the same license.` },
+    travel: { file: 'assets/audio/water-music.mp3', title: 'Handel, Water Music — Sarabande', credit: `<strong>Water Music — Sarabande</strong><br>George Frideric Handel<br>Marine Chamber Orchestra of the United States Marine Band, conducted by Michelle Rakers.<br><a href="https://commons.wikimedia.org/wiki/File:Handel%27s_Water_Music_-_16._Sarabande_-_Chamber_Orchestra_-_United_States_Marine_Band.opus" target="_blank" rel="noopener">Recording &amp; source</a> · Public domain` }
+  };
+  let track = document.querySelector('#travel-app') ? 'travel' : 'home', generation = 0;
+  const credit = document.querySelector('.music-credit > div');
+  function updateCredit() { if (credit) credit.innerHTML = tracks[track].credit; }
+  updateCredit();
   const LEVEL = 0.38, FADE = 1.2;
   let context, gain, source, loading, wanted = false, pauseTimer;
 
@@ -27,12 +35,13 @@
   function update(message = '') {
     const playing = wanted && !!source && context?.state === 'running';
     button.setAttribute('aria-pressed', String(playing));
-    button.setAttribute('aria-label', wanted ? 'Pause music: Vivaldi, Winter — Largo' : 'Play music: Vivaldi, Winter — Largo');
+    button.setAttribute('aria-label', (wanted ? 'Pause music: ' : 'Play music: ') + tracks[track].title);
     label.textContent = wanted && !source ? 'Loading…' : playing ? 'Pause music' : 'Play music';
     status.textContent = message;
   }
 
   async function toggle() {
+    const request = ++generation;
     wanted = !wanted;
     clearTimeout(pauseTimer);
     update();
@@ -55,7 +64,7 @@
       try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (_) { /* optional Safari API */ }
       await context.resume();
       if (!loading) {
-        loading = fetch(trackURL).then(response => {
+        loading = fetch(new URL(tracks[track].file, assetBase)).then(response => {
           if (!response.ok) throw new Error(`Audio request failed: ${response.status}`);
           return response.arrayBuffer();
         }).then(data => context.decodeAudioData(data)).then(seamlessLoop).catch(error => {
@@ -64,7 +73,7 @@
         });
       }
       const buffer = await loading;
-      if (!wanted) return;
+      if (!wanted || request !== generation) return;
       if (!source) {
         source = context.createBufferSource();
         source.buffer = buffer;
@@ -76,11 +85,25 @@
       gain.gain.linearRampToValueAtTime(LEVEL, context.currentTime + FADE);
       update();
     } catch (error) {
+      if (request !== generation) return;
       wanted = false;
       update('Music could not start. Select Play music to try again.');
       console.warn('Music playback failed', error);
     }
   }
+  addEventListener('portfolio:pagechange', event => {
+    const next = event.detail.travel ? 'travel' : 'home';
+    if (next === track) return;
+    track = next; ++generation; loading = null; updateCredit();
+    if (source) {
+      const old = source; source = null;
+      const t = context.currentTime;
+      gain.gain.cancelAndHoldAtTime(t);
+      gain.gain.linearRampToValueAtTime(0, t + FADE);
+      old.stop(t + FADE + .05);
+    }
+    if (wanted) { wanted = false; toggle(); } else update();
+  });
   button.addEventListener('click', toggle);
   update();
 })();

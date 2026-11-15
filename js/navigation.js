@@ -26,6 +26,16 @@
     homeLoaded = true;
   }
 
+  async function loadTravel() {
+    if (document.querySelector('#travel-app[data-ready]')) return;
+    for (const name of ['assets/vendor/d3.min.js', 'assets/vendor/topojson-client.min.js', 'js/travel-content.js', 'js/travels.js']) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script'); script.src = new URL(name, base);
+        script.onload = resolve; script.onerror = reject; document.body.appendChild(script);
+      });
+    }
+  }
+
   async function navigate(url, push) {
     const request = ++version, target = key(url);
     try {
@@ -54,7 +64,9 @@
         await homeLoading;
         homeLoading = null;
       }
+      if (next.node.querySelector('#travel-app')) await loadTravel();
       if (request !== version) return;
+      dispatchEvent(new CustomEvent('portfolio:pagechange', { detail: { travel: !!next.node.querySelector('#travel-app') } }));
       dispatchEvent(new Event('resize'));
       scrollTo({ top: next.y, behavior: 'instant' });
       const heading = next.node.querySelector('#tree') ? next.node : next.node.querySelector('h1');

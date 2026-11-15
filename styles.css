@@ -152,3 +152,64 @@ canvas#fx { z-index: 3; }
 .music-credit a { color: inherit; }
 
 .finale .motto-citation { font-family: var(--serif); font-size: 17px; color: var(--ink-soft); }
+
+/* Travel atlas */
+.travel-page { background: #ebe4d5; color: #25352f; }
+.travel-main { max-width: 1240px; margin: auto; padding: 110px 32px 90px; }
+.travel-page #topbar .brand { color: #25352f; }
+.travel-heading { max-width: 900px; padding: 20px 0 64px; }
+.travel-back { color: #52685e; text-decoration: none; }
+.travel-eyebrow { color: #96724f; margin: 38px 0 12px; }
+.travel-heading h1 { font-size: clamp(64px, 8vw, 116px); font-weight: 500; letter-spacing: -.035em; line-height: .9; margin: 0; }
+.travel-heading em, .atlas h2 em, .travel-takeaways em { color: #a67551; font-weight: 400; }
+.travel-intro { font-size: 23px; color: #69736a; margin: 22px 0 0; }
+.atlas { background: #f7f3e8; border: 1px solid #c9c6b5; padding: 42px 52px 48px; box-shadow: 0 18px 65px #24382b12; }
+.atlas-top, .destination-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; }
+.atlas .travel-eyebrow { margin: 0 0 8px; }
+.atlas h2, .travel-takeaways h2 { margin:0; font-size:clamp(40px,5vw,64px); font-weight:500; line-height:1; }
+.atlas-instruction { text-align:right; color:#718074; font-size:17px; line-height:1.3; margin:0; }
+.globe-wrap { position:relative; max-width:640px; margin: 8px auto 0; }
+.globe-wrap svg { display:block; width:100%; height:auto; cursor:grab; touch-action:none; }
+.globe-wrap svg.dragging { cursor:grabbing; }
+.globe-ocean { fill:#e7e8d9; stroke:#a8b6a5; stroke-width:1.5; }
+.globe-grid { fill:none; stroke:#a2b2a4; stroke-opacity:.38; stroke-width:.6; pointer-events:none; }
+.country { fill:#cbd2bc; stroke:#f0eee1; stroke-width:.45; }
+.country.visited { fill:#718e7b; cursor:pointer; }
+.country.visited:hover { fill:#b57955; }
+.flight-route { fill:none; stroke:#b77a50; stroke-width:1; stroke-opacity:.6; stroke-dasharray:3 3; pointer-events:none; }
+.destination-dot { fill:#a66040; stroke:#fff8e9; stroke-width:1; cursor:pointer; }
+.globe-caption { display:block; text-align:center; color:#8a9487; margin-top:-22px; }
+.map-status { text-align:center; color:#765e4c; }
+.destinations { border-top:1px solid #d6d5c6; margin-top:42px; padding-top:25px; }
+.destination-heading h3 { font-size:30px; font-weight:500; margin:0; }
+.destination-heading span { color:#8a9487; }
+.country-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.country-list button { background:transparent; border:1px solid #c6cebf; color:#425a4c; border-radius:30px; padding:9px 14px; font: 14px var(--mono); cursor:pointer; }
+.country-list button:hover, .country-list button:focus-visible { color:#fff; background:#526b5a; }
+.travel-takeaways { margin-top:28px; padding:40px 52px; border:1px solid #c7b8a0; background:#e2d7c2; }
+.travel-takeaways .travel-eyebrow { margin:0 0 10px; }
+.travel-takeaways p:last-child { color:#776f61; font-size:20px; }
+.travel-page dialog { width:min(720px,calc(100% - 32px)); max-height:85vh; border:1px solid #aaa892; background:#f7f3e8; color:#25352f; padding:32px; }
+.travel-page dialog::backdrop { background:#1d2923b8; }
+.gallery-header { display:flex; justify-content:space-between; align-items:start; }
+.gallery-header .travel-eyebrow { margin:0 0 8px; }
+.gallery-header h2 { font-size:48px; font-weight:500; margin:0; }
+.close-gallery { border:1px solid #bdc4b6; background:transparent; color:inherit; font-size:28px; width:42px; height:42px; cursor:pointer; }
+.gallery-content { display:grid; gap:18px; font-size:20px; color:#738071; }
+.gallery-content figure { margin:0; }.gallery-content img { width:100%; height:auto; }.gallery-content figcaption { font-size:16px; }
+@media(max-width:700px){.travel-main{padding:96px 16px 60px}.travel-heading{padding-bottom:40px}.atlas{padding:28px 20px}.atlas-top{align-items:start;flex-direction:column}.atlas-instruction{text-align:left}.globe-caption{margin-top:-12px;font-size:9px}.destinations{margin-top:30px}.destination-heading{align-items:start;flex-direction:column;gap:4px}.country-list button{font-size:12px;padding:8px 10px}.travel-takeaways{padding:32px 24px}.travel-heading h1{font-size:clamp(52px,12vw,80px)}}
+
+/* Season field notes */
+#season { cursor:pointer; color:var(--ink); }
+#season:hover, #season:focus-visible { background:var(--ink); color:var(--paper); }
+.season-dialog { width:min(480px,calc(100% - 32px)); max-height:85vh; padding:0; border:1px solid var(--rule); background:var(--paper); color:var(--ink); }
+.season-dialog::backdrop { background:rgba(42,35,36,.55); }
+.season-dialog img { width:100%; height:185px; display:block; object-fit:cover; }
+.season-close { position:absolute; top:12px; right:12px; width:40px; height:40px; border:1px solid var(--ink); background:var(--paper); font-size:26px; cursor:pointer; }
+.season-dialog-body { padding:24px; }
+.season-dialog-body .mono { color:var(--ink-soft); }
+.season-dialog h2 { font-size:36px; line-height:1; font-weight:500; margin:12px 0; }
+.season-fact { font-size:20px; line-height:1.4; }
+.season-sources { font-size:14px; line-height:1.6; }
+.season-sources a { color:var(--ink-soft); }
+@media(max-width:760px) { #season { display:block; left:16px; bottom:16px; } }

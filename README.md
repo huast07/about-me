@@ -29,3 +29,18 @@ is unavailable when opening HTML files directly from disk.
 Browser regression check (requires Playwright and its Chromium browser):
 `node tests/music-navigation.cjs`. Set `PORTFOLIO_URL` to test a different local
 server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing installations.
+
+## Travels and season notes
+
+The travel atlas uses D3 7.9.0 and topojson-client 3.1.0 (ISC licenses),
+and Natural Earth country boundaries through world-atlas 2.0.2 (public domain).
+Routes are illustrative great-circle connections from Toronto, not a record of flights.
+Add country photographs to `js/travel-content.js` as documented there. The travel
+notes box is a placeholder until Sterling supplies the text.
+
+The Travels soundtrack is Handel's *Water Music*, Sarabande, performed by the
+Marine Chamber Orchestra of the United States Marine Band, conducted by Michelle
+Rakers. [Recording and public-domain details](https://commons.wikimedia.org/wiki/File:Handel%27s_Water_Music_-_16._Sarabande_-_Chamber_Orchestra_-_United_States_Marine_Band.opus).
+The playback loop crossfades the recording. The cherry photograph is by
+[Sciencia58, CC0](https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg).
+Season panels link to their scientific and literary sources.

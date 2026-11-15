@@ -27,10 +27,10 @@ const assert = require('node:assert/strict');
   for (const name of ['research', 'industry', 'military', 'volunteering', 'travels', 'readings']) {
     await page.locator(`a.path[href="${name}.html"]`).evaluate(link => link.click());
     await page.waitForURL(`**/${name}.html`);
-    assert.ok((await page.locator('h1').textContent()).toLowerCase().startsWith(name));
+    assert.ok((await page.locator('h1').textContent()).toLowerCase().startsWith(name === 'travels' ? 'places' : name));
     assert.equal(await page.evaluate(() => window.visitToken), token);
-    assert.equal(await page.locator('#musicBtn').getAttribute('aria-pressed'), 'true');
-    await page.locator('a.back').click();
+    await page.waitForFunction(() => document.querySelector('#musicBtn').getAttribute('aria-pressed') === 'true');
+    await page.locator('a.back, a.travel-back').click();
     await page.waitForURL('**/index.html');
     assert.equal(await page.locator('#tree').count(), 1);
   }
@@ -51,7 +51,7 @@ const assert = require('node:assert/strict');
   await page.locator('#musicBtn').click();
   await page.waitForFunction(() => document.querySelector('#musicBtn').getAttribute('aria-pressed') === 'true');
   const directToken = await page.evaluate(() => window.visitToken);
-  await page.locator('a.back').click();
+  await page.locator('a.back, a.travel-back').click();
   await page.waitForSelector('#world .hero');
   assert.equal(await page.evaluate(() => window.visitToken), directToken);
   assert.equal(await page.locator('#musicBtn').getAttribute('aria-pressed'), 'true');

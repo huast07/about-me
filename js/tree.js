@@ -260,13 +260,37 @@
 
   /* ---------- seasons ---------- */
   let season = "spring", prevSeason = "spring", seasonChangedAt = -Infinity;
+  const seasonNotes = {
+    spring: { title: "Spring · the buds awaken", text: "After winter chilling releases dormancy, warmth drives cherry flower buds toward opening. Bud scales part, florets emerge, and the blossoms eventually unfold; temperature influences how quickly the sequence proceeds.", source: "https://www.nps.gov/subjects/cherryblossom/bloom-watch.htm", sourceLabel: "National Park Service · bloom stages" },
+    summer: { title: "Summer · next spring begins", text: "The petals are gone, but the next flowering season is already being prepared. In sweet cherry, buds begin differentiating into floral or vegetative forms by late summer; leaves meanwhile capture light to fuel growth.", source: "https://zaguan.unizar.es/record/96024/files/texto_completo.pdf", sourceLabel: "Herrero et al. · cherry bud development" },
+    autumn: { title: "Autumn · a change in chemistry", text: "As leaves senesce, chlorophyll breaks down and other pigments become visible. Yellow carotenoids and red anthocyanins can contribute to autumn colour, although the mix varies among trees and conditions.", source: "https://www.fs.usda.gov/nrs/pubs/jrnl/2009/nrs_2009_archetti_001.pdf", sourceLabel: "Forest Service · autumn colour research" },
+    winter: { title: "Winter · a measured rest", text: "Cherry buds are alive in winter, even when growth is not visible. Yoshino cherry buds need sufficient exposure to cool temperatures to release endodormancy; subsequent warmth helps them resume development.", source: "https://www.kyushu-u.ac.jp/en/researches/view/301/", sourceLabel: "Kyushu University · Yoshino bud dormancy" },
+    bloom: { title: "Full bloom · beauty in passing", text: "In Japanese poetry and art, sakura can evoke the fleeting character of beauty and life: their brief flowering makes the moment of viewing poignant. Hanami, the practice of gathering to view blossoms, brings that literary image into shared seasonal experience.", source: "https://usna.usda.gov/assets/images/as_pdf_image/2021_R2_V1_CherryBooklet_web.pdf", sourceLabel: "U.S. National Arboretum · flowering cherries and hanami" }
+  };
+  const seasonDialog = document.createElement("dialog");
+  seasonDialog.className = "season-dialog";
+  seasonDialog.setAttribute("aria-labelledby", "season-dialog-title");
+  seasonDialog.innerHTML = `<button type="button" class="season-close" aria-label="Close season notes">×</button>
+    <img src="assets/art/cherry-blossoms.jpg" alt="Pink Japanese cherry blossoms on a branch" loading="lazy">
+    <div class="season-dialog-body"><p class="mono">A closer look at the cherry tree</p><h2 id="season-dialog-title"></h2><p class="season-fact"></p>
+    <p class="season-sources"><a class="season-source" target="_blank" rel="noopener"></a><br><a href="https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg" target="_blank" rel="noopener">Photo: Sciencia58 · CC0</a></p></div>`;
+  document.getElementById("page").appendChild(seasonDialog);
+  seasonDialog.querySelector(".season-close").addEventListener("click", () => seasonDialog.close());
   const seasonLabel = document.getElementById("season");
+  seasonLabel.addEventListener("click", () => {
+    const note = seasonNotes[season];
+    seasonDialog.querySelector("h2").textContent = note.title;
+    seasonDialog.querySelector(".season-fact").textContent = note.text;
+    const source = seasonDialog.querySelector(".season-source"); source.href = note.source; source.textContent = note.sourceLabel;
+    seasonDialog.showModal();
+  });
   function setSeason(next) {
     if (next === season) return;
     prevSeason = season; season = next; seasonChangedAt = performance.now();
     const root = document.documentElement.style, se = SEASONS[next];
     root.setProperty("--sky-top", se.sky[0]); root.setProperty("--sky-bot", se.sky[1]);
-    seasonLabel.textContent = se.label;
+    seasonLabel.textContent = se.label + "  ↗";
+    seasonLabel.setAttribute("aria-label", `Explore ${se.label} cherry tree notes`);
   }
   const seasonFade = () => reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
   function foliagePass() {
@@ -346,7 +370,8 @@
 
 
   addEventListener("resize", resize);
-  seasonLabel.textContent = SEASONS[season].label;
+  seasonLabel.textContent = SEASONS[season].label + "  ↗";
+  seasonLabel.setAttribute("aria-label", `Explore ${SEASONS[season].label} cherry tree notes`);
   resize();
   document.fonts?.ready.then(resize); // web fonts change the finale's height
   requestAnimationFrame(loop);
