@@ -11,15 +11,15 @@ const SITE = {
 
   highlights: [
     { age: null, heading: "Roots in Toronto", tag: "Toronto", text: "Sterling was born in Toronto and grew up in North York." },
-    { age: 11, tag: "Leadership", text: "Sterling received the Principal's Award for Student Leadership in his graduating class." },
-    { age: 12, tag: "UTS", text: "Sterling enrolled in the University of Toronto Schools in downtown Toronto." },
-    { age: 15, tag: "Science Olympiad", text: "Sterling participated in the Junior Science Olympiad and became an alternate member of Team Canada." },
-    { age: 16, tag: "Chemistry", text: "Sterling won a bronze medal at the Canadian Chemistry Olympiad and qualified for the National Training Camp. Around the same time, he began auditing university lectures at the University of Toronto." },
-    { age: 17, tag: "Service", text: "Sterling joined the Canadian Armed Forces as a naval reservist, committing to serve Canada before self. He completed Basic Military Qualification in the summer of 2025." },
-    { age: 17, tag: "MILSET", text: "That same year, Sterling was selected to represent Team Canada at the MILSET International Science Expo and was interviewed by CBC after receiving the Best Delegation Award." },
-    { age: 18, tag: "ISEF", text: "Sterling was shortlisted to represent Team Canada at the Regeneron International Science and Engineering Fair." },
-    { age: 18, tag: "World Series", text: "Later that year, Sterling was selected to represent the Canadian Armed Forces by carrying the Canadian flag at Game 7 of the 2025 World Series." },
-    { age: 19, tag: "BikeTO & Research", text: "Sterling published BikeTO to the App Store and received a Mitacs Globalink Research Award for a research exchange in Bangkok, Thailand." }
+    { age: 11, tag: "Leadership", text: "At age 11, Sterling was awarded the Principal's Award for Student Leadership in his graduating class." },
+    { age: 12, tag: "UTS", text: "At age 12, Sterling enrolled in the University of Toronto Schools in Downtown Toronto." },
+    { age: 15, tag: "Science Olympiad", text: "At age 15, Sterling particated in the Junior Science Olympiad and become an Alternate Member for Team Canada." },
+    { age: 16, tag: "Chemistry", text: "At age 16, Sterling won a bronze medal at the Canadian Chemistry Olympiad and qualified for the National Training Camp. It was around the same time that Sterling first began auditing university lectures at the University of Toronto." },
+    { age: 17, tag: "Service", text: "At age 17, Sterling joined the Canadian Armed Forces as a naval reservist, committing to serve Canada before self. Sterling would complete Basic Military Qualification in the summer of 2025." },
+    { age: 17, tag: "MILSET", text: "In the same year, Sterling was selected to represent Team Canada at the MILSET International Science Expo and was interviewed by CBC after receving the Best Delegation Award." },
+    { age: 18, tag: "ISEF", text: "At age 18, Sterling was selected as a shortlist candidate to represent Team Canada for the Regeneron International Science and Engineering Fair." },
+    { age: 18, tag: "World Series", text: "Later in the year, Sterling was selected to represent the Canadian Armed Forces in carrying the Canadian Flag at Game 7 of the 2025 World Series." },
+    { age: 19, tag: "BikeTO & Research", text: "At age 19, Sterling published BikeTO to the App Store and was awarded a MITACS Globalink Research Award for a research exchange in Bangkok, Thailand." }
   ],
 
   motto: {
