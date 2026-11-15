@@ -213,3 +213,28 @@ canvas#fx { z-index: 3; }
 .season-sources { font-size:14px; line-height:1.6; }
 .season-sources a { color:var(--ink-soft); }
 @media(max-width:760px) { #season { display:block; left:16px; bottom:16px; } }
+
+/* Volunteering: an illustrated, cubist-inspired gallery. */
+.volunteer-page { background:#ddd2bf; color:#26312c; }
+.volunteer-page::before { content:""; position:fixed; inset:0; background:linear-gradient(rgba(241,233,217,.62),rgba(241,233,217,.79)), url("assets/art/volunteering-cubist.png") center / cover no-repeat; pointer-events:none; }
+.volunteer-main { position:relative; max-width:1160px; margin:0 auto; padding:112px 32px 70px; }
+.volunteer-heading { max-width:800px; padding:8px 0 58px; }
+.volunteer-back { color:#43554d; text-decoration:none; }
+.volunteer-back:hover { text-decoration:underline; }
+.volunteer-kicker { color:#9d5543; margin:53px 0 14px; }
+.volunteer-kicker span { margin:0 8px; color:#8d9586; }
+.volunteer-heading h1 { margin:0; font-size:clamp(68px,10vw,132px); letter-spacing:-.045em; font-weight:500; line-height:.87; }
+.volunteer-period { color:#aa5740; }
+.volunteer-intro { font-size:24px; line-height:1.35; color:#51645a; margin:24px 0 0; }
+.volunteer-projects { display:grid; gap:20px; }
+.volunteer-card { display:grid; grid-template-columns: 1fr .85fr; min-height:300px; background:#f8f4ea; border:1px solid #374940; box-shadow:8px 8px 0 #3f51432a; }
+.volunteer-copy { padding:32px 36px; display:flex; flex-direction:column; align-items:flex-start; }
+.volunteer-card-top { display:flex; width:100%; justify-content:space-between; gap:16px; color:#a05d49; }
+.volunteer-copy h2 { font-size:clamp(36px,4.4vw,56px); letter-spacing:-.02em; line-height:1; font-weight:500; margin:38px 0 20px; }
+.volunteer-rule { width:44px; height:2px; background:#b7654d; }
+.volunteer-copy p { font-size:20px; color:#7b8276; margin:18px 0 0; }
+.volunteer-photo { margin:12px; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; min-height:240px; text-align:center; background:#e8ddc9; border:1px solid #d3c4ad; color:#8b8878; }
+.volunteer-photo-symbol { font-family:var(--serif); font-size:44px; color:#b18c70; line-height:1; }
+.volunteer-footer { display:flex; justify-content:space-between; gap:12px; color:#5f6b60; margin-top:48px; border-top:1px solid #7e8875; padding-top:18px; }
+.volunteer-footer a { color:inherit; }
+@media(max-width:700px) { .volunteer-main { padding:100px 16px 60px; } .volunteer-heading { padding-bottom:40px; } .volunteer-kicker { margin-top:40px; } .volunteer-heading h1 { font-size:clamp(56px,13vw,88px); } .volunteer-intro { font-size:21px; } .volunteer-card { grid-template-columns:1fr; } .volunteer-copy { padding:26px 24px; } .volunteer-copy h2 { margin:28px 0 17px; } .volunteer-photo { min-height:185px; margin:0 10px 10px; } .volunteer-footer { font-size:9px; } }
