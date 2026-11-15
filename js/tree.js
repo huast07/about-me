@@ -72,9 +72,17 @@
     const el = t.content.firstChild; el.dataset.wy = wy; world.appendChild(el); return el; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const pad2 = n => String(n).padStart(2, "0");
+  const highlightText = ({ text, emphasis = [] }) => {
+    let html = esc(text);
+    for (const phrase of emphasis) {
+      const safe = esc(phrase);
+      html = html.replace(safe, () => `<strong>${safe}</strong>`);
+    }
+    return html;
+  };
 
   place(`<section class="hero" aria-label="Introduction">
-      <div class="mono">A life, grown one ring at a time</div>
+      <div class="mono">${esc(SITE.education)}</div>
       <h1>${esc(SITE.name.split(" ")[0])}<br><em>${esc(SITE.name.split(" ").slice(1).join(" "))}</em></h1>
       <p>Every branch on this tree is a moment that shaped me. Scroll, and watch it grow through the seasons.</p>
       <span class="hand"><span class="arrow" aria-hidden="true">&darr;</span> scroll to grow</span>
@@ -85,7 +93,7 @@
     m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
         <div class="mono kicker"><span>${pad2(m.i + 1)} / ${pad2(marks.length)}</span><span>${esc(m.tag)} - ${SEASONS[m.season].label}</span></div>
         <h2 class="age" id="mt-${m.i}">${heading}</h2>
-        <p>${esc(m.text)}</p>
+        <p>${highlightText(m)}</p>
       </article>`, m.wy + 60);
   });
 
