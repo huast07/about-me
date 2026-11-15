@@ -261,27 +261,63 @@
   /* ---------- seasons ---------- */
   let season = "spring", prevSeason = "spring", seasonChangedAt = -Infinity;
   const seasonNotes = {
-    spring: { title: "Spring · the buds awaken", text: "After winter chilling releases dormancy, warmth drives cherry flower buds toward opening. Bud scales part, florets emerge, and the blossoms eventually unfold; temperature influences how quickly the sequence proceeds.", source: "https://www.nps.gov/subjects/cherryblossom/bloom-watch.htm", sourceLabel: "National Park Service · bloom stages" },
-    summer: { title: "Summer · next spring begins", text: "The petals are gone, but the next flowering season is already being prepared. In sweet cherry, buds begin differentiating into floral or vegetative forms by late summer; leaves meanwhile capture light to fuel growth.", source: "https://zaguan.unizar.es/record/96024/files/texto_completo.pdf", sourceLabel: "Herrero et al. · cherry bud development" },
-    autumn: { title: "Autumn · a change in chemistry", text: "As leaves senesce, chlorophyll breaks down and other pigments become visible. Yellow carotenoids and red anthocyanins can contribute to autumn colour, although the mix varies among trees and conditions.", source: "https://www.fs.usda.gov/nrs/pubs/jrnl/2009/nrs_2009_archetti_001.pdf", sourceLabel: "Forest Service · autumn colour research" },
-    winter: { title: "Winter · a measured rest", text: "Cherry buds are alive in winter, even when growth is not visible. Yoshino cherry buds need sufficient exposure to cool temperatures to release endodormancy; subsequent warmth helps them resume development.", source: "https://www.kyushu-u.ac.jp/en/researches/view/301/", sourceLabel: "Kyushu University · Yoshino bud dormancy" },
-    bloom: { title: "Full bloom · beauty in passing", text: "In Japanese poetry and art, sakura can evoke the fleeting character of beauty and life: their brief flowering makes the moment of viewing poignant. Hanami, the practice of gathering to view blossoms, brings that literary image into shared seasonal experience.", source: "https://usna.usda.gov/assets/images/as_pdf_image/2021_R2_V1_CherryBooklet_web.pdf", sourceLabel: "U.S. National Arboretum · flowering cherries and hanami" }
+    spring: {
+      title: "Spring · the buds awaken", image: "assets/art/cherry-blossoms.jpg", alt: "Pink Japanese cherry blossoms in spring", photoUrl: "https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg", photoCredit: "Sciencia58 · CC0",
+      paragraphs: [
+        "‘Cherry blossom’ describes the flowers of several cherry species and hybrids in the genus Prunus; it is not one species. The Japanese cherry pictured here is Prunus serrulata. The familiar Yoshino cherry is the hybrid Prunus × yedoensis, also called Cerasus × yedoensis in some classifications.",
+        "After winter chilling releases bud dormancy, accumulated warmth drives development. Protective bud scales part, individual florets emerge, and petals expand. Each blossom contains reproductive organs: stamens produce pollen, while the pistil contains the ovary. In Washington, DC, ‘peak bloom’ is defined as 70% of Yoshino blossoms open—not the instant every tree reaches maximum flowering."
+      ], sources: [["National Park Service · bloom stages", "https://www.nps.gov/subjects/cherryblossom/bloom-watch.htm"], ["National Arboretum · flowering cherries", "https://usna.usda.gov/assets/images/as_pdf_image/2025_Beyond_the_Tidal_Basin_web_booklet.pdf"]]
+    },
+    summer: {
+      title: "Summer · preparing next spring", image: "assets/art/cherry-summer.jpg", alt: "Green leaf of a Japanese cherry tree in summer", photoUrl: "https://commons.wikimedia.org/wiki/File:PrunusSerrulataLeaf.jpg", photoCredit: "Chhe · public domain",
+      paragraphs: [
+        "Leaves become the tree’s solar collectors. Chlorophyll in their chloroplasts absorbs light energy for photosynthesis; carbon dioxide and water become sugars that support growth and storage. Water vapour exits through stomata, helping draw water and dissolved minerals upward from the roots.",
+        "Next spring’s display begins long before winter. In sweet cherry, buds begin differentiating into floral or vegetative forms by late summer. These observations concern Prunus avium; the timing and details can vary among ornamental cherry species and cultivars."
+      ], sources: [["Herrero et al. · sweet cherry bud development", "https://zaguan.unizar.es/record/96024/files/texto_completo.pdf"], ["Kyushu University · Yoshino bud activity", "https://www.kyushu-u.ac.jp/en/researches/view/301/"]]
+    },
+    autumn: {
+      title: "Autumn · a change in chemistry", image: "assets/art/cherry-autumn.jpg", alt: "Orange and red ornamental cherry leaves in autumn", photoUrl: "https://commons.wikimedia.org/wiki/File:Herbstlaub_der_Zierkirsche.JPG", photoCredit: "Lesekreis · CC0",
+      paragraphs: [
+        "As days shorten and temperatures cool, deciduous cherry leaves enter senescence. The tree dismantles chlorophyll and recovers some nutrients before the leaves fall. Yellow carotenoids become more visible as green fades; red anthocyanins can also contribute, depending on the tree and conditions.",
+        "At the base of each leaf, an abscission zone separates the leaf from the twig. The branch remains alive, with protected buds already in place for a future growing season."
+      ], sources: [["US Forest Service · autumn leaf pigments", "https://www.fs.usda.gov/nrs/pubs/jrnl/2009/nrs_2009_archetti_001.pdf"], ["US Forest Service · leaf senescence and abscission", "https://research.fs.usda.gov/treesearch/15618"]]
+    },
+    winter: {
+      title: "Winter · a measured rest", image: "assets/art/cherry-winter.jpg", alt: "A young Yoshino cherry tree after a winter snowfall", photoUrl: "https://commons.wikimedia.org/wiki/File:2026-01-19_07_49_22_A_Yoshino_Cherry_sapling_on_the_morning_following_a_moderate_snowfall_along_Aquetong_Lane_in_the_Mountainview_section_of_Ewing_Township,_Mercer_County,_New_Jersey.jpg", photoCredit: "Famartin · CC BY-SA 4.0",
+      paragraphs: [
+        "A bare tree is not an inactive tree. Yoshino cherry buds pass through endodormancy: an internal state in which they cannot resume normal growth until they have experienced sufficient chilling. Bud scales protect the developing tissues through the cold months.",
+        "Once the chilling requirement is met, cold external conditions may still restrain growth—often called ecodormancy. Later warmth promotes budbreak. Chilling needs and the timing of flowering differ among cherries and their cultivars."
+      ], sources: [["Kyushu University · Yoshino bud dormancy", "https://www.kyushu-u.ac.jp/en/researches/view/301/"], ["Cherry bud dormancy research", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11094712/"]]
+    },
+    bloom: {
+      title: "Full bloom · blossoms in words", image: "assets/art/cherry-blossoms.jpg", alt: "Pink Japanese cherry blossoms in full bloom", photoUrl: "https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg", photoCredit: "Sciencia58 · CC0",
+      paragraphs: [
+        "Japan: In poetry and art, sakura can evoke the beauty and impermanence of a moment. Hanami makes that attention to fleeting blossoms a shared seasonal experience. In Chinese literary traditions, cherry flowers also appear in poems, though they did not always occupy the same prominent place as in Japan. In Washington, DC, Japanese cherry trees carry another meaning: the 1912 gift became a symbol of friendship between Japan and the United States.",
+        "The Japanese verse: ‘世の中は　三日見ぬ間の　桜かな’ is a familiar variant associated with Ōshima Ryōta. In just three days away, the world seems transformed by cherry blossoms: the image invites us to notice how quickly the world changes. The original is often printed with に rather than the の displayed here.",
+        "The Chinese poem: In Li Shangyin’s ‘Under the Cherry Blossoms’ (櫻桃花下), orioles and butterflies seem to mock the speaker, who cannot catch the flowers at their best. On one visit the blossoms have not opened; on another they have already fallen. One reading is a lament for beautiful moments—and opportunities—that are difficult to meet at just the right time."
+      ], sources: [["National Arboretum · sakura and hanami", "https://usna.usda.gov/assets/images/as_pdf_image/2021_R2_V1_CherryBooklet_web.pdf"], ["Waseda University · Chinese and Japanese literary traditions", "https://www.waseda.jp/culture/news-en/2024/03/04/24416/"], ["National Park Service · friendship", "https://www.nps.gov/articles/000/cherry-trees-on-the-national-mall.htm"], ["Sophia University · Ryōta’s verse and its variant", "https://sophia.repo.nii.ac.jp/record/2024651/files/200000010063_000259380_83.pdf"], ["Li Shangyin · historical text and commentary", "https://upload.wikimedia.org/wikipedia/commons/3/34/NLC892-411999029045-157145_%E6%9D%8E%E7%BE%A9%E5%B1%B1%E8%A9%A9%E9%9B%86%E7%AE%8B%E6%B3%A8_%E7%AC%AC2%E5%86%8A.pdf"]]
+    }
   };
   const seasonDialog = document.createElement("dialog");
   seasonDialog.className = "season-dialog";
   seasonDialog.setAttribute("aria-labelledby", "season-dialog-title");
   seasonDialog.innerHTML = `<button type="button" class="season-close" aria-label="Close season notes">×</button>
-    <img src="assets/art/cherry-blossoms.jpg" alt="Pink Japanese cherry blossoms on a branch" loading="lazy">
-    <div class="season-dialog-body"><p class="mono">A closer look at the cherry tree</p><h2 id="season-dialog-title"></h2><p class="season-fact"></p>
-    <p class="season-sources"><a class="season-source" target="_blank" rel="noopener"></a><br><a href="https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg" target="_blank" rel="noopener">Photo: Sciencia58 · CC0</a></p></div>`;
+    <img alt="" loading="lazy">
+    <div class="season-dialog-body"><p class="mono">A closer look at the cherry tree</p><h2 id="season-dialog-title"></h2><div class="season-facts"></div>
+    <div class="season-sources"></div></div>`;
   document.getElementById("page").appendChild(seasonDialog);
   seasonDialog.querySelector(".season-close").addEventListener("click", () => seasonDialog.close());
   const seasonLabel = document.getElementById("season");
   seasonLabel.addEventListener("click", () => {
-    const note = seasonNotes[season];
+    const note = seasonNotes[season], img = seasonDialog.querySelector("img");
+    img.src = note.image; img.alt = note.alt;
     seasonDialog.querySelector("h2").textContent = note.title;
-    seasonDialog.querySelector(".season-fact").textContent = note.text;
-    const source = seasonDialog.querySelector(".season-source"); source.href = note.source; source.textContent = note.sourceLabel;
+    const facts = seasonDialog.querySelector(".season-facts"); facts.replaceChildren();
+    note.paragraphs.forEach(text => { const p = document.createElement("p"); p.className = "season-fact"; p.textContent = text; facts.append(p); });
+    const sources = seasonDialog.querySelector(".season-sources"); sources.replaceChildren();
+    [...note.sources, [`Photo: ${note.photoCredit}`, note.photoUrl]].forEach(([label, href]) => {
+      const link = document.createElement("a"); link.href = href; link.textContent = label; link.target = "_blank"; link.rel = "noopener"; sources.append(link);
+    });
     seasonDialog.showModal();
   });
   function setSeason(next) {
@@ -289,7 +325,7 @@
     prevSeason = season; season = next; seasonChangedAt = performance.now();
     const root = document.documentElement.style, se = SEASONS[next];
     root.setProperty("--sky-top", se.sky[0]); root.setProperty("--sky-bot", se.sky[1]);
-    seasonLabel.textContent = se.label + "  ↗";
+    seasonLabel.textContent = se.label;
     seasonLabel.setAttribute("aria-label", `Explore ${se.label} cherry tree notes`);
   }
   const seasonFade = () => reduceMotion ? 1 : Math.min(1, (performance.now() - seasonChangedAt) / SEASON_FADE_MS);
@@ -370,7 +406,7 @@
 
 
   addEventListener("resize", resize);
-  seasonLabel.textContent = SEASONS[season].label + "  ↗";
+  seasonLabel.textContent = SEASONS[season].label;
   seasonLabel.setAttribute("aria-label", `Explore ${SEASONS[season].label} cherry tree notes`);
   resize();
   document.fonts?.ready.then(resize); // web fonts change the finale's height

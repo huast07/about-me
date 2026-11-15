@@ -210,7 +210,7 @@ canvas#fx { z-index: 3; }
 .season-dialog-body .mono { color:var(--ink-soft); }
 .season-dialog h2 { font-size:36px; line-height:1; font-weight:500; margin:12px 0; }
 .season-fact { font-size:20px; line-height:1.4; }
-.season-sources { font-size:14px; line-height:1.6; }
+.season-sources { display:flex; flex-direction:column; align-items:flex-start; gap:4px; font-size:14px; line-height:1.5; }
 .season-sources a { color:var(--ink-soft); }
 @media(max-width:760px) { #season { display:block; left:16px; bottom:16px; } }
 
