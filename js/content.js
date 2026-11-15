@@ -28,8 +28,7 @@ const SITE = {
     latin: "Velut Arbor Aevo",
     translation: "As a tree through the ages",
     note: "Crescit occulto velut arbor aevo fama Marcelli.",
-    citation: "Horace, Odes I.12, lines 45–46",
-    source: "https://www.registrar.utoronto.ca/convocation/history-tradition/"
+    citation: "Horace, Odes I.12, lines 45–46"
   },
 
   /* Contact links shown under the finale. An empty value hides that link. */
