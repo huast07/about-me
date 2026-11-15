@@ -84,3 +84,22 @@ Full Bloom artwork: original AI-generated Chinese ink-and-wash scholar scene,
 Prompt: a contemplative scholar beneath flowering cherry branches beside a misty
 stream, traditional literati brushwork on rice paper, restrained mineral washes,
 wide composition with the scholar visible in a shallow crop; no lettering.
+
+## Book covers
+
+Reading-list cover images are served locally from `assets/books/`, sourced from
+[Open Library Covers](https://openlibrary.org/dev/docs/api/covers) by ISBN.
+Cover artwork belongs to the respective publishers and artists. Editions pictured
+identify the books and do not imply a particular edition owned by Sterling.
+
+- Manufacturing Consent: https://covers.openlibrary.org/b/isbn/9780375714498-L.jpg
+- Talking to Strangers: https://covers.openlibrary.org/b/isbn/9780316478526-L.jpg
+- Catch-22: https://covers.openlibrary.org/b/isbn/9781451626650-L.jpg
+- Eichmann in Jerusalem: A Report on the Banality of Evil: https://covers.openlibrary.org/b/isbn/9780143039884-L.jpg
+- Seeing Like a State: https://covers.openlibrary.org/b/isbn/9780300078152-L.jpg
+- From Third World to First: The Singapore Story: https://covers.openlibrary.org/b/isbn/9780060197766-L.jpg
+- History of the World: https://covers.openlibrary.org/b/isbn/9780195210439-L.jpg
+- The Worldly Philosophers: https://covers.openlibrary.org/b/isbn/9780684862149-L.jpg
+- The Story of Philosophy: https://covers.openlibrary.org/b/isbn/9780671739164-L.jpg
+- The Elements of Colour: https://covers.openlibrary.org/b/isbn/9780471289296-L.jpg
+- Steve Jobs: https://covers.openlibrary.org/b/isbn/9781451648539-L.jpg
