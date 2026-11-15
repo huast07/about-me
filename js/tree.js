@@ -264,38 +264,38 @@
     spring: {
       title: "Spring · the buds awaken", image: "assets/art/cherry-spring-buds.jpg", alt: "Cherry blossom buds emerging on a branch in spring", photoUrl: "https://commons.wikimedia.org/wiki/File:Cherry-blossom-buds.jpg", photoCredit: "些細な日常 · CC BY-SA 4.0", photoLicense: "https://creativecommons.org/licenses/by-sa/4.0/",
       paragraphs: [
-        "Sakura encompasses several ornamental cherries in Prunus, including P. serrulata and the hybrid P. × yedoensis (Yoshino cherry). The term does not designate a single species.",
-        "Following dormancy release, thermal accumulation drives budbreak, floret emergence and anthesis. Washington’s peak-bloom benchmark is 70% of Yoshino blossoms open; cultivar and weather affect phenology."
+        "Cherry blossom is not one species. Sakura includes several ornamental cherries in the genus Prunus, such as Prunus serrulata and the hybrid Prunus × yedoensis, the Yoshino cherry.",
+        "Once winter dormancy ends, accumulated warmth helps the buds open. Flowers emerge and unfold—a stage botanists call anthesis. The timing depends on the variety and the weather, so spring never follows quite the same schedule."
       ], sources: [["National Park Service · bloom stages", "https://www.nps.gov/subjects/cherryblossom/bloom-watch.htm"], ["National Arboretum · flowering cherries", "https://usna.usda.gov/assets/images/as_pdf_image/2025_Beyond_the_Tidal_Basin_web_booklet.pdf"]]
     },
     summer: {
       title: "Summer · preparing next spring", image: "assets/art/cherry-summer-canopy.jpg", alt: "Kanzan cherry leaves in midsummer", photoUrl: "https://commons.wikimedia.org/wiki/File:2020-07-20_11_20_58_Leaves_in_mid-summer_on_a_Kanzan_Cherry_along_Tranquility_Court_in_the_Franklin_Farm_section_of_Oak_Hill,_Fairfax_County,_Virginia.jpg", photoCredit: "Famartin · CC BY-SA 4.0", photoLicense: "https://creativecommons.org/licenses/by-sa/4.0/",
       paragraphs: [
-        "Mature leaves support carbon fixation and transpiration. Assimilated carbon supplies growing tissues and reserves; stomata regulate CO₂ uptake and water loss.",
-        "In sweet cherry (P. avium), floral initiation and organ differentiation occur during summer, preceding winter dormancy. Phenology varies among species and cultivars."
+        "After the petals fall, the leaves take over. Photosynthesis supplies sugars for new growth and stored reserves, while tiny pores called stomata balance carbon dioxide uptake against water loss.",
+        "Next year’s flowers begin well before next spring. In sweet cherry (Prunus avium), flower buds begin forming and developing their organs during summer. The exact schedule differs among cherry species and varieties."
       ], sources: [["Sweet cherry · floral induction and differentiation", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7067470/"], ["Kyushu University · Yoshino bud activity", "https://www.kyushu-u.ac.jp/en/researches/view/301/"]]
     },
     autumn: {
       title: "Autumn · a change in chemistry", image: "assets/art/cherry-autumn.jpg", alt: "Orange and red ornamental cherry leaves in autumn", photoUrl: "https://commons.wikimedia.org/wiki/File:Herbstlaub_der_Zierkirsche.JPG", photoCredit: "Lesekreis · CC0",
       paragraphs: [
-        "Senescence involves chlorophyll degradation and nutrient remobilization. Carotenoids become visible as chlorophyll declines; anthocyanins can contribute red pigmentation.",
-        "An abscission zone forms at the petiole base, enabling leaf separation; overwintering buds remain on the shoot."
+        "Autumn colour reveals a change in leaf chemistry. As green chlorophyll breaks down, yellow carotenoids become easier to see; anthocyanins can add red. The tree also recovers nutrients from ageing leaves before shedding them.",
+        "Leaves detach at a specialised layer near the base of each stalk, called the abscission zone. The branches look bare, but buds remain in place through winter."
       ], sources: [["US Forest Service · autumn leaf pigments", "https://www.fs.usda.gov/nrs/pubs/jrnl/2009/nrs_2009_archetti_001.pdf"], ["US Forest Service · leaf senescence and abscission", "https://research.fs.usda.gov/treesearch/15618"]]
     },
     winter: {
       title: "Winter · a measured rest", image: "assets/art/cherry-winter-capitol.jpg", alt: "Leafless Japanese cherry trees on the Capitol grounds in winter", photoUrl: "https://commons.wikimedia.org/wiki/File:Japanese_Cherry_Trees_on_Capitol_Grounds_in_Winter_(16633259844).jpg", photoCredit: "Architect of the Capitol · public domain",
       paragraphs: [
-        "Yoshino cherry buds undergo endodormancy, an internally maintained growth arrest released by sufficient chilling. Seasonal shifts in gene expression track this transition.",
-        "After endodormancy release, low ambient temperatures can continue to constrain growth (ecodormancy). Subsequent warmth promotes budbreak; chilling requirements vary by cultivar."
+        "A bare cherry tree is still alive and preparing for spring. Yoshino buds first enter endodormancy: an internal pause in growth that needs enough winter chilling to end.",
+        "Even after that requirement is met, cold weather can keep the buds closed. This second pause is called ecodormancy. Growth resumes as warmth builds, with different varieties needing different amounts of cold and warmth."
       ], sources: [["Kyushu University · Yoshino bud dormancy", "https://www.kyushu-u.ac.jp/en/researches/view/301/"], ["Cherry bud dormancy research", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11094712/"]]
     },
     bloom: {
       title: "Full bloom · blossoms in words", image: "assets/art/cherry-blossoms.jpg", alt: "Pink Japanese cherry blossoms in full bloom", photoUrl: "https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg", photoCredit: "Sciencia58 · CC0",
       paragraphs: [
-        "In Japanese poetics, sakura can figure transience and the affective response to impermanence. Chinese verse also treats cherry flowers, though their literary prominence differs across traditions. In Washington, the 1912 gift of Japanese trees acquired a distinct diplomatic meaning: international friendship.",
-        "Ōshima Ryōta’s haiku juxtaposes three days’ absence with a world transformed by blossom, making seasonal change an image of worldly mutability. The displayed の is a widely circulated variant; the verse is also attested with に.",
-        "In Li Shangyin’s ‘Under the Cherry Blossoms’ (櫻桃花下), the speaker arrives before opening or after decline. The disjunction between the observer’s timing and the flowers’ brief season can be read as an allegory of missed opportunity."
-      ], sources: [["National Arboretum · sakura and hanami", "https://usna.usda.gov/assets/images/as_pdf_image/2021_R2_V1_CherryBooklet_web.pdf"], ["Waseda University · Chinese and Japanese literary traditions", "https://www.waseda.jp/culture/news-en/2024/03/04/24416/"], ["National Park Service · friendship", "https://www.nps.gov/articles/000/cherry-trees-on-the-national-mall.htm"], ["Sophia University · Ryōta’s verse and its variant", "https://sophia.repo.nii.ac.jp/record/2024651/files/200000010063_000259380_83.pdf"], ["Li Shangyin · historical text and commentary", "https://upload.wikimedia.org/wikipedia/commons/3/34/NLC892-411999029045-157145_%E6%9D%8E%E7%BE%A9%E5%B1%B1%E8%A9%A9%E9%9B%86%E7%AE%8B%E6%B3%A8_%E7%AC%AC2%E5%86%8A.pdf"]]
+        "In Chinese poetry, cherry blossoms can give fleeting beauty a personal meaning. In Li Shangyin’s ‘Under the Cherry Blossoms’ (櫻桃花下), shown in the background, the speaker arrives too early or too late to see the flowers at their best. The missed bloom suggests the ache of an opportunity that never quite meets us at the right time.",
+        "In Japanese literature, sakura often draws attention to impermanence: the flowers are moving partly because they do not last. This is close to mono no aware, a sensitivity to the passing of things.",
+        "The other background poem, Ōshima Ryōta’s haiku, finds the world transformed by blossoms after just three days away. A small absence makes change suddenly visible. Where Li Shangyin dwells on missing the moment, Ryōta catches the surprise of returning to it."
+      ], sources: [["National Arboretum · sakura and hanami", "https://usna.usda.gov/assets/images/as_pdf_image/2021_R2_V1_CherryBooklet_web.pdf"], ["Waseda University · Chinese and Japanese literary traditions", "https://www.waseda.jp/culture/news-en/2024/03/04/24416/"], ["Sophia University · Ryōta’s verse and its variant", "https://sophia.repo.nii.ac.jp/record/2024651/files/200000010063_000259380_83.pdf"], ["Li Shangyin · historical text and commentary", "https://upload.wikimedia.org/wikipedia/commons/3/34/NLC892-411999029045-157145_%E6%9D%8E%E7%BE%A9%E5%B1%B1%E8%A9%A9%E9%9B%86%E7%AE%8B%E6%B3%A8_%E7%AC%AC2%E5%86%8A.pdf"]]
     }
   };
   const seasonDialog = document.createElement("dialog");

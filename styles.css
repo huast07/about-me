@@ -267,9 +267,27 @@ canvas#fx { z-index: 3; }
 .close-gallery { border-color:var(--rule); }
 
 /* Let each subpage's artwork remain visible behind the content. */
-.travel-page::before { background:linear-gradient(rgba(251,241,240,.74),rgba(241,230,228,.78)), url("assets/art/travel-surrealism.png") center / cover no-repeat; }
+.travel-page::before { background:linear-gradient(rgba(251,241,240,.74),rgba(241,230,228,.78)), url("assets/art/travel-romanticism.jpg") center / cover no-repeat; }
 .atlas, .travel-takeaways { background:transparent; border:0; box-shadow:none; padding-left:0; padding-right:0; }
 .volunteer-page::before { background:linear-gradient(rgba(241,233,217,.83),rgba(241,233,217,.87)), url("assets/art/volunteering-cubist.png") center / cover no-repeat; }
 .volunteer-card { background:transparent; border:0; border-top:1px solid #718078; box-shadow:none; }
 .volunteer-photo { background:transparent; border:1px solid #a79d8c; }
 .volunteer-copy p, .volunteer-photo { color:#505f54; }
+
+/* Body classes keep artwork consistent on direct visits and internal navigation. */
+.art-page { isolation:isolate; background:var(--sky-bot); padding:112px 24px 64px; }
+.art-page::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background-image:linear-gradient(90deg,rgba(251,245,234,.66),rgba(251,245,234,.82) 42%,rgba(251,245,234,.66)),var(--page-art);
+  background-position:center; background-size:cover; background-repeat:no-repeat; }
+.art-page #page { position:relative; }
+.military-page { --page-art:url("assets/art/military-remembrance.png"); }
+.industry-page { --page-art:url("assets/art/industry-modernism.jpg"); }
+.research-page { --page-art:url("assets/art/research-impressionism.jpg"); }
+.readings-page { --page-art:url("assets/art/readings-minoan.jpg"); }
+.art-credit { margin-top:48px; max-width:640px; font:12px/1.6 var(--mono); color:var(--ink-soft); }
+.art-credit a { color:inherit; text-underline-offset:3px; }
+.art-credit cite { font-style:italic; }
+@media(max-width:600px) {
+  .art-page { padding:110px 20px 48px; }
+  .art-page::before { background-image:linear-gradient(rgba(251,245,234,.78),rgba(251,245,234,.84)),var(--page-art); }
+}

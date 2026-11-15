@@ -44,3 +44,27 @@ Rakers. [Recording and public-domain details](https://commons.wikimedia.org/wiki
 The playback loop crossfades the recording. The cherry photograph is by
 [Sciencia58, CC0](https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg).
 Season panels link to their scientific and literary sources.
+
+## Subpage artwork
+
+- Travels: Caspar David Friedrich, *Wanderer above the Sea of Fog*, c. 1818.
+  [Public-domain source](https://commons.wikimedia.org/wiki/File:Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg); local file `assets/art/travel-romanticism.jpg`.
+- Industry: Robert Delaunay, *Hommage à Blériot*, 1914.
+  [Public-domain source](https://commons.wikimedia.org/wiki/File:Robert_Delaunay,_Hommage_à_Blériot,_1914.jpg); local file `assets/art/industry-modernism.jpg`.
+- Research: Claude Monet, *Water Lilies*, 1906.
+  [Public-domain source](https://commons.wikimedia.org/wiki/File:Claude_Monet_-_Water_Lilies_-_1933.1157_-_Art_Institute_of_Chicago.jpg); local file `assets/art/research-impressionism.jpg`.
+- Readings and Hobbies: restored Minoan dolphin fresco from Knossos.
+  Photograph by [Armagnac-commons](https://commons.wikimedia.org/wiki/File:Dauphins_de_knossos.jpg),
+  [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); local file `assets/art/readings-minoan.jpg`.
+  Images are fitted to the viewport and displayed beneath a CSS colour wash.
+
+### Military artwork
+
+Original AI-generated surrealist remembrance painting, created with the built-in
+image-generation tool; local file `assets/art/military-remembrance.png`.
+
+Generation prompt: landscape surrealist oil painting about remembrance; red poppies,
+weathered empty stone memorials receding toward a misty sea, shadows becoming ship
+silhouettes, and a floating stone arch framing a pale dawn sky. Reflective mood,
+muted blue-grey and limestone with crimson accents, quiet central space for text;
+no combat, weapons, lettering, or flags. Created with the built-in image tool.
