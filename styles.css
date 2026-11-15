@@ -265,3 +265,11 @@ canvas#fx { z-index: 3; }
 .travel-page dialog { border-color:var(--rule); background:var(--paper); color:var(--ink); }
 .gallery-content { color:var(--ink-soft); }
 .close-gallery { border-color:var(--rule); }
+
+/* Let each subpage's artwork remain visible behind the content. */
+.travel-page::before { background:linear-gradient(rgba(251,241,240,.74),rgba(241,230,228,.78)), url("assets/art/travel-surrealism.png") center / cover no-repeat; }
+.atlas, .travel-takeaways { background:transparent; border:0; box-shadow:none; padding-left:0; padding-right:0; }
+.volunteer-page::before { background:linear-gradient(rgba(241,233,217,.83),rgba(241,233,217,.87)), url("assets/art/volunteering-cubist.png") center / cover no-repeat; }
+.volunteer-card { background:transparent; border:0; border-top:1px solid #718078; box-shadow:none; }
+.volunteer-photo { background:transparent; border:1px solid #a79d8c; }
+.volunteer-copy p, .volunteer-photo { color:#505f54; }
