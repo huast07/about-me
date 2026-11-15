@@ -27,7 +27,7 @@ const assert = require('node:assert/strict');
   for (const name of ['research', 'industry', 'military', 'volunteering', 'travels', 'readings']) {
     await page.locator(`a.path[href="${name}.html"]`).evaluate(link => link.click());
     await page.waitForURL(`**/${name}.html`);
-    assert.ok((await page.locator('h1').textContent()).toLowerCase().startsWith(name === 'travels' ? 'places' : name));
+    assert.ok((await page.locator('h1').textContent()).toLowerCase().startsWith(name));
     assert.equal(await page.evaluate(() => window.visitToken), token);
     await page.waitForFunction(() => document.querySelector('#musicBtn').getAttribute('aria-pressed') === 'true');
     await page.locator('a.back, a.travel-back').click();

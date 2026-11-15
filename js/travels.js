@@ -1,6 +1,6 @@
 (() => {
  const countries = [
- ['Canada',124,-79.38,43.65],['United States',840,-98,39],['Mexico',484,-102,23],['Dominican Republic',214,-70.2,18.8],['Jamaica',388,-77.3,18.1],['France',250,2.4,46.6],['Belgium',56,4.5,50.6],['Netherlands',528,5.3,52.1],['Italy',380,12.5,42.5],['Denmark',208,10,56],['Switzerland',756,8.2,46.8],['Germany',276,10.4,51],['Thailand',764,100.8,15.3],['Malaysia',458,102,4.2],['Singapore',702,103.8,1.35],['Cambodia',116,105,12.6],['Myanmar',104,96,21],['Vietnam',704,107.5,16],['China',156,104,35],['Japan',392,138,37],['Iceland',352,-19,65],['United Kingdom',826,-2.5,54]
+ ['Canada',124,-79.38,43.65],['United States',840,-98,39],['Mexico',484,-102,23],['Dominican Republic',214,-70.2,18.8],['Jamaica',388,-77.3,18.1],['France',250,2.4,46.6],['Belgium',56,4.5,50.6],['Netherlands',528,5.3,52.1],['Italy',380,12.5,42.5],['Denmark',208,10,56],['Switzerland',756,8.2,46.8],['Germany',276,10.4,51],['Thailand',764,100.8,15.3],['Malaysia',458,102,4.2],['Singapore',702,103.8,1.35],['Cambodia',116,105,12.6],['Laos',418,102.6,19.5],['Myanmar',104,96,21],['Vietnam',704,107.5,16],['China',156,104,35],['Japan',392,138,37],['Iceland',352,-19,65],['United Kingdom',826,-2.5,54]
  ];
  const home=[-79.38,43.65];
  const root=document.getElementById('travel-app'); if(!root || root.dataset.ready) return; root.dataset.ready='true';
