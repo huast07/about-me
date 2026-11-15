@@ -38,11 +38,7 @@ Routes are illustrative great-circle connections from Toronto, not a record of f
 Add country photographs to `js/travel-content.js` as documented there. The travel
 notes box is a placeholder until Sterling supplies the text.
 
-The Travels soundtrack is Handel's *Water Music*, Sarabande, performed by the
-Marine Chamber Orchestra of the United States Marine Band, conducted by Michelle
-Rakers. [Recording and public-domain details](https://commons.wikimedia.org/wiki/File:Handel%27s_Water_Music_-_16._Sarabande_-_Chamber_Orchestra_-_United_States_Marine_Band.opus).
-The playback loop crossfades the recording. The cherry photograph is by
-[Sciencia58, CC0](https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg).
+Vivaldi plays across every page, including Travels.
 Scientific and literary source references are retained in `js/tree.js`.
 
 ## Subpage artwork
@@ -79,7 +75,12 @@ arches, ships, dawn light, composition and oil-painting style.
 - Summer photograph: [Famartin · CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:2020-07-20_11_20_58_Leaves_in_mid-summer_on_a_Kanzan_Cherry_along_Tranquility_Court_in_the_Franklin_Farm_section_of_Oak_Hill,_Fairfax_County,_Virginia.jpg).
 - Autumn photograph: [Lesekreis · CC0](https://commons.wikimedia.org/wiki/File:Herbstlaub_der_Zierkirsche.JPG).
 - Winter photograph: [Architect of the Capitol · public domain](https://commons.wikimedia.org/wiki/File:Japanese_Cherry_Trees_on_Capitol_Grounds_in_Winter_(16633259844).jpg).
-- Full bloom photograph: [Sciencia58 · CC0](https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg).
 
 CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/.
 Photographs are displayed cropped to fit the popup.
+
+Full Bloom artwork: original AI-generated Chinese ink-and-wash scholar scene,
+`assets/art/full-bloom-scholar.png`, created with the built-in image tool.
+Prompt: a contemplative scholar beneath flowering cherry branches beside a misty
+stream, traditional literati brushwork on rice paper, restrained mineral washes,
+wide composition with the scholar visible in a shallow crop; no lettering.

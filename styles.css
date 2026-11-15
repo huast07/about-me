@@ -291,3 +291,13 @@ canvas#fx { z-index: 3; }
   .art-page { padding:110px 20px 48px; }
   .art-page::before { background-image:linear-gradient(rgba(251,245,234,.78),rgba(251,245,234,.84)),var(--page-art); }
 }
+
+/* Keep the full-bloom branch grid in view on shorter desktop screens. */
+@media (min-width:761px) and (max-height:800px) {
+  .finale h2 { font-size:84px; }
+  .finale .hand { margin-bottom:12px; }
+  .finale .contact { margin-bottom:14px; }
+  .finale .paths { gap:10px; }
+  .finale .path { padding:12px 16px 14px; }
+  .finale .path strong { font-size:28px; }
+}

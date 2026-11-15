@@ -22,6 +22,7 @@ const assert = require('node:assert/strict');
   await page.waitForFunction(() => document.querySelector('#musicBtn').getAttribute('aria-pressed') === 'true');
   const token = await page.evaluate(() => window.visitToken);
   const time = await page.evaluate(() => testAudio.currentTime);
+  await page.evaluate(() => { window.initialSource = window.testSource; });
   assert.equal(await page.evaluate(() => testSource.loop), true);
   assert.ok(await page.evaluate(() => testSource.buffer.duration > 120));
   for (const name of ['research', 'industry', 'military', 'volunteering', 'travels', 'readings']) {
@@ -30,6 +31,8 @@ const assert = require('node:assert/strict');
     assert.ok((await page.locator('h1').textContent()).toLowerCase().startsWith(name));
     assert.equal(await page.evaluate(() => window.visitToken), token);
     await page.waitForFunction(() => document.querySelector('#musicBtn').getAttribute('aria-pressed') === 'true');
+    assert.equal(await page.evaluate(() => window.testSource === window.initialSource), true);
+    assert.ok((await page.locator('.music-credit').textContent()).includes('Vivaldi'));
     await page.locator('a.back, a.travel-back').click();
     await page.waitForURL('**/index.html');
     assert.equal(await page.locator('#tree').count(), 1);

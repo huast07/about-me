@@ -290,11 +290,10 @@
       ], sources: [["Kyushu University · Yoshino bud dormancy", "https://www.kyushu-u.ac.jp/en/researches/view/301/"], ["Cherry bud dormancy research", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11094712/"]]
     },
     bloom: {
-      title: "Full bloom", image: "assets/art/cherry-blossoms.jpg", alt: "Pink Japanese cherry blossoms in full bloom", photoUrl: "https://commons.wikimedia.org/wiki/File:Blossoms_of_Prunus_serrulata.jpg", photoCredit: "Sciencia58 · CC0",
+      title: "Full bloom", image: "assets/art/full-bloom-scholar.png", alt: "Chinese ink-and-wash painting of a scholar beneath flowering cherry branches beside a stream",
       paragraphs: [
         "In Chinese poetry, cherry blossoms can give fleeting beauty a personal meaning. In Li Shangyin’s ‘Under the Cherry Blossoms’ (櫻桃花下), shown in the background, the speaker arrives too early or too late to see the flowers at their best. The missed bloom suggests the ache of an opportunity that never quite meets us at the right time.",
-        "In Japanese literature, sakura often draws attention to impermanence: the flowers are moving partly because they do not last. This is close to mono no aware, a sensitivity to the passing of things.",
-        "The other background poem, Ōshima Ryōta’s haiku, finds the world transformed by blossoms after just three days away. A small absence makes change suddenly visible. Where Li Shangyin dwells on missing the moment, Ryōta catches the surprise of returning to it."
+        "In Japanese literature, sakura often draws attention to impermanence: the flowers are moving partly because they do not last. This is close to mono no aware, a sensitivity to the passing of things."
       ], sources: [["National Arboretum · sakura and hanami", "https://usna.usda.gov/assets/images/as_pdf_image/2021_R2_V1_CherryBooklet_web.pdf"], ["Waseda University · Chinese and Japanese literary traditions", "https://www.waseda.jp/culture/news-en/2024/03/04/24416/"], ["Sophia University · Ryōta’s verse and its variant", "https://sophia.repo.nii.ac.jp/record/2024651/files/200000010063_000259380_83.pdf"], ["Li Shangyin · historical text and commentary", "https://upload.wikimedia.org/wikipedia/commons/3/34/NLC892-411999029045-157145_%E6%9D%8E%E7%BE%A9%E5%B1%B1%E8%A9%A9%E9%9B%86%E7%AE%8B%E6%B3%A8_%E7%AC%AC2%E5%86%8A.pdf"]]
     }
   };
