@@ -16,17 +16,14 @@
         <button class="volunteer-carousel-arrow volunteer-carousel-previous" type="button" aria-label="Previous photo">←</button>
         <button class="volunteer-carousel-arrow volunteer-carousel-next" type="button" aria-label="Next photo">→</button>
       </div>
-      <div class="volunteer-carousel-meta"><p class="volunteer-carousel-caption"></p>
-        <span class="volunteer-carousel-count mono" aria-live="polite"></span></div>`;
+      <div class="volunteer-carousel-meta"><span class="volunteer-carousel-count mono" aria-live="polite"></span></div>`;
     gallery.replaceChildren(carousel);
     const image = carousel.querySelector('img');
-    const caption = carousel.querySelector('.volunteer-carousel-caption');
     const count = carousel.querySelector('.volunteer-carousel-count');
     function show(next) {
       index = (next + photos.length) % photos.length;
       const photo = photos[index];
       image.alt = photo.dataset.caption;
-      caption.textContent = photo.dataset.caption;
       count.textContent = `${index + 1} / ${photos.length}`;
       const nextImage = new Image();
       nextImage.src = photo.href;

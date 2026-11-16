@@ -350,12 +350,10 @@ canvas#fx { z-index: 3; }
 .volunteer-carousel-arrow:hover, .volunteer-carousel-arrow:focus-visible { background:var(--ink); color:var(--paper); }
 .volunteer-carousel-previous { left:12px; }
 .volunteer-carousel-next { right:12px; }
-.volunteer-carousel-meta { display:flex; justify-content:space-between; gap:18px; align-items:start; padding:14px 0; border-bottom:1px solid #718078; }
-.volunteer-carousel-caption { margin:0; color:#505f54; font-size:17px; line-height:1.3; }
-.volunteer-carousel-count { white-space:nowrap; padding-top:3px; }
+.volunteer-carousel-meta { display:flex; justify-content:flex-end; padding:10px 0; border-bottom:1px solid #718078; }
+.volunteer-carousel-count { white-space:nowrap; }
 @media(max-width:700px) {
   .volunteer-gallery { padding:0 10px 24px; }
   .volunteer-carousel-image { height:300px; }
   .volunteer-carousel-arrow { width:38px; height:38px; }
-  .volunteer-carousel-caption { font-size:16px; }
 }
