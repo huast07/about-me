@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BikeTO - Sterling Huang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="art-page industry-page">
+<div id="page">
+<main class="projects-main">
+  <a class="back mono" href="industry.html">&larr; Back to Industry Projects</a>
+  <header class="project-detail-heading">
+    <img class="project-icon" src="assets/projects/biketo-icon.png" alt="BikeTO app icon with a bicycle and Toronto streetcar" width="1024" height="1024">
+    <div><h1>BikeTO</h1><p>A personal project for getting around Toronto by bike and public transit.</p></div>
+  </header>
+  <section class="project-section project-overview" aria-labelledby="biketo-overview">
+    <h2 id="biketo-overview">About the project</h2>
+    <p>BikeTO brings cycling, Bike Share stations, and TTC trip planning together on one map.</p>
+    <ul>
+      <li><strong>Cycling routes</strong> to help plan a trip through the city.</li>
+      <li><strong>Bike Share stations</strong> with bike and dock availability.</li>
+      <li><strong>TTC trip planning</strong> alongside cycling options.</li>
+    </ul>
+  </section>
+<footer class="art-credit">Robert Delaunay · <cite>Hommage à Blériot</cite> (1914) · Public domain.</footer>
+</main>
+</div>
+<div class="hud" id="topbar">
+  <a class="brand" href="index.html">Sterling Huang</a>
+  <div class="music-controls">
+    <button class="chip" id="musicBtn" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Play music</span></button>
+    <details class="music-credit"><summary aria-label="About the music">♫</summary><div>
+      <strong>Winter — Largo</strong><br>Vivaldi · The Four Seasons<br>
+      John Harrison, violin · Robert Turizziani, conductor · Wichita State University Chamber Players.<br>
+      <a href="https://commons.wikimedia.org/wiki/File:11_-_Vivaldi_Winter_mvt_2_Largo_-_John_Harrison_violin.ogg" target="_blank" rel="noopener">Recording &amp; source</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>
+    </div></details>
+  </div>
+</div>
+<p id="musicStatus" class="sr" role="status"></p>
+<script src="js/music.js"></script>
+<script src="js/navigation.js"></script>
+</body>
+</html>

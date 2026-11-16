@@ -273,19 +273,31 @@ canvas#fx { z-index: 3; }
 .travel-moments { display:block; margin:24px 0 0; padding:10px 0; border:0; border-bottom:1px solid var(--rule); background:transparent; color:var(--ink); font:18px var(--serif); cursor:pointer; }
 @media(max-width:700px){.gallery-content.has-photos{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.gallery-content img{height:150px}.travel-page dialog{padding:20px}.gallery-header{top:-20px}.gallery-header h2{font-size:36px}}
 @media(max-width:420px){.gallery-content.has-photos{grid-template-columns:1fr}.gallery-content img{height:210px}}
-.travel-takeaways.travel-journal { max-width:880px; margin:72px auto 0; padding:42px 48px 42px 64px; border:1px solid #bbaa8b66; background:linear-gradient(90deg,transparent 42px,#b86b6240 43px,transparent 44px),#f8f0deeb; box-shadow:0 12px 32px #382d2014; }
-@font-face { font-family:"Kalam"; font-style:normal; font-weight:400; font-display:swap; src:url("assets/fonts/kalam/regular.ttf") format("truetype"); }
-@font-face { font-family:"Kalam"; font-style:normal; font-weight:700; font-display:swap; src:url("assets/fonts/kalam/bold.ttf") format("truetype"); }
-.travel-journal h2 { font-family:"Kalam",cursive; font-size:38px; font-style:normal; font-weight:400; margin:0 0 28px; }
-.journal-entry { font-family:"Kalam",cursive; }
-.travel-journal .journal-entry p { font-size:24px; line-height:1.85; color:var(--ink); margin:0 0 24px; background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.85em - 1px),#97866826 calc(1.85em - 1px),#97866826 1.85em); }
+.travel-takeaways.travel-journal { --journal-margin:58px; position:relative; isolation:isolate; max-width:900px; margin:84px auto 0; padding:38px 52px 54px 80px; border:1px solid #b69b6f; border-left:18px solid #634b35; border-radius:5px 12px 12px 5px; background:radial-gradient(ellipse at 100% 0,#b98c4140,transparent 42%),radial-gradient(ellipse at 0 100%,#b3894933,transparent 45%),linear-gradient(90deg,#8d6a3529,transparent 28px,transparent calc(var(--journal-margin) - 1px),#aa61563d var(--journal-margin),transparent calc(var(--journal-margin) + 1px)),repeating-linear-gradient(7deg,#765b2805 0 1px,transparent 1px 4px),#f1e3c3; box-shadow:inset 5px 0 15px #76542526,inset 0 0 38px #a37c3826,3px 4px 0 #ded0ad,5px 7px 0 #bfae89,8px 11px 0 #71553c,10px 20px 35px #382d2038; }
+.travel-journal::before { content:""; position:absolute; top:25px; bottom:25px; left:-25px; width:36px; background:radial-gradient(ellipse at center,#e1cba4 0 20%,#5f4934 24% 36%,transparent 40%) center top / 36px 56px repeat-y; pointer-events:none; }
+.journal-masthead { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:8px; color:#796447; font:11px var(--mono); letter-spacing:.15em; text-transform:uppercase; }
+.journal-stamp { display:grid; place-content:center; flex:none; width:88px; height:88px; border:3px double #8d594d88; border-radius:50%; color:#8d594dbb; text-align:center; font-size:10px; line-height:1.8; transform:rotate(12deg); }
+@font-face { font-family:"Travel Hand"; font-style:normal; font-weight:400; font-display:swap; src:url("assets/fonts/travel-hand/regular.ttf") format("truetype"); }
+.travel-journal h2 { font-family:"Travel Hand",cursive; font-size:39px; font-style:normal; font-weight:400; margin:0 0 30px; color:#403524; }
+.journal-entry { font-family:"Travel Hand",cursive; }
+.travel-journal .journal-entry p { font-size:25px; line-height:1.85; color:#403524; margin:0 0 26px; background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.85em - 1px),#80745630 calc(1.85em - 1px),#80745630 1.85em); }
 .travel-journal .journal-entry p:last-child { margin-bottom:0; }
-.travel-journal strong, .travel-journal em { color:var(--ink); font-weight:700; font-style:italic; }
+.travel-journal strong, .travel-journal em { color:#382b1c; font-weight:700; font-style:italic; }
 .journal-word { display:inline-block; }
 @media(max-width:600px){
-  .travel-takeaways.travel-journal { margin-top:48px; padding:28px 22px 32px 32px; background:linear-gradient(90deg,transparent 19px,#b86b6240 20px,transparent 21px),#f8f0deeb; }
-  .travel-journal .journal-entry p { font-size:21px; }
+  .travel-takeaways.travel-journal { --journal-margin:18px; margin:48px 6px 0 0; padding:24px 20px 36px 30px; border-left-width:12px; }
+  .travel-journal::before { left:-19px; width:27px; background-size:27px 56px; }
+  .journal-masthead { font-size:9px; letter-spacing:.08em; }
+  .journal-stamp { width:65px; height:65px; font-size:8px; }
+  .travel-journal h2 { font-size:31px; margin-bottom:24px; }
+  .travel-journal .journal-entry p { font-size:22px; }
 }
+.gallery-content.travel-carousel { display:block; }
+.travel-carousel-window { min-width:0; touch-action:pan-y; }
+.travel-carousel-window img { height:min(54vh,480px); width:100%; object-fit:contain; }
+.travel-carousel-controls { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:12px; padding:20px 0 4px; }
+.travel-carousel-controls button { border:1px solid var(--rule); border-radius:4px; background:transparent; color:var(--ink); min-width:44px; min-height:44px; padding:8px 12px; font:16px var(--serif); cursor:pointer; }
+.travel-carousel-controls span { min-width:64px; text-align:center; font:12px var(--mono); }
 .close-gallery { border-color:var(--rule); }
 
 /* Let each subpage's artwork remain visible behind the content. */
@@ -326,6 +338,25 @@ canvas#fx { z-index: 3; }
   .military-album h2 { font-size:28px; }
 }
 .industry-page { --page-art:url("assets/art/industry-modernism.jpg"); }
+.projects-main { max-width:1000px; margin:0 auto; }
+.projects-main > .back { color:var(--ink-soft); }
+.projects-main h1 { font-size:clamp(46px,7vw,76px); font-weight:500; line-height:1.05; margin:32px 0 52px; }
+.project-section { border-top:1px solid var(--rule); padding:26px 0 36px; }
+.project-section h2 { font-size:34px; font-weight:500; margin:0 0 28px; }
+.project-preview { display:flex; align-items:center; gap:36px; padding:8px 0 20px; }
+.project-icon-link { flex:none; border-radius:28px; }
+.project-icon { display:block; width:160px; height:160px; border-radius:28px; box-shadow:0 8px 20px #332b2421; }
+.project-preview h3 { font-size:38px; font-weight:500; margin:0 0 8px; }
+.project-preview p,.project-coming-soon { font-size:23px; line-height:1.5; color:var(--ink-soft); margin:0 0 20px; }
+.project-details-link { display:inline-block; color:var(--ink); font-size:21px; text-decoration-thickness:1px; text-underline-offset:6px; padding:8px 0; }
+.project-detail-heading { display:flex; align-items:center; gap:32px; margin:40px 0; }
+.project-detail-heading h1 { margin:0 0 14px; }
+.project-detail-heading p { font-size:24px; line-height:1.5; max-width:540px; margin:0; color:var(--ink-soft); }
+.project-overview { max-width:760px; }
+.project-overview p,.project-overview li { font-size:23px; line-height:1.65; }
+.project-overview ul { padding-left:24px; }
+.project-overview li { margin:10px 0; }
+@media(max-width:600px){.project-preview{gap:22px;align-items:flex-start}.project-icon{width:106px;height:106px;border-radius:22px}.project-preview h3{font-size:32px}.project-preview p{font-size:21px}.project-section h2{font-size:30px}.project-detail-heading{align-items:flex-start;flex-direction:column;gap:24px}.projects-main h1{margin-bottom:36px}.project-detail-heading h1{margin-bottom:12px}}
 .research-page { --page-art:url("assets/art/research-impressionism.jpg"); }
 .readings-page { --page-art:url("assets/art/readings-minoan.jpg"); }
 .art-credit { margin-top:48px; max-width:640px; font:12px/1.6 var(--mono); color:var(--ink-soft); }

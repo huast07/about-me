@@ -3,7 +3,7 @@
 (() => {
   if (location.protocol === 'file:') return;
   const base = new URL('../', document.currentScript.src);
-  const names = ['index.html', 'research.html', 'industry.html', 'military.html', 'volunteering.html', 'travels.html', 'readings.html'];
+  const names = ['index.html', 'research.html', 'industry.html', 'biketo.html', 'military.html', 'volunteering.html', 'travels.html', 'readings.html'];
   const allowed = new Set(names.map(name => new URL(name, base).pathname));
   const key = url => url.pathname === base.pathname ? new URL('index.html', base).pathname : url.pathname;
   const pages = new Map();

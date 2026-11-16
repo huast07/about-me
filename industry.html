@@ -9,20 +9,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500&family=IBM+Plex+Mono:wght@400&family=Caveat:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body class="stub art-page industry-page">
+<body class="art-page industry-page">
 <div id="page">
-<!-- Placeholder. This branch gets its own theme in a later round. -->
-<main>
-  <div class="mono">Branch 02 - coming soon</div>
-  <h1>Industry Projects</h1>
-  <p>This branch is still growing. It will get its own look and much more detail. Here is what will live here:</p>
-  <ul>
-    <li>Sun Life</li>
-    <li>Maplecrown</li>
-    <li>BikeTO</li>
-    <li>DECA ICDC and the Wharton Global Investing Competition</li>
-  </ul>
+<main class="projects-main">
   <a class="back mono" href="index.html">&larr; Back to the tree</a>
+  <h1>Industry Projects</h1>
+  <section class="project-section" aria-labelledby="personal-projects-title">
+    <h2 id="personal-projects-title">Personal Projects</h2>
+    <article class="project-preview">
+      <a class="project-icon-link" href="biketo.html" aria-label="Explore BikeTO"><img class="project-icon" src="assets/projects/biketo-icon.png" alt="BikeTO app icon with a bicycle and Toronto streetcar" width="1024" height="1024"></a>
+      <div><h3>BikeTO</h3><p>Getting around Toronto by bike and public transit.</p><a class="project-details-link" href="biketo.html">More details <span aria-hidden="true">↗</span></a></div>
+    </article>
+  </section>
+  <section class="project-section" aria-labelledby="competition-projects-title">
+    <h2 id="competition-projects-title">Competition Projects</h2>
+    <p class="project-coming-soon">More details coming soon.</p>
+  </section>
 <footer class="art-credit">Robert Delaunay · <cite>Hommage à Blériot</cite> (1914) · Public domain.</footer>
 </main>
 </div>
