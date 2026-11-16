@@ -345,7 +345,7 @@ canvas#fx { z-index: 3; }
 /* Volunteer albums become an inline carousel on every screen. */
 .volunteer-gallery { min-width:0; align-self:center; padding:24px 12px; }
 .volunteer-carousel-frame { position:relative; overflow:hidden; background:#24302b18; touch-action:pan-y; }
-.volunteer-carousel-image { display:block; width:100%; height:330px; object-fit:cover; object-position:center 30%; }
+.volunteer-carousel-image { display:block; width:100%; height:330px; object-fit:contain; object-position:center; }
 .volunteer-carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px; border:1px solid #718078; background:#fbf6f1e8; color:var(--ink); cursor:pointer; font-size:25px; line-height:1; }
 .volunteer-carousel-arrow:hover, .volunteer-carousel-arrow:focus-visible { background:var(--ink); color:var(--paper); }
 .volunteer-carousel-previous { left:12px; }
