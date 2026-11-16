@@ -65,6 +65,13 @@
         homeLoading = null;
       }
       if (next.node.querySelector('#travel-app')) await loadTravel();
+      if (next.node.querySelector('.volunteer-gallery') && !window.volunteerGalleryReady) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = new URL('js/volunteering.js', base);
+          script.onload = resolve; script.onerror = reject; document.body.appendChild(script);
+        });
+      }
       if (request !== version) return;
       dispatchEvent(new CustomEvent('portfolio:pagechange', { detail: { travel: !!next.node.querySelector('#travel-app') } }));
       dispatchEvent(new Event('resize'));

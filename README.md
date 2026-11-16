@@ -103,3 +103,14 @@ identify the books and do not imply a particular edition owned by Sterling.
 - The Story of Philosophy: https://covers.openlibrary.org/b/isbn/9780671739164-L.jpg
 - The Elements of Colour: https://covers.openlibrary.org/b/isbn/9780471289296-L.jpg
 - Steve Jobs: https://covers.openlibrary.org/b/isbn/9781451648539-L.jpg
+
+## Volunteering photo galleries
+
+The volunteering page includes 36 supplied photographs: nine City of Toronto,
+seven FIFA, and twenty Wind Whistle Farm photos. Web-sized JPEGs (up to 1800px)
+and 480px thumbnails live in `assets/volunteering/`; originals remain untouched.
+Exports have orientation applied and omit EXIF metadata.
+
+Each album is listed in `volunteering.html` with descriptive captions and alt text.
+`js/volunteering.js` opens the gallery on direct and progressive visits. Use the
+previous/next buttons or arrow keys to browse, and Escape to close.
