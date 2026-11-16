@@ -35,8 +35,15 @@ server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing insta
 The travel atlas uses D3 7.9.0 and topojson-client 3.1.0 (ISC licenses),
 and Natural Earth country boundaries through world-atlas 2.0.2 (public domain).
 Routes are illustrative great-circle connections from Toronto, not a record of flights.
-Add country photographs to `js/travel-content.js` as documented there. The travel
-notes box is a placeholder until Sterling supplies the text.
+Add country photographs to `js/travel-content.js` as documented there. The first
+batch contains 149 optimized, metadata-free JPEGs in `assets/travels/`; originals
+remain untouched. Clearly identifiable destinations are grouped by country;
+unconfirmed locations are in “Travel moments” and can be reassigned later.
+Four MOV clips from the supplied folder are not included in these photo galleries.
+The takeaways preserve Sterling’s text in a handwritten journal, revealing words
+as visitors scroll. Reduced-motion users and browsers without JavaScript see the
+complete entry immediately. Gallery photos preserve their full composition and
+link to the full image in a new tab.
 
 Vivaldi plays across every page, including Travels.
 Scientific and literary source references are retained in `js/tree.js`.
