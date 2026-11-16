@@ -98,7 +98,6 @@
   });
 
   const finale = place(`<section class="finale" aria-labelledby="motto">
-      <div class="mono">${esc(SEASONS.bloom.label)}</div>
       <h2 id="motto" lang="la">${esc(SITE.motto.latin)}</h2>
       <p class="translation">${esc(SITE.motto.translation)}</p>
       <p class="hand"><span lang="la">“${esc(SITE.motto.note)}”</span><br>
