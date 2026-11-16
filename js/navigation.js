@@ -65,6 +65,13 @@
         homeLoading = null;
       }
       if (next.node.querySelector('#travel-app')) await loadTravel();
+      if (next.node.querySelector('.military-main') && !window.militaryCarouselReady) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = new URL('js/military.js', base);
+          script.onload = resolve; script.onerror = reject; document.body.appendChild(script);
+        });
+      }
       if (next.node.querySelector('.volunteer-gallery') && !window.volunteerGalleryReady) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
