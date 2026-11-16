@@ -39,8 +39,8 @@
  const grid=svg.append('path').datum(d3.geoGraticule10()).attr('class','globe-grid');
  const land=svg.append('g'); const routes=svg.append('g'); const dots=svg.append('g');
  function draw(){projection.rotate(rotation);grid.attr('d',path);land.selectAll('path').attr('d',path);routes.selectAll('path').attr('d',path);dots.selectAll('circle').attr('cx',d=>projection([d[2],d[3]])[0]).attr('cy',d=>projection([d[2],d[3]])[1]).style('display',d=>d3.geoDistance([d[2],d[3]],[-rotation[0],-rotation[1]]) < Math.PI/2 ? null : 'none');}
- let stopCarousel=()=>{};
- function startCarousel(photos){
+ function startCarousel(photos,gallery){
+   if(!photos.length)return;
    gallery.classList.add('travel-carousel');
    gallery.setAttribute('aria-roledescription','carousel');
    gallery.setAttribute('aria-label','Travel moments');
@@ -52,7 +52,7 @@
    gallery.append(viewport,controls);
    const [previous,next,toggle]=controls.querySelectorAll('button'),counter=controls.querySelector('span');
    const motion=matchMedia('(prefers-reduced-motion: reduce)');
-   let index=0,playing=!motion.matches,hovered=false,timer,startX=null,disposed=false;
+   let index=0,playing=!motion.matches,hovered=false,timer,startX=null;
    function show(direction=0){
      index=(index+direction+photos.length)%photos.length;const photo=photos[index];
      img.src=photo.src;img.alt=photo.alt;img.width=photo.width;img.height=photo.height;link.href=photo.src;
@@ -63,7 +63,8 @@
    function restart(){
      clearInterval(timer);toggle.textContent=playing?'Pause slideshow':'Play slideshow';
      if(playing)timer=setInterval(()=>{
-       if(!disposed&&dialog.open&&dialog.isConnected&&!document.hidden&&!hovered&&!viewport.contains(document.activeElement))show(1);
+       const bounds=gallery.getBoundingClientRect();
+       if(gallery.isConnected&&bounds.bottom>0&&bounds.top<innerHeight&&!dialog.open&&!document.hidden&&!hovered&&!viewport.contains(document.activeElement))show(1);
      },4500);
    }
    previous.addEventListener('click',()=>{show(-1);restart();});
@@ -80,15 +81,12 @@
    viewport.addEventListener('dragstart',event=>event.preventDefault());
    function reduceMotion(){if(motion.matches){playing=false;restart();}}
    motion.addEventListener('change',reduceMotion);show();restart();
-   return ()=>{disposed=true;clearInterval(timer);motion.removeEventListener('change',reduceMotion);};
  }
  function open(d){
-   stopCarousel();gallery.classList.remove('travel-carousel');gallery.removeAttribute('aria-roledescription');gallery.removeAttribute('aria-label');
    selected=d;title.textContent=d[0];gallery.replaceChildren();
    const photos=(window.TRAVEL_PHOTOS||{})[d[0]]||[];
    gallery.classList.toggle('has-photos',photos.length>0);
    if(!photos.length){const p=document.createElement('p');p.textContent='Photos coming soon.';gallery.append(p);}
-   else if(d[0]==='Travel moments')stopCarousel=startCarousel(photos);
    else photos.forEach(photo=>{
      const figure=document.createElement('figure'),link=document.createElement('a'),img=document.createElement('img');
      link.href=photo.src;link.target='_blank';link.rel='noopener';link.setAttribute('aria-label',`View full photo: ${photo.alt}`);
@@ -99,10 +97,9 @@
    dialog.showModal();dialog.scrollTop=0;
  }
  countries.forEach(d=>{const b=document.createElement('button');b.type='button';b.textContent=d[0];b.addEventListener('click',()=>{rotation=[-d[2],-d[3]];draw();open(d)});list.append(b)});
- root.querySelector('.travel-moments').addEventListener('click',()=>open(['Travel moments']));
+ startCarousel(Object.values(window.TRAVEL_PHOTOS||{}).flat(),root.querySelector('.travel-slideshow'));
  dialog.querySelector('.close-gallery').addEventListener('click',()=>dialog.close());
- dialog.addEventListener('close',()=>stopCarousel());
- addEventListener('portfolio:pagechange',()=>{if(!dialog.isConnected){stopCarousel();if(dialog.open)dialog.close();}});
+ addEventListener('portfolio:pagechange',()=>{if(!dialog.isConnected&&dialog.open)dialog.close();});
  svg.call(d3.drag().on('start',()=>svg.classed('dragging',true)).on('drag',event=>{rotation=[rotation[0]+event.dx*.35,Math.max(-85,Math.min(85,rotation[1]-event.dy*.35))];draw()}).on('end',()=>svg.classed('dragging',false)));
  fetch(new URL('assets/data/countries-110m.json',document.baseURI)).then(r=>{if(!r.ok) throw Error('Map unavailable');return r.json()}).then(data=>{
  geo=topojson.feature(data,data.objects.countries).features;

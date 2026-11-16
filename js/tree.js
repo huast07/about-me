@@ -89,9 +89,8 @@
     </section>`, 380);
 
   marks.forEach(m => {
-    const heading = m.heading ? esc(m.heading) : `At age <b>${esc(m.age)}</b>,`;
+    const heading = m.heading ? esc(m.heading) : `At age <b>${esc(m.age)}</b>`;
     m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
-        <div class="mono kicker"><span>${pad2(m.i + 1)} / ${pad2(marks.length)}</span><span>${esc(m.tag)} - ${SEASONS[m.season].label}</span></div>
         <h2 class="age" id="mt-${m.i}">${heading}</h2>
         <p>${highlightText(m)}</p>
       </article>`, m.wy + 60);
