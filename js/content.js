@@ -50,8 +50,8 @@ const SITE = {
     { href: "research.html", title: "Research", blurb: "Matter Lab, KMUTT and the science fair years." },
     { href: "industry.html", title: "Industry Projects", blurb: "Sun Life, Maplecrown, BikeTO and more." },
     { href: "travels.html", title: "Travels", blurb: "Denmark, Thailand and seventeen more countries." },
-    { href: "volunteering.html", title: "Volunteering", blurb: "FIFA, city events, farm life and advocacy." },
+    { href: "volunteering.html", title: "Volunteering", blurb: "FIFA, City Cultural Events and Farm Life" },
     { href: "military.html", title: "Military Service", blurb: "Canadian Armed Forces." },
-    { href: "readings.html", title: "Readings and Hobbies", blurb: "The weekly book club and things I write." }
+    { href: "readings.html", title: "Readings and Hobbies", blurb: "Weekly Book Club and Things I Write" }
   ]
 };
