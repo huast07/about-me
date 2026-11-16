@@ -23,7 +23,8 @@
      paragraphs.forEach(({p,words})=>{
        const box=p.getBoundingClientRect();
        const progress=motion.matches?1:Math.max(0,Math.min(1,(innerHeight*.92-box.top)/(box.height+innerHeight*.02)));
-       words.forEach((word,i)=>{const ink=Math.max(0,Math.min(1,progress*words.length-i));word.style.clipPath=`inset(0 ${(1-ink)*100}% 0 0)`;});
+       // Reveal whole glyphs without clipping ascenders or italic overhangs.
+       words.forEach((word,i)=>{const ink=Math.max(0,Math.min(1,progress*words.length-i));word.style.opacity=ink;});
      });
    }
    function scheduleJournal(){if(!queued){queued=true;requestAnimationFrame(writeJournal);}}

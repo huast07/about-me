@@ -274,15 +274,17 @@ canvas#fx { z-index: 3; }
 @media(max-width:700px){.gallery-content.has-photos{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.gallery-content img{height:150px}.travel-page dialog{padding:20px}.gallery-header{top:-20px}.gallery-header h2{font-size:36px}}
 @media(max-width:420px){.gallery-content.has-photos{grid-template-columns:1fr}.gallery-content img{height:210px}}
 .travel-takeaways.travel-journal { max-width:880px; margin:72px auto 0; padding:42px 48px 42px 64px; border:1px solid #bbaa8b66; background:linear-gradient(90deg,transparent 42px,#b86b6240 43px,transparent 44px),#f8f0deeb; box-shadow:0 12px 32px #382d2014; }
-.travel-journal h2 { font-family:var(--hand); font-size:44px; margin:0 0 28px; }
-.journal-entry { font-family:var(--hand); }
-.travel-journal .journal-entry p { font-size:30px; line-height:1.55; color:var(--ink); margin:0 0 24px; background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.55em - 1px),#97866826 calc(1.55em - 1px),#97866826 1.55em); }
+@font-face { font-family:"Kalam"; font-style:normal; font-weight:400; font-display:swap; src:url("assets/fonts/kalam/regular.ttf") format("truetype"); }
+@font-face { font-family:"Kalam"; font-style:normal; font-weight:700; font-display:swap; src:url("assets/fonts/kalam/bold.ttf") format("truetype"); }
+.travel-journal h2 { font-family:"Kalam",cursive; font-size:38px; font-style:normal; font-weight:400; margin:0 0 28px; }
+.journal-entry { font-family:"Kalam",cursive; }
+.travel-journal .journal-entry p { font-size:24px; line-height:1.85; color:var(--ink); margin:0 0 24px; background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.85em - 1px),#97866826 calc(1.85em - 1px),#97866826 1.85em); }
 .travel-journal .journal-entry p:last-child { margin-bottom:0; }
 .travel-journal strong, .travel-journal em { color:var(--ink); font-weight:700; font-style:italic; }
 .journal-word { display:inline-block; }
 @media(max-width:600px){
   .travel-takeaways.travel-journal { margin-top:48px; padding:28px 22px 32px 32px; background:linear-gradient(90deg,transparent 19px,#b86b6240 20px,transparent 21px),#f8f0deeb; }
-  .travel-journal .journal-entry p { font-size:26px; }
+  .travel-journal .journal-entry p { font-size:21px; }
 }
 .close-gallery { border-color:var(--rule); }
 

@@ -44,6 +44,9 @@ The takeaways preserve Sterling’s text in a handwritten journal, revealing wor
 as visitors scroll. Reduced-motion users and browsers without JavaScript see the
 complete entry immediately. Gallery photos preserve their full composition and
 link to the full image in a new tab.
+The journal uses locally hosted Kalam regular and bold fonts (SIL Open Font
+License, included in `assets/fonts/kalam/OFL.txt`). Words fade in without clipping
+letter shapes or italic overhangs.
 
 Vivaldi plays across every page, including Travels.
 Scientific and literary source references are retained in `js/tree.js`.
