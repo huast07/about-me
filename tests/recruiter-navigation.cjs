@@ -11,17 +11,11 @@ const assert = require('node:assert/strict');
     await page.goto(root);
     await page.locator('#home-intro').waitFor();
     await page.evaluate(() => document.fonts.ready);
-    assert.equal(await page.locator('#home-intro .action-link').count(), 4);
-    for (const size of [{width:1440,height:900},{width:390,height:844}]) {
-      await page.setViewportSize(size);
-      await page.waitForTimeout(100);
-      assert.equal(await page.locator('#home-intro .action-link').evaluateAll(links => links.every(link => {
-        const box = link.getBoundingClientRect(); return box.top >= 72 && box.bottom <= innerHeight && box.left >= 0 && box.right <= innerWidth;
-      })), true, 'Homepage shortcuts fit the first screen');
-    }
-    await page.getByRole('link', {name:'View projects', exact:true}).click();
-    await page.waitForURL('**/industry.html');
+    await page.setViewportSize({width:390,height:844});
     const menu = page.locator('.site-menu');
+    await menu.locator('summary').click();
+    await page.getByRole('navigation', {name:'Mobile navigation'}).getByRole('link', {name:'Projects',exact:true}).click();
+    await page.waitForURL('**/industry.html');
     await menu.locator('summary').click();
     await page.getByRole('navigation', {name:'Mobile navigation'}).getByRole('link', {name:'Research',exact:true}).click();
     await page.waitForURL('**/research.html');
@@ -80,6 +74,6 @@ const assert = require('node:assert/strict');
     const paused=await counter.textContent();await page.waitForTimeout(2300);
     assert.equal(await counter.textContent(),paused);
     assert.deepEqual(errors, []);
-    console.log('PASS: homepage shortcuts, mobile menu and Escape, focus and history, all-page layouts at five widths, app screenshots, plain text, Play resumes with focus');
+    console.log('PASS: homepage navigation, mobile menu and Escape, focus and history, all-page layouts at five widths, app screenshots, plain text, Play resumes with focus');
   } finally { await browser.close(); }
 })().catch(error => {console.error(error); process.exit(1);});

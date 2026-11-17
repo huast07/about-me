@@ -30,7 +30,7 @@ Browser regression check (requires Playwright and its Chromium browser):
 `node tests/music-navigation.cjs`. Set `PORTFOLIO_URL` to test a different local
 server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing installations.
 `node tests/travel-carousel.cjs` checks the sliding photo strip and unique milestone ages.
-`node tests/recruiter-navigation.cjs` checks homepage shortcuts, the mobile menu,
+`node tests/recruiter-navigation.cjs` checks homepage navigation, the mobile menu,
 navigation focus/history, layouts from 320px to 1440px, app screenshots, plain-text
 travel notes, and explicit slideshow playback while the Play button retains focus.
 
@@ -40,15 +40,10 @@ Every page has static navigation links, a native mobile Menu, and a direct email
 contact link. The shared header stays outside `#page` so navigation keeps the music
 player alive. Keep the header links consistent across the eight HTML files.
 Selecting a page starts at its top; browser Back/Forward preserves its saved position.
-The homepage provides immediate project, research, résumé-request, and contact links;
-the introduction scrolls normally before the optional tree story, without a timeline
-sidebar. Reading areas use translucent paper-coloured backgrounds and Georgia body
-text. Light artwork overlays keep the paintings visible around and through the
+The homepage introduction scrolls normally before the optional tree story, without
+a timeline sidebar or shortcut buttons. The shared header provides page navigation.
+Reading areas use translucent paper-coloured backgrounds and Georgia body text. Light artwork overlays keep the paintings visible around and through the
 content panels on desktop and mobile.
-
-“Request résumé” opens an email addressed to Sterling with a résumé-request subject.
-It does not send an email automatically. A downloadable résumé and detailed research
-roles, dates, and contributions still need to be supplied by Sterling.
 
 BikeTO’s download link and the three images in `assets/projects/biketo/` come from
 [its official App Store listing](https://apps.apple.com/ca/app/biketo/id6761314510).

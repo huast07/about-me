@@ -85,12 +85,6 @@
       <div class="education">${SITE.education.split('\n').map(esc).join('<br>')}</div>
       <h1>${esc(SITE.name.split(" ")[0])}<br><em>${esc(SITE.name.split(" ").slice(1).join(" "))}</em></h1>
       <p>I’m an Engineering Science student at the University of Toronto, with experience in research, app development, and community service.</p>
-      <nav class="hero-actions" aria-label="Explore my work">
-        <a class="action-link primary" href="industry.html">View projects</a>
-        <a class="action-link" href="research.html">Research</a>
-        <a class="action-link" href="mailto:${esc(SITE.contact.email)}?subject=R%C3%A9sum%C3%A9%20request">Request résumé</a>
-        <a class="action-link" href="mailto:${esc(SITE.contact.email)}">Contact</a>
-      </nav>
       <button class="story-start" type="button">Explore my story <span aria-hidden="true">↓</span></button>
     </section>`, 380);
   // The introduction scrolls normally; the tree remains an optional animated story.
