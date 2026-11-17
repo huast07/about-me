@@ -41,9 +41,10 @@ contact link. The shared header stays outside `#page` so navigation keeps the mu
 player alive. Keep the header links consistent across the eight HTML files.
 Selecting a page starts at its top; browser Back/Forward preserves its saved position.
 The homepage provides immediate project, research, résumé-request, and contact links;
-the introduction scrolls normally before the optional tree story. Larger, labelled
-story controls replace the desktop dots. Reading areas use paper-coloured backgrounds
-and Georgia body text while retaining the paintings and display typography.
+the introduction scrolls normally before the optional tree story, without a timeline
+sidebar. Reading areas use translucent paper-coloured backgrounds and Georgia body
+text. Light artwork overlays keep the paintings visible around and through the
+content panels on desktop and mobile.
 
 “Request résumé” opens an email addressed to Sterling with a résumé-request subject.
 It does not send an email automatically. A downloadable résumé and detailed research

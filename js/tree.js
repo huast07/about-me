@@ -12,7 +12,7 @@
   const SEASON_FADE_MS = 1400, CANOPY_COUNT = 760, GROWTH_RATE = 3.2;
   /* At the end of the page the crown sits at CROWN_SCREEN of the viewport height and the motto at FINALE_SCREEN. */
   const CROWN_SCREEN = 0.8, FINALE_SCREEN = 0.42;
-  /* Screen line (fraction from top) that decides the current season and rail stop: just below centre, where cards are read. */
+  /* Screen line (fraction from top) that decides the current season: just below centre, where cards are read. */
   const FOCUS_SCREEN = 0.62;
   const CARD_MAX_W = 340, CARD_GAP = 70; // highlight card width and distance from the trunk (desktop)
   const TOPBAR_CLEARANCE = 100; // room for the shared navigation
@@ -343,7 +343,6 @@
   }
 
   /* ---------- frame ---------- */
-  const railBtns = [];
   function render() {
     ctx.clearRect(0, 0, W, H);
     drawTrunk();
@@ -357,9 +356,6 @@
     marks.forEach(m => m.el.classList.toggle("on", tip > m.wy - 40 && !finaleOn)); // cards step aside for the finale
     const mid = camY() + H * (1 - FOCUS_SCREEN) - GROUND;
     setSeason(seasonAt(mid));
-    const cur = mid >= TOP - 80 ? marks.length : clamp(Math.round((mid - SEED_H) / STEP), 0, marks.length - 1);
-    railBtns.forEach((b, i) => { const on = i === cur && mid > SEED_H - STEP / 2;
-      b.classList.toggle("cur", on); b.setAttribute("aria-current", on ? "step" : "false"); });
   }
 
   /* ---------- particles ---------- */
@@ -402,13 +398,6 @@
   /* ---------- navigation ---------- */
   const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND + introScroll), behavior: reduceMotion ? "auto" : "smooth" });
   hero.querySelector('.story-start').addEventListener('click', () => goTo(marks[0].wy + 60));
-  const rail = document.getElementById("rail");
-  [...marks.map(m => ({ label: m.tag, wy: () => m.wy + 60 })), { label: "Explore sections", wy: () => +finale.dataset.wy }].forEach(stop => {
-    const li = document.createElement("li"), b = document.createElement("button");
-    b.innerHTML = `<span>${esc(stop.label)}</span>`; b.setAttribute("aria-label", `Jump to ${stop.label}`);
-    b.addEventListener("click", () => goTo(stop.wy()));
-    li.appendChild(b); rail.appendChild(li); railBtns.push(b);
-  });
   world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND + introScroll) }); });
 
 

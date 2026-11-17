@@ -28,7 +28,7 @@ a:focus-visible, button:focus-visible { outline: 2px dashed var(--ink); outline-
 /* faded ink painting + vertical verses behind the tree */
 #backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 /* no blend mode or CSS filter here: both force the tall layer to be re-composited every frame */
-#ink { position: absolute; inset: 0; opacity: .2; }
+#ink { position: absolute; inset: 0; opacity: .4; }
 #ink canvas { display: block; width: 100%; height: 100%; }
 .verse .ch { opacity: 0; transition: opacity 1.2s ease; }
 .verse .ch.on { opacity: 1; }
@@ -40,7 +40,7 @@ a:focus-visible, button:focus-visible { outline: 2px dashed var(--ink); outline-
 .verse .v-title { font-weight: 500; }
 .verse .v-author { font-size: .5em; letter-spacing: .2em; padding-top: 6em; }
 .verse-haiku { left: 4vw; }
-.verse-poem { right: 52px; } /* just inside the progress rail */
+.verse-poem { right: 52px; }
 canvas#tree, canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 canvas#fx { z-index: 3; }
 #world { position: fixed; left: 0; top: 0; width: 100%; z-index: 2; will-change: transform; }
@@ -107,12 +107,6 @@ canvas#fx { z-index: 3; }
 @keyframes eq { 50% { height: 10px; } }
 #season { left: 16px; bottom: 16px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 6px 9px;
   background: color-mix(in srgb, var(--paper) 85%, transparent); border: 1px solid var(--rule); }
-#rail { right: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column-reverse; gap: 9px; margin: 0; padding: 0; list-style: none; }
-#rail button { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--ink); background: transparent; cursor: pointer; position: relative; padding: 0; transition: transform .2s, background .2s; }
-#rail button.cur { background: var(--sakura-deep); border-color: var(--sakura-deep); transform: scale(1.35); }
-#rail button span { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-size: 11px; letter-spacing: .1em;
-  text-transform: uppercase; opacity: 0; transition: opacity .2s; pointer-events: none; background: var(--paper); padding: 2px 6px; }
-#rail button:hover span, #rail button:focus-visible span { opacity: 1; }
 
 @media (max-width: 760px) {
   .hero { left: 16px; }
@@ -125,11 +119,11 @@ canvas#fx { z-index: 3; }
   .path .blurb { font-size: 14px; }
   .path .go { right: 10px; top: 10px; font-size: 18px; }
   .finale .hand { margin-bottom: 18px; }
-  #rail, #season { display: none; }
+  #season { display: none; }
   .verse { top: auto; bottom: 12vh; font-size: 15px; opacity: .16; } /* small enough that both verses stay clear of the trunk */ /* below the hero title on small screens */
   .verse-haiku { left: 10px; }
   .verse-poem { right: 10px; }
-  #ink { opacity: .16; }
+  #ink { opacity: .32; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -250,7 +244,7 @@ canvas#fx { z-index: 3; }
 .travel-heading h1 { margin-top:44px; color:var(--ink); font-style:italic; font-size:clamp(58px,8vw,92px); letter-spacing:-.01em; }
 .travel-back { color:var(--ink-soft); }
 .atlas, .travel-takeaways { background:color-mix(in srgb,var(--paper) 94%,transparent); border:1px solid var(--rule); box-shadow:0 18px 44px -26px rgba(60,20,30,.35); }
-.atlas-instruction { color:var(--ink-soft); text-align:center; font-size:19px; }
+.atlas-instruction { color:var(--ink); text-align:center; font-size:19px; width:fit-content; max-width:100%; margin-inline:auto; padding:10px 14px; background:#fbf6f1cc; }
 .globe-ocean { fill:#f2e8e6; stroke:#c8b4b4; }
 .globe-grid { stroke:#b8a4a4; }
 .country { fill:#d5c7c3; stroke:#fbf6f1; }
@@ -258,9 +252,10 @@ canvas#fx { z-index: 3; }
 .country.visited:hover { fill:var(--sakura-deep); }
 .flight-route { stroke:#b9476c; }
 .destination-dot { fill:#a74665; stroke:#fff8f6; }
-.globe-caption, .destination-heading span { color:var(--ink-soft); }
+.globe-caption, .destination-heading span { color:var(--ink); background:#fbf6f1cc; padding:6px 10px; }
+.globe-caption { width:fit-content; max-width:100%; margin-inline:auto; }
 .destinations { border-color:var(--rule); }
-.country-list button { border:1px solid var(--rule); border-radius:0; background:rgba(255,255,255,.3); color:var(--ink); font:12px var(--mono); }
+.country-list button { border:1px solid var(--rule); border-radius:0; background:#fbf6f1cc; color:var(--ink); font:12px var(--mono); }
 .country-list button:hover, .country-list button:focus-visible { color:var(--paper); background:var(--ink); }
 .travel-takeaways h2 { font-size:clamp(36px,5vw,54px); font-style:italic; color:var(--ink); }
 .travel-takeaways p:last-child { color:var(--ink-soft); }
@@ -324,9 +319,9 @@ canvas#fx { z-index: 3; }
 .close-gallery { border-color:var(--rule); }
 
 /* Let each subpage's artwork remain visible behind the content. */
-.travel-page::before { background:linear-gradient(rgba(251,241,240,.74),rgba(241,230,228,.78)), url("assets/art/travel-romanticism.jpg") center / cover no-repeat; }
+.travel-page::before { background:linear-gradient(rgba(251,241,240,.56),rgba(241,230,228,.62)), url("assets/art/travel-romanticism.jpg") center / cover no-repeat; }
 .atlas, .travel-takeaways { background:transparent; border:0; box-shadow:none; padding-left:0; padding-right:0; }
-.volunteer-page::before { background:linear-gradient(rgba(241,233,217,.83),rgba(241,233,217,.87)), url("assets/art/volunteering-cubist.png") center / cover no-repeat; }
+.volunteer-page::before { background:linear-gradient(rgba(241,233,217,.42),rgba(241,233,217,.5)), url("assets/art/volunteering-cubist.png") center / cover no-repeat; }
 .volunteer-card { background:transparent; border:0; border-top:1px solid #718078; box-shadow:none; }
 .volunteer-photo { background:transparent; border:1px solid #a79d8c; }
 .volunteer-copy p, .volunteer-photo { color:#505f54; }
@@ -334,7 +329,7 @@ canvas#fx { z-index: 3; }
 /* Body classes keep artwork consistent on direct visits and internal navigation. */
 .art-page { isolation:isolate; background:var(--sky-bot); padding:112px 24px 64px; }
 .art-page::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
-  background-image:linear-gradient(90deg,rgba(251,245,234,.66),rgba(251,245,234,.82) 42%,rgba(251,245,234,.66)),var(--page-art);
+  background-image:linear-gradient(90deg,rgba(251,245,234,.28),rgba(251,245,234,.42) 42%,rgba(251,245,234,.28)),var(--page-art);
   background-position:center; background-size:cover; background-repeat:no-repeat; }
 .art-page #page { position:relative; }
 .military-page { --page-art:url("assets/art/military-remembrance.png"); }
@@ -387,7 +382,7 @@ canvas#fx { z-index: 3; }
 .art-credit cite { font-style:italic; }
 @media(max-width:600px) {
   .art-page { padding:110px 20px 48px; }
-  .art-page::before { background-image:linear-gradient(rgba(251,245,234,.78),rgba(251,245,234,.84)),var(--page-art); }
+  .art-page::before { background-image:linear-gradient(rgba(251,245,234,.36),rgba(251,245,234,.44)),var(--page-art); }
 }
 
 /* Keep the full-bloom branch grid in view on shorter desktop screens. */
@@ -480,7 +475,7 @@ html { scroll-padding-top:100px; }
 summary:focus-visible { outline:2px dashed var(--ink); outline-offset:4px; }
 .mono { font-size:12px; }
 .back, .travel-back { display:inline-flex; align-items:center; min-height:44px; font:14px/1.5 var(--ui); letter-spacing:0; text-transform:none; color:var(--ink); text-underline-offset:4px; }
-.hero { top:108px; left:max(24px,12vw); z-index:4; width:min(640px,calc(100% - 48px)); transform:none; padding:26px 30px; background:#fbf6f1ed; border:1px solid var(--rule); }
+.hero { top:108px; left:max(24px,12vw); z-index:4; width:min(640px,calc(100% - 48px)); transform:none; padding:26px 30px; background:#fbf6f19e; border:1px solid var(--rule); }
 .hero .education { font:15px/1.5 var(--ui); color:var(--ink-soft); }
 .hero h1 { font-size:clamp(48px,6vw,78px); margin:16px 0; }
 .hero p { font:19px/1.55 var(--body); max-width:560px; color:var(--ink); }
@@ -495,15 +490,9 @@ summary:focus-visible { outline:2px dashed var(--ink); outline-offset:4px; }
 .path .blurb { font:16px/1.5 var(--body); }
 .finale { max-height:calc(100dvh - 112px); overflow-y:auto; padding:0 4px 10px; scrollbar-gutter:stable; }
 .finale .contact a { display:inline-flex; align-items:center; justify-content:center; min-height:44px; font:14px/1.4 var(--ui); letter-spacing:0; text-transform:none; overflow-wrap:anywhere; }
-#rail { right:16px; gap:2px; max-height:calc(100dvh - 160px); overflow-y:auto; top:calc(50% + 24px); }
-#rail button { display:flex; align-items:center; width:164px; min-height:44px; height:auto; padding:8px 12px; border:0; border-left:2px solid transparent; border-radius:0; background:#fbf6f1e8; text-align:left; }
-#rail button span { position:static; transform:none; opacity:1; white-space:normal; padding:0; background:none; color:var(--ink-soft); font:13px/1.35 var(--ui); text-transform:none; letter-spacing:0; }
-#rail button.cur { transform:none; background:var(--paper); border-left-color:var(--sakura-deep); }
-#rail button.cur span { color:var(--ink); font-weight:600; }
-#rail button:hover { background:#e9dfd6; }
 #season { min-height:44px; font-size:12px; }
 #page:not(.story-active) #season { display:none; }
-.projects-main, .military-main, .readings-main { padding:30px 36px; background:#fbf6f1f5; border:1px solid var(--rule); }
+.projects-main, .military-main, .readings-main { padding:30px 36px; background:#fbf6f1b8; border:1px solid var(--rule); }
 .project-overview p, .project-overview li, .project-preview p, .project-coming-soon, .page-intro { font:19px/1.65 var(--body); color:var(--ink); }
 .project-detail-heading p { font:20px/1.6 var(--body); }
 .project-detail-heading .action-link { margin-top:22px; }
@@ -516,7 +505,7 @@ summary:focus-visible { outline:2px dashed var(--ink); outline-offset:4px; }
 .app-screenshots figure { min-width:0; margin:0; }
 .app-screenshots img { display:block; width:100%; height:auto; border:1px solid var(--rule); border-radius:12px; }
 .app-screenshots figcaption { margin-top:12px; font:16px/1.5 var(--body); color:var(--ink-soft); }
-.volunteer-copy { background:#fbf6f1f5; }
+.volunteer-copy { background:#fbf6f1b8; }
 .volunteer-copy h2 { margin-top:8px; }
 .volunteer-copy p, .experience-points { font:18px/1.65 var(--body); color:var(--ink); }
 .volunteer-copy .experience-lead { font-size:20px; line-height:1.5; }
@@ -543,7 +532,6 @@ summary:focus-visible { outline:2px dashed var(--ink); outline-offset:4px; }
 .travel-journal.plain-text h2 { font:40px/1.1 var(--serif); }
 .travel-journal.plain-text strong, .travel-journal.plain-text em { color:var(--ink); font-style:normal; }
 .close-gallery, .season-close, .volunteer-carousel-arrow { min-width:44px; min-height:44px; }
-@media(max-width:1260px) { #rail { display:none; } }
 @media(max-width:1180px) {
   .desktop-nav { display:none; }
   .site-menu { display:block; }
