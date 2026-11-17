@@ -29,6 +29,7 @@ is unavailable when opening HTML files directly from disk.
 Browser regression check (requires Playwright and its Chromium browser):
 `node tests/music-navigation.cjs`. Set `PORTFOLIO_URL` to test a different local
 server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing installations.
+`node tests/travel-carousel.cjs` checks the sliding photo strip and unique milestone ages.
 
 ## Travels and season notes
 
@@ -48,8 +49,9 @@ The torn, aged journal paper has frayed edges, worn corners, stains, and fold cr
 and uses the locally hosted “Nothing You Could Do” handwriting
 font (SIL Open Font License, included in `assets/fonts/travel-hand/OFL.txt`). Words
 fade in without clipping letter shapes or italic overhangs. “Travel moments” shows
-all 149 photos directly on the page in a looping carousel that advances every 2.5
-seconds, with previous/next, arrow-key, swipe, and play/pause controls. It pauses on photo hover
+all 149 photos in a looping horizontal strip with three photos visible on desktop and
+two on mobile. The row slides forward every two seconds, with previous/next, arrow-key,
+swipe, and play/pause controls. It pauses on photo hover
 or focus within the carousel, while offscreen, while a country gallery is open, and when the tab is hidden;
 reduced-motion users start with autoplay off. Country galleries retain their grids.
 

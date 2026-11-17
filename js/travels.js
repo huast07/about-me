@@ -48,29 +48,55 @@
    const viewport=document.createElement('div');viewport.className='travel-carousel-window';
    viewport.tabIndex=0;
    viewport.setAttribute('role','group');
-   viewport.setAttribute('aria-roledescription','slide');
-   const img=document.createElement('img');
-   img.decoding='async';img.draggable=false;viewport.append(img);
+   viewport.setAttribute('aria-label','Photo strip. Use left and right arrow keys to browse.');
+   const track=document.createElement('div');track.className='travel-carousel-track';viewport.append(track);
    const controls=document.createElement('div');controls.className='travel-carousel-controls';
    controls.innerHTML='<button type="button" aria-label="Previous photo">←</button><span></span><button type="button" aria-label="Next photo">→</button><button type="button" class="carousel-playback"></button>';
    gallery.append(viewport,controls);
    const [previous,next,toggle]=controls.querySelectorAll('button'),counter=controls.querySelector('span');
    const motion=matchMedia('(prefers-reduced-motion: reduce)');
-   let index=0,playing=!motion.matches,hovered=false,timer,startX=null;
-   function show(direction=0){
-     index=(index+direction+photos.length)%photos.length;const photo=photos[index];
+   let index=0,playing=!motion.matches,hovered=false,timer,startX=null,animation=null;
+   const wrap=value=>(value+photos.length)%photos.length;
+   function makeSlide(position){
+     const photoIndex=wrap(position),photo=photos[photoIndex];
+     const slide=document.createElement('figure'),img=document.createElement('img');
+     slide.className='travel-carousel-slide';
+     slide.setAttribute('role','group');slide.setAttribute('aria-roledescription','slide');
+     slide.setAttribute('aria-label',`Photo ${photoIndex+1} of ${photos.length}`);
      img.src=photo.src;img.alt=photo.alt;img.width=photo.width;img.height=photo.height;
-     viewport.setAttribute('aria-label',`Photo ${index+1} of ${photos.length}. Use left and right arrow keys to browse.`);
-     counter.textContent=`${index+1} / ${photos.length}`;
-     if(direction&&!motion.matches)img.animate([{opacity:.3,transform:`translateX(${direction>0?24:-24}px)`},{opacity:1,transform:'translateX(0)'}],{duration:400});
+     img.decoding='async';img.draggable=false;slide.append(img);return slide;
    }
+   // Keep a photo on either side of the visible row so the loop never jumps back.
+   for(let offset=-1;offset<=4;offset++)track.append(makeSlide(index+offset));
+   function update(){
+     counter.textContent=`${index+1} / ${photos.length}`;
+     const visible=innerWidth<=600?2:3;
+     [...track.children].forEach((slide,i)=>slide.setAttribute('aria-hidden',i<1||i>visible?'true':'false'));
+   }
+   function show(direction){
+     if(animation)return;
+     function finish(){
+       index=wrap(index+direction);
+       if(direction>0){track.firstElementChild.remove();track.append(makeSlide(index+4));}
+       else {track.lastElementChild.remove();track.prepend(makeSlide(index-1));}
+       animation?.cancel();animation=null;update();
+     }
+     if(motion.matches){finish();return;}
+     const step=track.children[1].getBoundingClientRect().left-track.children[0].getBoundingClientRect().left;
+     animation=track.animate([
+       {transform:`translateX(${-step}px)`},
+       {transform:`translateX(${-(1+direction)*step}px)`}
+     ],{duration:650,easing:'cubic-bezier(.25,.1,.25,1)',fill:'forwards'});
+     animation.onfinish=finish;
+   }
+   new ResizeObserver(()=>{if(animation)animation.finish();update();}).observe(viewport);
    function restart(){
      clearInterval(timer);toggle.textContent=playing?'Pause slideshow':'Play slideshow';
      viewport.setAttribute('aria-live',playing?'off':'polite');
      if(playing)timer=setInterval(()=>{
        const bounds=gallery.getBoundingClientRect();
        if(gallery.isConnected&&bounds.bottom>0&&bounds.top<innerHeight&&!dialog.open&&!document.hidden&&!hovered&&!gallery.contains(document.activeElement))show(1);
-     },2500);
+     },2000);
    }
    previous.addEventListener('click',()=>{show(-1);restart();});
    next.addEventListener('click',()=>{show(1);restart();});
@@ -93,7 +119,7 @@
    viewport.addEventListener('pointercancel',()=>{startX=null;});
    viewport.addEventListener('dragstart',event=>event.preventDefault());
    function reduceMotion(){if(motion.matches){playing=false;restart();}}
-   motion.addEventListener('change',reduceMotion);show();restart();
+   motion.addEventListener('change',reduceMotion);update();restart();
  }
  function open(d){
    selected=d;title.textContent=d[0];gallery.replaceChildren();

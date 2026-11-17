@@ -88,10 +88,13 @@
       <span class="hand"><span class="arrow" aria-hidden="true">&darr;</span> scroll to grow</span>
     </section>`, 380);
 
+  const shownAges = new Set();
   marks.forEach(m => {
-    const heading = m.heading ? esc(m.heading) : `At age <b>${esc(m.age)}</b>`;
+    const repeatedAge = !m.heading && shownAges.has(m.age);
+    const heading = m.heading ? esc(m.heading) : repeatedAge ? esc(m.tag) : `At age <b>${esc(m.age)}</b>`;
+    if (m.age !== null) shownAges.add(m.age);
     m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
-        <h2 class="age" id="mt-${m.i}">${heading}</h2>
+        <h2 class="${repeatedAge ? 'sr' : 'age'}" id="mt-${m.i}">${heading}</h2>
         <p>${highlightText(m)}</p>
       </article>`, m.wy + 60);
   });

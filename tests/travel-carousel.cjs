@@ -1,0 +1,85 @@
+// Run against the locally served site; supports the same overrides as music-navigation.cjs.
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const assert = require('node:assert/strict');
+(async () => {
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH });
+  try {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    const root = process.env.PORTFOLIO_URL || 'http://127.0.0.1:4173/';
+    await page.goto(root + 'travels.html');
+    const carousel = page.locator('.travel-carousel');
+    const frame = carousel.locator('.travel-carousel-window');
+    const counter = carousel.locator('.travel-carousel-controls span');
+    const next = carousel.getByRole('button', { name: 'Next photo', exact: true });
+    const previous = carousel.getByRole('button', { name: 'Previous photo', exact: true });
+    const waitCount = value => page.waitForFunction(expected => document.querySelector('.travel-carousel-controls span').textContent === expected, value);
+    const visiblePhotos = () => frame.evaluate(el => {
+      const bounds = el.getBoundingClientRect();
+      return [...el.querySelectorAll('figure')].filter(photo => {
+        const rect = photo.getBoundingClientRect();
+        return rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1;
+      }).length;
+    });
+    await carousel.scrollIntoViewIfNeeded();
+    assert.equal(await visiblePhotos(), 3);
+    assert.equal(await carousel.locator('a').count(), 0);
+    const total = await page.evaluate(() => Object.values(window.TRAVEL_PHOTOS).flat().length);
+    await waitCount(`2 / ${total}`); // Automatic slide completes after 2 seconds + its transition.
+    await carousel.getByRole('button', { name: 'Pause slideshow' }).click();
+    const paused = await counter.textContent();
+    await page.waitForTimeout(2300);
+    assert.equal(await counter.textContent(), paused);
+    const before = await frame.locator('figure').nth(1).getAttribute('aria-label');
+    await next.click();
+    await page.waitForTimeout(250);
+    assert.equal(await frame.locator('.travel-carousel-track').evaluate(el => el.getAnimations().length), 1);
+    await waitCount(`3 / ${total}`);
+    assert.equal(await frame.locator('figure').nth(0).getAttribute('aria-label'), before);
+    await frame.focus();
+    await page.keyboard.press('ArrowLeft');
+    await waitCount(`2 / ${total}`);
+    await previous.click();
+    await waitCount(`1 / ${total}`);
+    await previous.click();
+    await waitCount(`${total} / ${total}`);
+    await next.click();
+    await waitCount(`1 / ${total}`);
+    await frame.locator('img').evaluateAll(images => Promise.all(images.map(img => img.decode())));
+    await page.screenshot({ path: '/private/tmp/travel-strip-desktop.png' });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await carousel.scrollIntoViewIfNeeded();
+    assert.equal(await visiblePhotos(), 2);
+    const box = await frame.boundingBox();
+    await page.mouse.move(box.x + box.width * .8, box.y + 100);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * .2, box.y + 100);
+    await page.mouse.up();
+    await waitCount(`2 / ${total}`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await frame.locator('img').evaluateAll(images => Promise.all(images.map(img => img.decode())));
+    await page.screenshot({ path: '/private/tmp/travel-strip-mobile.png' });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.reload();
+    await carousel.scrollIntoViewIfNeeded();
+    await carousel.getByRole('button', { name: 'Play slideshow' }).waitFor();
+    await next.click();
+    await waitCount(`2 / ${total}`);
+    assert.equal(await frame.locator('.travel-carousel-track').evaluate(el => el.getAnimations().length), 0);
+    await page.locator('.travel-back').click();
+    await page.waitForSelector('#world .mark', { state: 'attached' });
+    const headings = await page.locator('.mark .age').allTextContents();
+    for (const age of [11, 15, 16, 17, 18, 19]) assert.equal(headings.filter(text => text === `At age ${age}`).length, 1);
+    assert.equal(await page.locator('.mark').count(), 10);
+    const intact = await page.evaluate(() => [...document.querySelectorAll('.mark p')].every((p, i) => p.textContent === SITE.highlights[i].text));
+    assert.equal(intact, true);
+    await page.locator('a.path[href="travels.html"]').evaluate(link => link.click());
+    await page.waitForURL('**/travels.html');
+    assert.equal(await page.locator('.travel-carousel-track').count(), 1);
+    await next.click();
+    await waitCount(`3 / ${total}`);
+    assert.deepEqual(errors, []);
+    console.log('PASS: multi-photo row, autoplay, animated slide, seamless wrap, pause, keyboard, swipe, mobile, reduced motion, cached navigation, unique ages, original milestone text');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exit(1); });

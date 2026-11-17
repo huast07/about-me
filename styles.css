@@ -305,9 +305,15 @@ canvas#fx { z-index: 3; }
   .travel-journal .journal-entry p { font-size:22px; }
 }
 .gallery-content.travel-carousel { display:block; }
-.travel-carousel-window { min-width:0; overflow:hidden; touch-action:pan-y; }
+.travel-carousel-window { --photo-count:3; --photo-gap:16px; min-width:0; overflow:hidden; touch-action:pan-y; }
+.travel-carousel-track { display:flex; gap:var(--photo-gap); transform:translateX(calc((100% + var(--photo-gap)) / var(--photo-count) * -1)); }
+.travel-carousel-slide { flex:0 0 calc((100% - (var(--photo-count) - 1) * var(--photo-gap)) / var(--photo-count)); min-width:0; }
 .travel-carousel-window:focus-visible, .travel-carousel-controls button:focus-visible { outline:2px solid var(--ink); outline-offset:4px; }
-.travel-carousel-window img { height:min(54vh,480px); width:100%; object-fit:contain; }
+.travel-carousel-window img { height:300px; width:100%; object-fit:contain; }
+@media(max-width:600px){
+  .travel-carousel-window { --photo-count:2; --photo-gap:12px; }
+  .travel-carousel-window img { height:220px; }
+}
 .travel-carousel-controls { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:12px; padding:20px 0 4px; }
 .travel-carousel-controls button { border:1px solid var(--rule); border-radius:4px; background:transparent; color:var(--ink); min-width:44px; min-height:44px; padding:8px 12px; font:16px var(--serif); cursor:pointer; }
 .travel-carousel-controls span { min-width:64px; text-align:center; font:12px var(--mono); }
