@@ -37,8 +37,10 @@ The travel atlas uses D3 7.9.0 and topojson-client 3.1.0 (ISC licenses),
 and Natural Earth country boundaries through world-atlas 2.0.2 (public domain).
 Routes are illustrative great-circle connections from Toronto, not a record of flights.
 Add country photographs to `js/travel-content.js` as documented there. The first
-batch contains 149 optimized, metadata-free JPEGs in `assets/travels/`; originals
-remain untouched. Clearly identifiable destinations are grouped by country;
+batch contains 149 optimized, metadata-free JPEGs in `assets/travels/`; a further
+90 photos from Travels2 are in `assets/travels/batch-2/`, for 239 photos total.
+Exports are at most 1400px on the longest side; originals remain untouched.
+Clearly identifiable destinations are grouped by country;
 unconfirmed locations use the “Travel moments” data key and can be reassigned later.
 Four MOV clips from the supplied folder are not included in these photo galleries.
 The takeaways preserve Sterling’s text in a handwritten journal, revealing words
@@ -49,7 +51,7 @@ The torn, aged journal paper has frayed edges, worn corners, stains, and fold cr
 and uses the locally hosted “Nothing You Could Do” handwriting
 font (SIL Open Font License, included in `assets/fonts/travel-hand/OFL.txt`). Words
 fade in without clipping letter shapes or italic overhangs. “Travel moments” shows
-all 149 photos in a looping horizontal strip with three photos visible on desktop and
+all 239 photos in a looping horizontal strip with three photos visible on desktop and
 two on mobile. The row slides forward every two seconds, with previous/next, arrow-key,
 swipe, and play/pause controls. It pauses on photo hover
 or focus within the carousel, while offscreen, while a country gallery is open, and when the tab is hidden;

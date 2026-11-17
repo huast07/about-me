@@ -37,6 +37,12 @@ window.TRAVEL_PHOTOS = {
       "alt": "Cycling on a wooded path",
       "width": 1050,
       "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_5778.jpg",
+      "alt": "Niagara Falls surrounded by winter ice and snow",
+      "width": 1400,
+      "height": 1050
     }
   ],
   "United States": [
@@ -49,6 +55,30 @@ window.TRAVEL_PHOTOS = {
     {
       "src": "assets/travels/img_2539.jpg",
       "alt": "An illuminated street at night",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5962.jpg",
+      "alt": "Friends on a city street beneath the illuminated Empire State Building",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5987.jpg",
+      "alt": "Friends outside the Museum of Sex in New York",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6027.jpg",
+      "alt": "Friends outside Columbia University’s Low Library",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6046.jpg",
+      "alt": "Friends in the courtyard at Columbia University",
       "width": 1400,
       "height": 1050
     }
@@ -917,6 +947,526 @@ window.TRAVEL_PHOTOS = {
       "alt": "Friends together outside",
       "width": 1050,
       "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_0199.jpg",
+      "alt": "An alpine lake between green mountain slopes",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_0623.jpg",
+      "alt": "A green valley surrounded by forested mountains",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1033.jpg",
+      "alt": "Friends holding drinks together indoors",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2040.jpg",
+      "alt": "Taking in a mountain panorama from a lookout",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2092.jpg",
+      "alt": "A sprawling city seen through a window",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_2265.jpg",
+      "alt": "A city stretching across a sunlit valley",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2306.jpg",
+      "alt": "A group posing together at an event",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2310.jpg",
+      "alt": "Friends sharing a meal beside a window",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2340.jpg",
+      "alt": "Trying a novelty moustache at a souvenir shop",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_2349.jpg",
+      "alt": "Enjoying the view from a stone tower",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2380.jpg",
+      "alt": "Friends with their luggage inside a terminal",
+      "width": 1054,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_2671.jpg",
+      "alt": "Colourful umbrellas suspended above a narrow street",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2801.jpg",
+      "alt": "A rocky river flowing through a forested valley",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2917.jpg",
+      "alt": "Hiking beside a stream in the woods",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2960.jpg",
+      "alt": "A rocky stream surrounded by dense green forest",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_3074.jpg",
+      "alt": "A group gathered at an outdoor overlook",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_3162.jpg",
+      "alt": "Paddling on a lake in a yellow life jacket",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_3469.jpg",
+      "alt": "A broad river beneath distant mountain ridges",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_3581.jpg",
+      "alt": "A wooden watchtower behind a palisade",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_4691.jpg",
+      "alt": "Exploring a tree-lined city street",
+      "width": 1099,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_4784.jpg",
+      "alt": "Two friends holding a souvenir together",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_4991.jpg",
+      "alt": "Friends taking a selfie indoors",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5035.jpg",
+      "alt": "Friends gathered outside a green building",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_5140.jpg",
+      "alt": "Friends enjoying a boat ride",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5221.jpg",
+      "alt": "Friends exploring a stone courtyard",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5260.jpg",
+      "alt": "Friends beside a waterfront statue",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5442.jpg",
+      "alt": "Cycling along a city street at night",
+      "width": 761,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_5851.jpg",
+      "alt": "Friends beside a clubhouse sign",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5861.jpg",
+      "alt": "Relaxing in a wicker chair outdoors",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_5863.jpg",
+      "alt": "Sunset reflected on a quiet lake",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5878.jpg",
+      "alt": "A snowy hillside beneath a pastel evening sky",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5891.jpg",
+      "alt": "Friends sharing a table inside a dining hall",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6041.jpg",
+      "alt": "Friends gathered in a brightly lit room",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6078.jpg",
+      "alt": "Friends together on a city street",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6663.jpg",
+      "alt": "Friends enjoying a day outdoors",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6731.jpg",
+      "alt": "Cooking a meal on a portable camping stove",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_6753.jpg",
+      "alt": "Friends holding a map beside a lake",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6914.jpg",
+      "alt": "Visiting an aircraft cockpit",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_6969.jpg",
+      "alt": "Friends looking down at the camera beneath an ornate ceiling",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_7097.jpg",
+      "alt": "Relaxing in chairs in a shaded park",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7263.jpg",
+      "alt": "A formal garden leading to a grand building",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7322.jpg",
+      "alt": "An ornate painted ceiling framed by gilded decoration",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7389.jpg",
+      "alt": "Friends relaxing on a grassy riverbank",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7567.jpg",
+      "alt": "Curved stone seating in an outdoor theatre",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_7596.jpg",
+      "alt": "A narrow street with a passage connecting two buildings",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7912.jpg",
+      "alt": "Friends swimming in clear lake water",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_8046.jpg",
+      "alt": "Trams and a bicycle on a city street at sunset",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8527.jpg",
+      "alt": "Rows of vineyards rolling across a green hillside",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8549.jpg",
+      "alt": "Vineyards overlooking a lake beneath a cloudy sky",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9034.jpg",
+      "alt": "A group enjoying the view from a mountain lookout",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9091.jpg",
+      "alt": "Friends relaxing on rocks high in the mountains",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9729.jpg",
+      "alt": "Relaxing on a wooden bench indoors",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/screenshot_2025-04-04_at_10.12.46_am.jpg",
+      "alt": "Recording at a microphone while wearing headphones",
+      "width": 1400,
+      "height": 815
+    }
+  ],
+  "Switzerland": [
+    {
+      "src": "assets/travels/batch-2/img_0902.jpg",
+      "alt": "Friends beside the waterfront in Lucerne",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1215.jpg",
+      "alt": "Red flowers overlooking the river in Lucerne",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1250.jpg",
+      "alt": "Lucerne’s waterfront illuminated at dusk",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1301.jpg",
+      "alt": "Historic buildings along the waterfront in Lucerne",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1343.jpg",
+      "alt": "Flowers along the wooden Chapel Bridge in Lucerne",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1723.jpg",
+      "alt": "Bern’s cathedral rising above the trees",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1776.jpg",
+      "alt": "The Aare winding through Bern",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_1874.jpg",
+      "alt": "A Swiss flag above a stone building in Bern",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8091.jpg",
+      "alt": "A sweeping metal sculpture outside CERN",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8095.jpg",
+      "alt": "Standing beside a CERN sign",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8123.jpg",
+      "alt": "Rows of national flags outside the United Nations in Geneva",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8315.jpg",
+      "alt": "A boat flying a Swiss flag on a lake beneath the mountains",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_8316.jpg",
+      "alt": "A lakeside boat and Swiss flag against an alpine backdrop",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9364.jpg",
+      "alt": "Standing beside an alpine lake with the Matterhorn behind",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_9367.jpg",
+      "alt": "The Matterhorn reflected in a still alpine lake",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9448.jpg",
+      "alt": "Hiking above Zermatt with the Matterhorn in the distance",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9547.jpg",
+      "alt": "A group posing together on a mountain trail near the Matterhorn",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9595.jpg",
+      "alt": "A Swiss flag on a rocky ridge beneath the Matterhorn",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9654.jpg",
+      "alt": "The Matterhorn rising above the buildings of Zermatt",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_9679.jpg",
+      "alt": "A tree-lined path through Zermatt beneath the mountains",
+      "width": 1400,
+      "height": 1050
+    }
+  ],
+  "Mexico": [
+    {
+      "src": "assets/travels/batch-2/img_2144.jpg",
+      "alt": "Standing outside Puebla Cathedral",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2194.jpg",
+      "alt": "A crowd gathered around tall festival figures in Puebla",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_2272.jpg",
+      "alt": "A yellow church in Cholula",
+      "width": 1050,
+      "height": 1400
+    },
+    {
+      "src": "assets/travels/batch-2/img_2289.jpg",
+      "alt": "The colourful San Pedro Cholula sign",
+      "width": 1400,
+      "height": 1050
+    }
+  ],
+  "Germany": [
+    {
+      "src": "assets/travels/batch-2/img_2219.jpg",
+      "alt": "Neuschwanstein Castle above a wooded valley",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_2356.jpg",
+      "alt": "Munich’s rooftops and the twin towers of the Frauenkirche",
+      "width": 1400,
+      "height": 1050
+    }
+  ],
+  "Denmark": [
+    {
+      "src": "assets/travels/batch-2/img_5068.jpg",
+      "alt": "Friends beside the colourful waterfront buildings of Nyhavn",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_5636.jpg",
+      "alt": "Posing with a Copenhagen souvenir display",
+      "width": 1050,
+      "height": 1400
+    }
+  ],
+  "France": [
+    {
+      "src": "assets/travels/batch-2/img_7198.jpg",
+      "alt": "The ornate facade of Paris City Hall",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7305.jpg",
+      "alt": "Standing beside the glass pyramid at the Louvre",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7411.jpg",
+      "alt": "Friends beneath the illuminated July Column at Place de la Bastille",
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "src": "assets/travels/batch-2/img_7606.jpg",
+      "alt": "The facade of Lyon Cathedral beneath a blue sky",
+      "width": 1400,
+      "height": 1050
     }
   ]
 };

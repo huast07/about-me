@@ -82,7 +82,7 @@
   };
 
   place(`<section class="hero" aria-label="Introduction">
-      <div class="mono">${esc(SITE.education)}</div>
+      <div class="mono">${SITE.education.split('\n').map(esc).join('<br>')}</div>
       <h1>${esc(SITE.name.split(" ")[0])}<br><em>${esc(SITE.name.split(" ").slice(1).join(" "))}</em></h1>
       <p>Every branch on this tree is a moment that shaped me. Scroll, and watch it grow through the seasons.</p>
       <span class="hand"><span class="arrow" aria-hidden="true">&darr;</span> scroll to grow</span>

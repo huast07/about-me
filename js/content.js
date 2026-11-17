@@ -8,7 +8,7 @@
    ===================================================================== */
 const SITE = {
   name: "Sterling Huang",
-  education: "UTS'25 and University of Toronto Engineering Science 2T9",
+  education: "University of Toronto Schools '25\nUniversity of Toronto Engineering Science 2T9",
   linkedin: "https://www.linkedin.com/in/sterling-huang-20206b24b/",
 
   highlights: [
