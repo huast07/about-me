@@ -30,6 +30,28 @@ Browser regression check (requires Playwright and its Chromium browser):
 `node tests/music-navigation.cjs`. Set `PORTFOLIO_URL` to test a different local
 server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing installations.
 `node tests/travel-carousel.cjs` checks the sliding photo strip and unique milestone ages.
+`node tests/recruiter-navigation.cjs` checks homepage shortcuts, the mobile menu,
+navigation focus/history, layouts from 320px to 1440px, app screenshots, plain-text
+travel notes, and explicit slideshow playback while the Play button retains focus.
+
+## Navigation and readability
+
+Every page has static navigation links, a native mobile Menu, and a direct email
+contact link. The shared header stays outside `#page` so navigation keeps the music
+player alive. Keep the header links consistent across the eight HTML files.
+Selecting a page starts at its top; browser Back/Forward preserves its saved position.
+The homepage provides immediate project, research, résumé-request, and contact links;
+the introduction scrolls normally before the optional tree story. Larger, labelled
+story controls replace the desktop dots. Reading areas use paper-coloured backgrounds
+and Georgia body text while retaining the paintings and display typography.
+
+“Request résumé” opens an email addressed to Sterling with a résumé-request subject.
+It does not send an email automatically. A downloadable résumé and detailed research
+roles, dates, and contributions still need to be supplied by Sterling.
+
+BikeTO’s download link and the three images in `assets/projects/biketo/` come from
+[its official App Store listing](https://apps.apple.com/ca/app/biketo/id6761314510).
+The expanded IC2 name is from [the research centre’s official site](https://ic2.sit.kmutt.ac.th/about-us/).
 
 ## Travels and season notes
 
@@ -58,6 +80,10 @@ or focus within the carousel, while offscreen, while a country gallery is open, 
 reduced-motion users start with autoplay off. Country galleries retain their grids.
 An “Expand gallery” control opens all travel moments in a scrollable photo grid,
 with lazy-loaded images. Close the gallery or press Escape to return to the same carousel position.
+The page also offers photo/takeaway shortcuts and a Plain-text view that shows the
+entire note immediately in Georgia, using the same underlying text. Activating Play
+explicitly resumes the slideshow even while the playback button retains focus;
+other carousel controls still pause automatic movement while focused.
 
 Vivaldi plays across every page, including Travels.
 Scientific and literary source references are retained in `js/tree.js`.

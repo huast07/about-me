@@ -15,7 +15,7 @@
   /* Screen line (fraction from top) that decides the current season and rail stop: just below centre, where cards are read. */
   const FOCUS_SCREEN = 0.62;
   const CARD_MAX_W = 340, CARD_GAP = 70; // highlight card width and distance from the trunk (desktop)
-  const TOPBAR_CLEARANCE = 64; // px kept free above the finale for the fixed top bar
+  const TOPBAR_CLEARANCE = 100; // room for the shared navigation
 
   const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -81,12 +81,21 @@
     return html;
   };
 
-  place(`<section class="hero" aria-label="Introduction">
-      <div class="mono">${SITE.education.split('\n').map(esc).join('<br>')}</div>
+  const hero = place(`<section class="hero" id="home-intro" aria-label="Introduction" tabindex="-1">
+      <div class="education">${SITE.education.split('\n').map(esc).join('<br>')}</div>
       <h1>${esc(SITE.name.split(" ")[0])}<br><em>${esc(SITE.name.split(" ").slice(1).join(" "))}</em></h1>
-      <p>Every branch on this tree is a moment that shaped me. Scroll, and watch it grow through the seasons.</p>
-      <span class="hand"><span class="arrow" aria-hidden="true">&darr;</span> scroll to grow</span>
+      <p>I’m an Engineering Science student at the University of Toronto, with experience in research, app development, and community service.</p>
+      <nav class="hero-actions" aria-label="Explore my work">
+        <a class="action-link primary" href="industry.html">View projects</a>
+        <a class="action-link" href="research.html">Research</a>
+        <a class="action-link" href="mailto:${esc(SITE.contact.email)}?subject=R%C3%A9sum%C3%A9%20request">Request résumé</a>
+        <a class="action-link" href="mailto:${esc(SITE.contact.email)}">Contact</a>
+      </nav>
+      <button class="story-start" type="button">Explore my story <span aria-hidden="true">↓</span></button>
     </section>`, 380);
+  // The introduction scrolls normally; the tree remains an optional animated story.
+  hero.removeAttribute('data-wy');
+  document.getElementById('page').insertBefore(hero, world);
 
   const shownAges = new Set();
   marks.forEach(m => {
@@ -119,8 +128,8 @@
   const cv = document.getElementById("tree");
   let ctx = cv.getContext("2d"); // temporarily swapped to a sprite canvas while sprites are built
   const fxCv = document.getElementById("fx"), fctx = fxCv.getContext("2d");
-  let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false, DPR = 1;
-  const camY = () => scrollY;
+  let W = 0, H = 0, S = 200, trunkCX = 0, TW = 1, mobile = false, DPR = 1, introScroll = 0;
+  const camY = () => Math.max(0, scrollY - introScroll);
   const sy = wy => H - GROUND - wy + camY();
   /* The growing tip starts at the ground (a bud) and catches up with the reading line as you scroll. */
   const BUD_START = 22; // px of shoot visible before any scrolling
@@ -142,7 +151,8 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     S = mobile ? W * 0.4 : Math.min(W * 0.28, 300); trunkCX = W * 0.5; TW = mobile ? 0.62 : 1;
     WORLD_H = TOP + GROUND + H * CROWN_SCREEN;
-    spacer.style.height = WORLD_H + "px"; world.style.height = WORLD_H + "px";
+    introScroll = Math.max(0, hero.offsetTop + hero.offsetHeight - H * .45);
+    spacer.style.height = (WORLD_H + introScroll) + "px"; world.style.height = WORLD_H + "px";
     const finaleCentre = Math.max(H * FINALE_SCREEN, finale.offsetHeight / 2 + TOPBAR_CLEARANCE);
     finale.dataset.wy = WORLD_H - GROUND - finaleCentre;
     layoutDom(); render();
@@ -340,6 +350,7 @@
     [...twigs, ...branches].forEach(drawWood);
     foliagePass();
     world.style.transform = `translateY(${H - GROUND - WORLD_H + camY()}px)`;
+    world.parentElement.classList.toggle('story-active', camY() > 0);
     const tip = tipY();
     const finaleOn = tip > +finale.dataset.wy - 160;
     finale.classList.toggle("on", finaleOn);
@@ -389,15 +400,16 @@
   }
 
   /* ---------- navigation ---------- */
-  const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND), behavior: reduceMotion ? "auto" : "smooth" });
+  const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND + introScroll), behavior: reduceMotion ? "auto" : "smooth" });
+  hero.querySelector('.story-start').addEventListener('click', () => goTo(marks[0].wy + 60));
   const rail = document.getElementById("rail");
-  [...marks.map(m => ({ label: m.tag, wy: () => m.wy + 60 })), { label: SITE.motto.latin, wy: () => +finale.dataset.wy }].forEach(stop => {
+  [...marks.map(m => ({ label: m.tag, wy: () => m.wy + 60 })), { label: "Explore sections", wy: () => +finale.dataset.wy }].forEach(stop => {
     const li = document.createElement("li"), b = document.createElement("button");
     b.innerHTML = `<span>${esc(stop.label)}</span>`; b.setAttribute("aria-label", `Jump to ${stop.label}`);
     b.addEventListener("click", () => goTo(stop.wy()));
     li.appendChild(b); rail.appendChild(li); railBtns.push(b);
   });
-  world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND) }); });
+  world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND + introScroll) }); });
 
 
   addEventListener("resize", resize);

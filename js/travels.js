@@ -6,6 +6,16 @@
  const root=document.getElementById('travel-app'); if(!root || root.dataset.ready) return; root.dataset.ready='true';
  const journal=root.querySelector('.journal-entry');
  if(journal){
+   const viewToggle=root.querySelector('.journal-toggle');
+   let plainText=false;
+   viewToggle.hidden=false;
+   viewToggle.addEventListener('click',()=>{
+     plainText=!plainText;
+     journal.closest('.travel-journal').classList.toggle('plain-text',plainText);
+     viewToggle.setAttribute('aria-pressed',String(plainText));
+     viewToggle.textContent=plainText?'Handwritten view':'Plain-text view';
+     scheduleJournal();
+   });
    const walker=document.createTreeWalker(journal,NodeFilter.SHOW_TEXT),nodes=[];
    while(walker.nextNode()) nodes.push(walker.currentNode);
    nodes.forEach(node=>{
@@ -22,7 +32,7 @@
      queued=false;if(!journal.isConnected)return;
      paragraphs.forEach(({p,words})=>{
        const box=p.getBoundingClientRect();
-       const progress=motion.matches?1:Math.max(0,Math.min(1,(innerHeight*.92-box.top)/(box.height+innerHeight*.02)));
+       const progress=motion.matches||plainText?1:Math.max(0,Math.min(1,(innerHeight*.92-box.top)/(box.height+innerHeight*.02)));
        // Reveal whole glyphs without clipping ascenders or italic overhangs.
        words.forEach((word,i)=>{const ink=Math.max(0,Math.min(1,progress*words.length-i));word.style.opacity=ink;});
      });
@@ -55,7 +65,7 @@
    gallery.append(viewport,controls);
    const [previous,next,toggle,expand]=controls.querySelectorAll('button'),counter=controls.querySelector('span');
    const motion=matchMedia('(prefers-reduced-motion: reduce)');
-   let index=0,playing=!motion.matches,hovered=false,timer,startX=null,animation=null;
+   let index=0,playing=!motion.matches,hovered=false,timer,startX=null,animation=null,playbackFocusAllowed=false;
    const wrap=value=>(value+photos.length)%photos.length;
    function makeSlide(position){
      const photoIndex=wrap(position),photo=photos[photoIndex];
@@ -95,12 +105,14 @@
      viewport.setAttribute('aria-live',playing?'off':'polite');
      if(playing)timer=setInterval(()=>{
        const bounds=gallery.getBoundingClientRect();
-       if(gallery.isConnected&&bounds.bottom>0&&bounds.top<innerHeight&&!dialog.open&&!document.hidden&&!hovered&&!gallery.contains(document.activeElement))show(1);
+       const focusPaused=gallery.contains(document.activeElement)&&!(document.activeElement===toggle&&playbackFocusAllowed);
+       if(gallery.isConnected&&bounds.bottom>0&&bounds.top<innerHeight&&!dialog.open&&!document.hidden&&!hovered&&!focusPaused)show(1);
      },2000);
    }
    previous.addEventListener('click',()=>{show(-1);restart();});
    next.addEventListener('click',()=>{show(1);restart();});
-   toggle.addEventListener('click',()=>{playing=!playing;restart();});
+   toggle.addEventListener('click',()=>{playing=!playing;playbackFocusAllowed=playing;restart();});
+   toggle.addEventListener('blur',()=>{playbackFocusAllowed=false;});
    expand.addEventListener('click',()=>{
      if(animation)animation.finish();
      openGallery('Travel moments',photos,false);

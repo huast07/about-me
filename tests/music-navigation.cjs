@@ -55,7 +55,7 @@ const assert = require('node:assert/strict');
   await page.waitForFunction(() => document.querySelector('#musicBtn').getAttribute('aria-pressed') === 'true');
   const directToken = await page.evaluate(() => window.visitToken);
   await page.locator('a.back, a.travel-back').click();
-  await page.waitForSelector('#world .hero');
+  await page.waitForSelector('#home-intro');
   assert.equal(await page.evaluate(() => window.visitToken), directToken);
   assert.equal(await page.locator('#musicBtn').getAttribute('aria-pressed'), 'true');
   // Mobile controls remain visible and the layout fits the viewport.

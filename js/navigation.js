@@ -1,8 +1,36 @@
 /* Progressive navigation keeps the soundtrack alive. Each URL is also a complete
    static page for direct visits, refreshes, and browsers without JavaScript. */
 (() => {
-  if (location.protocol === 'file:') return;
   const base = new URL('../', document.currentScript.src);
+  const menu = document.querySelector('.site-menu');
+  const updateNavigation = () => {
+    const filename = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.site-nav a').forEach(link => {
+      const active = link.getAttribute('href') === (filename === 'biketo.html' ? 'industry.html' : filename);
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  };
+  menu?.addEventListener('click', event => {
+    if (event.target.closest('a')) menu.open = false;
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu?.open) {
+      menu.open = false; menu.querySelector('summary').focus();
+    }
+  });
+  document.addEventListener('click', event => {
+    if (menu?.open && !menu.contains(event.target)) menu.open = false;
+  });
+  document.addEventListener('focusin', event => {
+    if (menu?.open && !menu.contains(event.target)) menu.open = false;
+  });
+  matchMedia('(min-width:1181px)').addEventListener('change', () => {
+    if (menu) menu.open = false;
+  });
+  addEventListener('portfolio:pagechange', updateNavigation);
+  updateNavigation();
+  if (location.protocol === 'file:') return;
   const names = ['index.html', 'research.html', 'industry.html', 'biketo.html', 'military.html', 'volunteering.html', 'travels.html', 'readings.html'];
   const allowed = new Set(names.map(name => new URL(name, base).pathname));
   const key = url => url.pathname === base.pathname ? new URL('index.html', base).pathname : url.pathname;
@@ -82,8 +110,8 @@
       if (request !== version) return;
       dispatchEvent(new CustomEvent('portfolio:pagechange', { detail: { travel: !!next.node.querySelector('#travel-app') } }));
       dispatchEvent(new Event('resize'));
-      scrollTo({ top: next.y, behavior: 'instant' });
-      const heading = next.node.querySelector('#tree') ? next.node : next.node.querySelector('h1');
+      scrollTo({ top: push ? 0 : next.y, behavior: 'instant' });
+      const heading = next.node.querySelector('#home-intro') || next.node.querySelector('h1');
       if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
     } catch (error) {
       if (request === version) location.assign(url.href);
