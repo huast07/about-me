@@ -42,11 +42,15 @@
  function startCarousel(photos,gallery){
    if(!photos.length)return;
    gallery.classList.add('travel-carousel');
+   gallery.setAttribute('role','region');
    gallery.setAttribute('aria-roledescription','carousel');
    gallery.setAttribute('aria-label','Travel moments');
    const viewport=document.createElement('div');viewport.className='travel-carousel-window';
-   const link=document.createElement('a'),img=document.createElement('img');
-   link.target='_blank';link.rel='noopener';img.decoding='async';link.append(img);viewport.append(link);
+   viewport.tabIndex=0;
+   viewport.setAttribute('role','group');
+   viewport.setAttribute('aria-roledescription','slide');
+   const img=document.createElement('img');
+   img.decoding='async';img.draggable=false;viewport.append(img);
    const controls=document.createElement('div');controls.className='travel-carousel-controls';
    controls.innerHTML='<button type="button" aria-label="Previous photo">←</button><span></span><button type="button" aria-label="Next photo">→</button><button type="button" class="carousel-playback"></button>';
    gallery.append(viewport,controls);
@@ -55,26 +59,35 @@
    let index=0,playing=!motion.matches,hovered=false,timer,startX=null;
    function show(direction=0){
      index=(index+direction+photos.length)%photos.length;const photo=photos[index];
-     img.src=photo.src;img.alt=photo.alt;img.width=photo.width;img.height=photo.height;link.href=photo.src;
-     link.setAttribute('aria-label',`View full photo: ${photo.alt}`);
+     img.src=photo.src;img.alt=photo.alt;img.width=photo.width;img.height=photo.height;
+     viewport.setAttribute('aria-label',`Photo ${index+1} of ${photos.length}. Use left and right arrow keys to browse.`);
      counter.textContent=`${index+1} / ${photos.length}`;
-     if(direction&&!motion.matches)img.animate([{opacity:.3},{opacity:1}],{duration:400});
+     if(direction&&!motion.matches)img.animate([{opacity:.3,transform:`translateX(${direction>0?24:-24}px)`},{opacity:1,transform:'translateX(0)'}],{duration:400});
    }
    function restart(){
      clearInterval(timer);toggle.textContent=playing?'Pause slideshow':'Play slideshow';
+     viewport.setAttribute('aria-live',playing?'off':'polite');
      if(playing)timer=setInterval(()=>{
        const bounds=gallery.getBoundingClientRect();
-       if(gallery.isConnected&&bounds.bottom>0&&bounds.top<innerHeight&&!dialog.open&&!document.hidden&&!hovered&&!viewport.contains(document.activeElement))show(1);
-     },4500);
+       if(gallery.isConnected&&bounds.bottom>0&&bounds.top<innerHeight&&!dialog.open&&!document.hidden&&!hovered&&!gallery.contains(document.activeElement))show(1);
+     },2500);
    }
    previous.addEventListener('click',()=>{show(-1);restart();});
    next.addEventListener('click',()=>{show(1);restart();});
    toggle.addEventListener('click',()=>{playing=!playing;restart();});
+   gallery.addEventListener('keydown',event=>{
+     if(event.key==='ArrowLeft'||event.key==='ArrowRight'){
+       event.preventDefault();show(event.key==='ArrowLeft'?-1:1);restart();
+     }
+   });
    viewport.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')hovered=true;});
    viewport.addEventListener('pointerleave',()=>{hovered=false;});
-   viewport.addEventListener('pointerdown',event=>{startX=event.clientX;});
+   viewport.addEventListener('pointerdown',event=>{
+     if(!event.isPrimary||event.button!==0)return;
+     startX=event.clientX;viewport.setPointerCapture(event.pointerId);
+   });
    viewport.addEventListener('pointerup',event=>{
-     if(startX!==null&&Math.abs(event.clientX-startX)>40){show(event.clientX<startX?1:-1);restart();link.addEventListener('click',event=>event.preventDefault(),{once:true});}
+     if(startX!==null&&Math.abs(event.clientX-startX)>40){show(event.clientX<startX?1:-1);restart();}
      startX=null;
    });
    viewport.addEventListener('pointercancel',()=>{startX=null;});

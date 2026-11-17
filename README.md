@@ -42,14 +42,15 @@ unconfirmed locations use the “Travel moments” data key and can be reassigne
 Four MOV clips from the supplied folder are not included in these photo galleries.
 The takeaways preserve Sterling’s text in a handwritten journal, revealing words
 as visitors scroll. Reduced-motion users and browsers without JavaScript see the
-complete entry immediately. Gallery photos preserve their full composition and
-link to the full image in a new tab.
-The torn, aged journal paper uses the locally hosted “Nothing You Could Do” handwriting
+complete entry immediately. Country gallery photos preserve their full composition and
+link to the full image in a new tab; travel moments stay inline without opening another page.
+The torn, aged journal paper has frayed edges, worn corners, stains, and fold creases,
+and uses the locally hosted “Nothing You Could Do” handwriting
 font (SIL Open Font License, included in `assets/fonts/travel-hand/OFL.txt`). Words
 fade in without clipping letter shapes or italic overhangs. “Travel moments” shows
-all 149 photos directly on the page in a looping carousel that advances every 4.5
-seconds, with previous/next, swipe, and play/pause controls. It pauses on photo hover
-or focus, while offscreen, while a country gallery is open, and when the tab is hidden;
+all 149 photos directly on the page in a looping carousel that advances every 2.5
+seconds, with previous/next, arrow-key, swipe, and play/pause controls. It pauses on photo hover
+or focus within the carousel, while offscreen, while a country gallery is open, and when the tab is hidden;
 reduced-motion users start with autoplay off. Country galleries retain their grids.
 
 Vivaldi plays across every page, including Travels.
