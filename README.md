@@ -56,6 +56,8 @@ two on mobile. The row slides forward every two seconds, with previous/next, arr
 swipe, and play/pause controls. It pauses on photo hover
 or focus within the carousel, while offscreen, while a country gallery is open, and when the tab is hidden;
 reduced-motion users start with autoplay off. Country galleries retain their grids.
+An “Expand gallery” control opens all travel moments in a scrollable photo grid,
+with lazy-loaded images. Close the gallery or press Escape to return to the same carousel position.
 
 Vivaldi plays across every page, including Travels.
 Scientific and literary source references are retained in `js/tree.js`.

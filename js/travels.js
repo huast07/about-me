@@ -51,9 +51,9 @@
    viewport.setAttribute('aria-label','Photo strip. Use left and right arrow keys to browse.');
    const track=document.createElement('div');track.className='travel-carousel-track';viewport.append(track);
    const controls=document.createElement('div');controls.className='travel-carousel-controls';
-   controls.innerHTML='<button type="button" aria-label="Previous photo">←</button><span></span><button type="button" aria-label="Next photo">→</button><button type="button" class="carousel-playback"></button>';
+   controls.innerHTML='<button type="button" aria-label="Previous photo">←</button><span></span><button type="button" aria-label="Next photo">→</button><button type="button" class="carousel-playback"></button><button type="button" class="carousel-expand" aria-haspopup="dialog" aria-controls="travel-gallery">Expand gallery</button>';
    gallery.append(viewport,controls);
-   const [previous,next,toggle]=controls.querySelectorAll('button'),counter=controls.querySelector('span');
+   const [previous,next,toggle,expand]=controls.querySelectorAll('button'),counter=controls.querySelector('span');
    const motion=matchMedia('(prefers-reduced-motion: reduce)');
    let index=0,playing=!motion.matches,hovered=false,timer,startX=null,animation=null;
    const wrap=value=>(value+photos.length)%photos.length;
@@ -101,6 +101,10 @@
    previous.addEventListener('click',()=>{show(-1);restart();});
    next.addEventListener('click',()=>{show(1);restart();});
    toggle.addEventListener('click',()=>{playing=!playing;restart();});
+   expand.addEventListener('click',()=>{
+     if(animation)animation.finish();
+     openGallery('Travel moments',photos,false);
+   });
    gallery.addEventListener('keydown',event=>{
      if(event.key==='ArrowLeft'||event.key==='ArrowRight'){
        event.preventDefault();show(event.key==='ArrowLeft'?-1:1);restart();
@@ -122,16 +126,23 @@
    motion.addEventListener('change',reduceMotion);update();restart();
  }
  function open(d){
-   selected=d;title.textContent=d[0];gallery.replaceChildren();
-   const photos=(window.TRAVEL_PHOTOS||{})[d[0]]||[];
+   selected=d;
+   openGallery(d[0],(window.TRAVEL_PHOTOS||{})[d[0]]||[]);
+ }
+ function openGallery(name,photos,linkPhotos=true){
+   title.textContent=name;gallery.replaceChildren();
    gallery.classList.toggle('has-photos',photos.length>0);
    if(!photos.length){const p=document.createElement('p');p.textContent='Photos coming soon.';gallery.append(p);}
    else photos.forEach(photo=>{
-     const figure=document.createElement('figure'),link=document.createElement('a'),img=document.createElement('img');
-     link.href=photo.src;link.target='_blank';link.rel='noopener';link.setAttribute('aria-label',`View full photo: ${photo.alt}`);
+     const figure=document.createElement('figure'),img=document.createElement('img');
      img.src=photo.src;img.alt=photo.alt||'';img.loading='lazy';img.decoding='async';
      img.width=photo.width||1400;img.height=photo.height||1050;
-     link.append(img);figure.append(link);gallery.append(figure);
+     if(linkPhotos){
+       const link=document.createElement('a');
+       link.href=photo.src;link.target='_blank';link.rel='noopener';link.setAttribute('aria-label',`View full photo: ${photo.alt}`);
+       link.append(img);figure.append(link);
+     }else figure.append(img);
+     gallery.append(figure);
    });
    dialog.showModal();dialog.scrollTop=0;
  }
