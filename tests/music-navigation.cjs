@@ -34,14 +34,14 @@ const assert = require('node:assert/strict');
     assert.equal(await page.evaluate(() => window.testSource === window.initialSource), true);
     assert.ok((await page.locator('.music-credit').textContent()).includes('Vivaldi'));
     await page.locator('a.back, a.travel-back').click();
-    await page.waitForURL('**/index.html');
+    await page.waitForURL('**/index.html#sections');
     assert.equal(await page.locator('#tree').count(), 1);
   }
   assert.ok(await page.evaluate(() => testAudio.currentTime) > time);
   await page.goBack();
   await page.waitForURL('**/readings.html');
   await page.goForward();
-  await page.waitForURL('**/index.html');
+  await page.waitForURL('**/index.html#sections');
   assert.equal(await page.evaluate(() => window.visitToken), token);
   await page.locator('#musicBtn').click();
   await page.waitForFunction(() => testAudio.state === 'suspended');

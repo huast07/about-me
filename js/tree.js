@@ -102,7 +102,7 @@
       </article>`, m.wy + 60);
   });
 
-  const finale = place(`<section class="finale" aria-labelledby="motto">
+  const finale = place(`<section class="finale" id="sections" aria-labelledby="motto">
       <h2 id="motto" lang="la">${esc(SITE.motto.latin)}</h2>
       <p class="translation">${esc(SITE.motto.translation)}</p>
       <p class="hand"><span lang="la">“${esc(SITE.motto.note)}”</span><br>
@@ -112,7 +112,7 @@
         ${SITE.contact.github ? `<a href="${esc(SITE.contact.github)}" target="_blank" rel="noopener">GitHub &nearr;</a>` : ""}
         ${SITE.contact.email ? `<a href="mailto:${esc(SITE.contact.email)}">${esc(SITE.contact.email)}</a>` : ""}
       </div>
-      <nav class="paths" aria-label="Explore more">
+      <nav class="paths" aria-label="Explore more" tabindex="-1">
         ${SITE.paths.map((p, i) => `<a class="path" href="${esc(p.href)}" style="--i:${i}">
           <span class="mono">Branch ${pad2(i + 1)}</span><strong>${esc(p.title)}</strong><span class="blurb">${esc(p.blurb)}</span><span class="go" aria-hidden="true">&rarr;</span></a>`).join("")}
       </nav>
@@ -392,13 +392,29 @@
   /* ---------- navigation ---------- */
   const goTo = wy => scrollTo({ top: Math.max(0, wy - H * 0.5 + GROUND + introScroll), behavior: reduceMotion ? "auto" : "smooth" });
   hero.querySelector('.story-start').addEventListener('click', () => goTo(marks[0].wy + 60));
-  world.addEventListener("focusin", e => { const el = e.target.closest("[data-wy]"); if (el) scrollTo({ top: Math.max(0, +el.dataset.wy - H * 0.5 + GROUND + introScroll) }); });
+  function showSections() {
+    if (!world.isConnected) return;
+    scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+    render();
+    finale.scrollTop = finale.scrollHeight;
+    finale.querySelector('.paths').focus({ preventScroll: true });
+  }
+  addEventListener('portfolio:sections', showSections);
+  addEventListener('hashchange', () => { if (location.hash === '#sections') showSections(); });
+  world.addEventListener("focusin", e => {
+    const el = e.target.closest("[data-wy]");
+    if (el) scrollTo({ top: el === finale ? document.documentElement.scrollHeight : Math.max(0, +el.dataset.wy - H * 0.5 + GROUND + introScroll), behavior: 'instant' });
+  });
 
 
   addEventListener("resize", resize);
   seasonLabel.textContent = SEASONS[season].label;
   seasonLabel.setAttribute("aria-label", `Explore ${SEASONS[season].label} cherry tree notes`);
   resize();
-  document.fonts?.ready.then(resize); // web fonts change the finale's height
+  if (location.hash === '#sections') showSections();
+  document.fonts?.ready.then(() => {
+    resize(); // Web fonts change the finale's height.
+    if (location.hash === '#sections') showSections();
+  });
   requestAnimationFrame(loop);
 })();

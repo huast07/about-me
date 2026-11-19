@@ -30,6 +30,8 @@ Browser regression check (requires Playwright and its Chromium browser):
 `node tests/music-navigation.cjs`. Set `PORTFOLIO_URL` to test a different local
 server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing installations.
 `node tests/travel-carousel.cjs` checks the sliding photo strip and unique milestone ages.
+`node tests/branch-return.cjs` checks that all six branch Home links return to the
+visible section boxes on desktop and mobile, including history and refreshes.
 `node tests/recruiter-navigation.cjs` checks homepage navigation, the mobile menu,
 navigation focus/history, layouts from 320px to 1440px, app screenshots, plain-text
 travel notes, and explicit slideshow playback while the Play button retains focus.
@@ -40,6 +42,8 @@ Every page has static navigation links, a native mobile Menu, and a direct email
 contact link. The shared header stays outside `#page` so navigation keeps the music
 player alive. Keep the header links consistent across the eight HTML files.
 Selecting a page starts at its top; browser Back/Forward preserves its saved position.
+Branch-page Home links target `index.html#sections`, returning directly to the six
+section boxes, including on a direct visit or refresh.
 The homepage introduction scrolls normally before the optional tree story, without
 a timeline sidebar or shortcut buttons. The shared header provides page navigation.
 Reading areas use translucent paper-coloured backgrounds and Georgia body text. Light artwork overlays keep the paintings visible around and through the

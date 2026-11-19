@@ -34,6 +34,7 @@
   const names = ['index.html', 'research.html', 'industry.html', 'biketo.html', 'military.html', 'volunteering.html', 'travels.html', 'readings.html'];
   const allowed = new Set(names.map(name => new URL(name, base).pathname));
   const key = url => url.pathname === base.pathname ? new URL('index.html', base).pathname : url.pathname;
+  const isSections = url => key(url) === new URL('index.html', base).pathname && url.hash === '#sections';
   const pages = new Map();
   let current = key(new URL(location.href)), version = 0;
   let homeLoaded = !!document.getElementById('tree'), homeLoading = null;
@@ -112,7 +113,8 @@
       dispatchEvent(new Event('resize'));
       scrollTo({ top: push ? 0 : next.y, behavior: 'instant' });
       const heading = next.node.querySelector('#home-intro') || next.node.querySelector('h1');
-      if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+      if (isSections(url)) dispatchEvent(new Event('portfolio:sections'));
+      else if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
     } catch (error) {
       if (request === version) location.assign(url.href);
     }
@@ -122,9 +124,14 @@
     const link = event.target.closest('a[href]');
     if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
     const url = new URL(link.href);
-    if (url.origin !== location.origin || !allowed.has(key(url)) || url.hash || url.search) return;
+    if (url.origin !== location.origin || !allowed.has(key(url)) || (url.hash && !isSections(url)) || url.search) return;
     event.preventDefault();
-    if (key(url) === current) { scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (key(url) === current) {
+      if (location.hash !== url.hash) history.pushState({}, '', url);
+      if (isSections(url)) dispatchEvent(new Event('portfolio:sections'));
+      else scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     navigate(url, true);
   });
   addEventListener('popstate', () => navigate(new URL(location.href), false));
