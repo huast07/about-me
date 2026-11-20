@@ -2,7 +2,7 @@
    CONTENT - edit this file only to change what the main page says.
    Highlights are listed oldest first. The tree grows one highlight per
    step and the seasons cycle spring > summer > autumn > winter as it grows.
-   age: a number, or null for a milestone with a custom heading.
+   age: a number, or null for an introductory milestone; heading is optional.
    Main-page milestones supplied by Sterling; keep text verbatim.
    emphasis lists exact phrases to display in bold without changing the text.
    ===================================================================== */
@@ -12,7 +12,7 @@ const SITE = {
   linkedin: "https://www.linkedin.com/in/sterling-huang-20206b24b/",
 
   highlights: [
-    { age: null, heading: "Roots in Toronto", tag: "Toronto", emphasis: ["Toronto", "North York"], text: "Sterling was born in Toronto and grew up in North York." },
+    { age: null, tag: "Toronto", emphasis: ["Toronto", "North York"], text: "Sterling was born in Toronto and grew up in North York." },
     { age: 11, tag: "Leadership", emphasis: ["Principal's Award for Student Leadership"], text: "Sterling was awarded the Principal's Award for Student Leadership in his graduating class." },
     { age: 15, tag: "Science Olympiad", emphasis: ["Junior Science Olympiad", "Alternate Member for Team Canada"], text: "Sterling participated in the Junior Science Olympiad and became an Alternate Member for Team Canada." },
     { age: 16, tag: "Chemistry", emphasis: ["bronze medal", "Canadian Chemistry Olympiad", "National Training Camp"], text: "Sterling won a bronze medal at the Canadian Chemistry Olympiad and qualified for the National Training Camp. It was around the same time that Sterling first began auditing university lectures at the University of Toronto." },

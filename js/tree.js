@@ -93,10 +93,10 @@
   const shownAges = new Set();
   marks.forEach(m => {
     const repeatedAge = !m.heading && shownAges.has(m.age);
-    const heading = m.heading ? esc(m.heading) : repeatedAge ? esc(m.tag) : `At age <b>${esc(m.age)}</b>`;
+    const heading = m.heading ? esc(m.heading) : m.age === null ? null : repeatedAge ? esc(m.tag) : `At age <b>${esc(m.age)}</b>`;
     if (m.age !== null) shownAges.add(m.age);
-    m.el = place(`<article class="mark" id="m-${m.i}" aria-labelledby="mt-${m.i}">
-        <h2 class="${repeatedAge ? 'sr' : 'age'}" id="mt-${m.i}">${heading}</h2>
+    m.el = place(`<article class="mark" id="m-${m.i}" ${heading === null ? `aria-label="${esc(m.tag)}"` : `aria-labelledby="mt-${m.i}"`}>
+        ${heading === null ? '' : `<h2 class="${repeatedAge ? 'sr' : 'age'}" id="mt-${m.i}">${heading}</h2>`}
         <p>${highlightText(m)}</p>
       </article>`, m.wy + 60);
   });

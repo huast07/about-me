@@ -488,7 +488,10 @@ summary:focus-visible { outline:2px dashed var(--ink); outline-offset:4px; }
 .mark p { font-size:19px; line-height:1.55; }
 .path strong { font-family:var(--serif); }
 .path .blurb { font:16px/1.5 var(--body); }
-.finale { max-height:calc(100dvh - 88px); overflow-y:auto; padding:0 4px 10px; scrollbar-gutter:stable; }
+.finale { max-height:calc(100dvh - 88px); overflow-y:auto; padding:0 4px 10px; }
+/* Keep homepage scrolling available without visible scrollbar tracks. */
+html:has(#tree), body:has(#tree), .finale { scrollbar-width:none; }
+html:has(#tree)::-webkit-scrollbar, body:has(#tree)::-webkit-scrollbar, .finale::-webkit-scrollbar { display:none; }
 .finale .contact a { display:inline-flex; align-items:center; justify-content:center; min-height:44px; font:14px/1.4 var(--ui); letter-spacing:0; text-transform:none; overflow-wrap:anywhere; }
 #season { min-height:44px; font-size:12px; }
 #page:not(.story-active) #season { display:none; }
