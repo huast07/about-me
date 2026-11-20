@@ -69,6 +69,7 @@ canvas#fx { z-index: 3; }
 /* ---------- finale ---------- */
 .finale { position: absolute; left: 50%; width: min(760px, calc(100% - 32px)); text-align: center;
   transform: translate(-50%, -50%) translateY(24px); opacity: 0; transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2, .8, .2, 1); }
+.finale:not(.on), .mark:not(.on) { visibility:hidden; pointer-events:none; }
 .finale.on { opacity: 1; transform: translate(-50%, -50%); }
 .finale h2 { font-weight: 500; font-style: italic; font-size: clamp(54px, 10vw, 110px); line-height: 1; margin: 10px 0 6px; color: var(--ink);
   text-shadow: 0 2px 30px rgba(255, 240, 244, .9); }

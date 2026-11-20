@@ -30,6 +30,8 @@ Browser regression check (requires Playwright and its Chromium browser):
 `node tests/music-navigation.cjs`. Set `PORTFOLIO_URL` to test a different local
 server; `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` optionally select existing installations.
 `node tests/travel-carousel.cjs` checks the sliding photo strip and unique milestone ages.
+`node tests/home-interactions.cjs` checks actual text selection, hidden-section input
+blocking, and keyboard access to visible cards on desktop and mobile.
 `node tests/branch-return.cjs` checks that all six branch Home links return to the
 visible section boxes on desktop and mobile, including history and refreshes.
 `node tests/recruiter-navigation.cjs` checks homepage navigation, the mobile menu,
@@ -46,6 +48,9 @@ Branch-page Home links target `index.html#sections`, returning directly to the s
 section boxes, including on a direct visit or refresh.
 The homepage introduction scrolls normally before the optional tree story, without
 a timeline sidebar or shortcut buttons. The shared header provides page navigation.
+Hidden story sections are inert and invisible so their links and scrollbars cannot
+interfere with visible content. Only keyboard focus can reposition the story; mouse
+and touch selection leave the current scroll position alone.
 Reading areas use translucent paper-coloured backgrounds and Georgia body text. Light artwork overlays keep the paintings visible around and through the
 content panels on desktop and mobile.
 

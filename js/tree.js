@@ -101,7 +101,7 @@
       </article>`, m.wy + 60);
   });
 
-  const finale = place(`<section class="finale" id="sections" aria-labelledby="motto">
+  const finale = place(`<section class="finale" id="sections" aria-labelledby="motto" inert>
       <h2 id="motto" lang="la">${esc(SITE.motto.latin)}</h2>
       <p class="translation">${esc(SITE.motto.translation)}</p>
       <p class="hand"><span lang="la">“${esc(SITE.motto.note)}”</span><br>
@@ -348,8 +348,13 @@
     // Keep the complete ending in view as it fades in during the final scroll.
     // The world moves down as the tree grows; cancel its remaining travel here.
     finale.style.translate = `0 ${Math.max(0, WORLD_H + introScroll - H - scrollY)}px`;
+    finale.inert = !finaleOn;
     finale.classList.toggle("on", finaleOn);
-    marks.forEach(m => m.el.classList.toggle("on", tip > m.wy - 40 && !finaleOn)); // cards step aside for the finale
+    marks.forEach(m => {
+      const visible = tip > m.wy - 40 && !finaleOn;
+      m.el.inert = !visible;
+      m.el.classList.toggle("on", visible);
+    }); // Cards step aside for the finale.
     const mid = camY() + H * (1 - FOCUS_SCREEN) - GROUND;
     setSeason(seasonAt(mid));
   }
@@ -403,7 +408,11 @@
   }
   addEventListener('portfolio:sections', showSections);
   addEventListener('hashchange', () => { if (location.hash === '#sections') showSections(); });
+  let tabNavigating = false;
+  addEventListener('keydown', e => { if (e.key === 'Tab') tabNavigating = true; });
+  addEventListener('pointerdown', () => { tabNavigating = false; }, { passive: true });
   world.addEventListener("focusin", e => {
+    if (!tabNavigating) return; // Selecting text with a mouse or touch must not move the page.
     const el = e.target.closest("[data-wy]");
     if (el) scrollTo({ top: el === finale ? document.documentElement.scrollHeight : Math.max(0, +el.dataset.wy - H * 0.5 + GROUND + introScroll), behavior: 'instant' });
   });
