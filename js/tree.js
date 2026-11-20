@@ -15,7 +15,6 @@
   /* Screen line (fraction from top) that decides the current season: just below centre, where cards are read. */
   const FOCUS_SCREEN = 0.62;
   const CARD_MAX_W = 340, CARD_GAP = 70; // highlight card width and distance from the trunk (desktop)
-  const TOPBAR_CLEARANCE = 100; // room for the shared navigation
 
   const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -147,7 +146,7 @@
     WORLD_H = TOP + GROUND + H * CROWN_SCREEN;
     introScroll = Math.max(0, hero.offsetTop + hero.offsetHeight - H * .45);
     spacer.style.height = (WORLD_H + introScroll) + "px"; world.style.height = WORLD_H + "px";
-    const finaleCentre = Math.max(H * FINALE_SCREEN, finale.offsetHeight / 2 + TOPBAR_CLEARANCE);
+    const finaleCentre = Math.max(H * FINALE_SCREEN, finale.offsetHeight / 2 + document.getElementById("topbar").offsetHeight + 16);
     finale.dataset.wy = WORLD_H - GROUND - finaleCentre;
     layoutDom(); render();
   }
@@ -346,6 +345,9 @@
     world.parentElement.classList.toggle('story-active', camY() > 0);
     const tip = tipY();
     const finaleOn = tip > +finale.dataset.wy - 160;
+    // Keep the complete ending in view as it fades in during the final scroll.
+    // The world moves down as the tree grows; cancel its remaining travel here.
+    finale.style.translate = `0 ${Math.max(0, WORLD_H + introScroll - H - scrollY)}px`;
     finale.classList.toggle("on", finaleOn);
     marks.forEach(m => m.el.classList.toggle("on", tip > m.wy - 40 && !finaleOn)); // cards step aside for the finale
     const mid = camY() + H * (1 - FOCUS_SCREEN) - GROUND;
